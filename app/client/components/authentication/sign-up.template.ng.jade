@@ -1,0 +1,95 @@
+include client/lib/mixins/form.mixins.include.jade
+
+//- ****************************************************************************
+
+h2 {{ 'authentication.title.SignUp' | translate }}
+
+form#form-sign-up.well(
+        name="formSignUp",
+        method="POST",
+        data-ng-submit="vm.signUp()")
+    
+    .alert.alert-danger(data-ng-if="vm.objErrs.strSignUp")
+        |{{ vm.objErrs.strSignUp | translate }}
+    
+    .row
+        .col-sm-12
+            label
+                |{{ 'authentication.Gender' | translate }}:
+        .clearfix
+        .col-sm-12
+            fieldset
+                +inputRadio('vm.objUserNew.strGender', 'vm.objErrs.strGender',
+                        'authentication.gender.Female', 'sign-up-gender-female',
+                        'signUpGender', 'female', "110", 'vm.isInvalidSignUp()')
+                +inputRadio('vm.objUserNew.strGender', 'vm.objErrs.strGender',
+                        'authentication.gender.Male', 'sign-up-gender-male',
+                        'signUpGender', 'male', "120", 'vm.isInvalidSignUp()')
+                +inputRadio('vm.objUserNew.strGender', 'vm.objErrs.strGender',
+                        'authentication.gender.Other', 'sign-up-gender-other',
+                        'signUpGender', 'other', "130", 'vm.isInvalidSignUp()')
+
+    .vmargin-2rem
+    .row
+        .col-sm-6
+            fieldset
+                +inputText('vm.objUserNew.strFirstName', 'vm.objErrs.strFirstName',
+                        'authentication.FirstName', 'sign-up-first-name',
+                        'signUpFirstName', '', '210', 'vm.isInvalidSignUp()')
+            .errorFieldEmpty
+        .col-sm-6
+            fieldset
+                +inputText('vm.objUserNew.strLastName', 'vm.objErrs.strLastName',
+                        'authentication.LastName', 'sign-up-last-name',
+                        'signUpLastName', '', '220', 'vm.isInvalidSignUp()')
+            .errorFieldEmpty
+
+    .row
+        .col-sm-12
+            fieldset
+                +inputText('vm.objUserNew.strUsername', 'vm.objErrs.strUsername',
+                        'authentication.Username', 'sign-up-username',
+                        'signUpUsername', '', '310', 'vm.isInvalidSignUp(\'signUpUsername\')', true)
+            .errorField
+                +errorHandler('vm.objErrs.strUsername')
+       
+    .vmargin-2rem
+    .row
+        .col-sm-6
+            fieldset
+                +inputText('vm.objUserNew.strEmail', 'vm.objErrs.strEmail',
+                        'authentication.Email', 'sign-up-email',
+                        'signUpEmail', '', '410', 'vm.isInvalidSignUp(\'signUpEmail\')', true)
+            .errorField
+                +errorHandler('vm.objErrs.strEmail')
+        .col-sm-6
+            fieldset
+                +inputText('vm.objUserNew.strEmailConfirmation', 'vm.objErrs.strEmailConfirmation',
+                        'authentication.EmailConfirmation', 'sign-up-email-confirmation',
+                        'signUpEmailConfirmation', '', '420', 'vm.isInvalidSignUp(\'signUpEmailConfirmation\')', true)
+            .errorField
+                +errorHandler('vm.objErrs.strEmailConfirmation')
+                +errorHandler('vm.objErrs.isEmailNotConfirmed', 'authentication.error.EmailNotConfirmed')
+    
+        .row
+        .col-sm-6
+            fieldset
+                +inputPassword('vm.objUserNew.strPassword', 'vm.objErrs.strPassword',
+                        'authentication.Password', 'sign-up-password',
+                        'signUpPassword', '', '510', 'vm.isInvalidSignUp(\'signUpPassword\')', true)
+            .errorField
+                +errorHandler('vm.objErrs.strPassword')
+        .col-sm-6
+            fieldset
+                +inputPassword('vm.objUserNew.strPasswordConfirmation', 'vm.objErrs.strPasswordConfirmation',
+                        'authentication.PasswordConfirmation', 'sign-up-password-confirmation',
+                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalidSignUp(\'signUpPasswordConfirmation\')', true)
+            .errorField
+                +errorHandler('vm.objErrs.strPasswordConfirmation')
+                +errorHandler('vm.objErrs.isPasswordNotConfirmed', 'authentication.error.PasswordNotConfirmed')
+    
+        .row
+        .col-xs-12.no-margin.right
+            fieldset
+                button.btn.btn-primary(tabindex="1000")
+                    |{{ 'authentication.title.SignUp' | translate }}

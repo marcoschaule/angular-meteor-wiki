@@ -1,0 +1,374 @@
+// *****************************************************************************
+// Imports and requires
+// *****************************************************************************
+
+@import _variables
+
+// *****************************************************************************
+// General
+// *****************************************************************************
+
+*
+    font-weight normal
+    outline none !important
+
+html, body
+    margin 0
+    height 100%
+    padding 0
+    font-family "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+    background-color $colorBackground
+    color $colorFontDefault
+
+h1, h2, h3, h4, h5
+    color $colorFontHeading
+    margin-top 0
+h6
+    color #51586a
+    margin 0 0 .2rem 0
+    padding 0
+    text-transform uppercase
+    
+fieldset
+    margin-bottom .5rem
+label
+    font-weight normal
+input, textarea
+    color $colorWhite !important
+input[type="radio"], input[type="checkbox"]
+    display inline
+    height auto
+    margin 0 .6rem 0 0
+    width auto
+input[type="radio"] + label, input[type="checkbox"] + label
+    margin-right 3rem
+
+// *****************************************************************************
+// General classes
+// *****************************************************************************
+
+// Font styles
+.striked
+    text-decoration line-through
+
+// Displays
+.inline
+    display inline
+.block
+    display block
+.inline-block
+    display inline-block
+
+// Positions
+.relative
+    position relative
+.absolute
+    position absolute
+.fixed
+    position fixed
+
+// Alignments
+.left
+    text-align left
+.right
+    text-align right
+.center
+    text-align center
+.justify
+    text-align justify
+    
+// Floats
+.float-left
+    float left
+.float-right
+    float right
+.clear
+    clear both
+
+// Margins
+.vmargin-half-rem
+    height 0.5rem
+.vmargin-1rem
+    height 1rem
+.vmargin-2rem
+    height 2rem
+.vmargin-3rem
+    height 3rem
+.vmargin-4rem
+    height 4rem
+.hmargin-half-rem, .hmargin-1rem, .hmargin-2rem, .hmargin-3rem, .hmargin-4rem
+    height 1px
+    float left
+.hmargin-half-rem
+    width .5rem
+.hmargin-1rem
+    width 1rem
+.hmargin-2rem
+    width 2rem
+.hmargin-3rem
+    width 3rem
+.hmargin-4rem
+    width 4rem
+.no-margin
+    margin 0
+.no-margin-right
+    margin-right 0
+.no-margin-left
+    margin-left 0
+.no-margin-top
+    margin-top 0
+.no-margin-bottom
+    margin-bottom 0
+    
+ // Paddings
+.no-padding
+    padding 0
+.no-padding-right
+    padding-right 0
+.no-padding-left
+    padding-left 0
+.no-padding-top
+    padding-top 0
+.no-padding-bottom
+    padding-bottom 0
+
+// colors
+.color-bg-2
+    color $colorBackground2
+    
+// error messages
+.errorField, .errorFieldEmpty
+    color $colorErrorFg
+    font-weight normal
+    height 3rem
+    width 100%
+
+// *****************************************************************************
+// Bootstrap overrides
+// *****************************************************************************
+
+// alerts
+.alert
+    border-radius $radiusDefault
+
+// buttons
+.btn
+    border-radius $radiusDefault
+    text-transform none
+.btn.btn-flat:not(.btn-link), .btn-default.btn-flat:not(.btn-link)
+    color $colorFontDefault
+    padding .4rem
+.btn-primary:not(.btn-link):not(.btn-flat)
+    background-color $colorPrimaryNormalBg
+    color $colorPrimaryNormalFg
+.btn-primary:not(.btn-link):not(.btn-flat):hover
+    background-color $colorPrimaryHoverBg
+    color $colorPrimaryHoverFg
+.btn-primary:not(.btn-link):not(.btn-flat).active
+    color $colorPrimaryNormalFg
+
+// forms
+.form-control
+    background-color $colorBrighten1 !important
+    border none !important
+.form-control:focus
+    background-color $colorBackground3 !important
+    background-image none !important
+    box-shadow none !important
+    transition background-color .5s
+.form-control:-webkit-autofill,
+.form-control:hover:-webkit-autofill,
+.form-control:focus:-webkit-autofill
+    background-image none !important
+    background-color $colorBackground3 !important
+    box-shadow 0 0 0px 1000px $colorBackground3 inset
+    border none !important
+    text-fill-color white !important
+    -webkit-background-image none !important
+    -webkit-background-color $colorBackground3 !important
+    -webkit-box-shadow 0 0 0px 1000px $colorBackground3 inset
+    -webkit-border none !important
+    -webkit-text-fill-color white !important
+    
+    
+// wells
+.well
+    border none
+    background-color $colorBrighten1 !important
+    border-radius $radiusDefault !important
+    color $colorFontDefault !important
+    box-shadow none !important
+
+// *****************************************************************************
+// Bootstrap extensions
+// *****************************************************************************
+
+// buttons
+.btn-simple
+    color $colorFontDefault !important
+    margin 0
+    padding 0
+.btn-simple:hover, .btn-simple.active
+    text-decoration underline
+
+// forms
+label.form-control-alt
+    color #51586a
+    margin 0
+    padding 0
+    text-transform uppercase
+input.form-control-alt
+    display block
+    background-color $colorBackground2
+    border none
+    border-radius $radiusDefault
+    padding .6rem 1.2rem
+    width 100%
+
+// form-button groups
+.btn-group-alt
+    position relative
+    z-index 0
+.btn-group-alt input
+    position relative
+    z-index 1
+.btn-group-alt button
+    position absolute
+    top 0
+    right 0
+    z-index 2
+    padding .3rem .4rem
+    margin 0
+
+// *****************************************************************************
+// Layout
+// *****************************************************************************
+
+#container
+    max-width 1200px
+    min-height 100%
+    padding 4rem 2rem
+    position relative
+#main
+    padding-bottom 120px
+#footer
+    bottom 0
+    border-top 1px solid #434857
+    height 120px
+    margin-top 2*$paddingDefault
+    padding-top $paddingDefault
+    position absolute
+    width 100%
+#sidebar-header, #article-header
+    border-bottom 1px solid #434857
+    margin-bottom 2*$paddingDefault
+    min-height 8rem
+#sidebar-header
+    padding-left 2rem
+    .badge
+        border-radius 100px
+        background-color $colorBackground2
+        margin-right 1rem
+        padding .8rem
+    .username
+        font-size 1.6rem
+#sidebar-content h6, #article-content h6
+        margin 0 0 .6rem 0
+#sidebar-content
+    h6
+        padding 0 2rem
+    .btn-primary:not(.btn-link):not(.btn-flat)
+        background-color $colorButtonSidebarNormalBg
+        border none
+        box-shadow none !important
+        color $colorButtonSidebarNormalFg
+        display block
+        margin 0 0 .2rem 0
+        padding-left 2rem
+        padding-right 2rem
+        text-align left
+        width 100%
+        box-shadow none
+    .btn-primary:not(.btn-link):not(.btn-flat):hover
+        background-color $colorButtonSidebarHoverBg !important
+        color $colorButtonSidebarHoverFg !important
+        box-shadow none
+    .btn-primary:not(.btn-link):not(.btn-flat).active
+        background-color $colorButtonSidebarActiveBg
+        color $colorButtonSidebarActiveFg
+    .btn-primary:not(.btn-link):not(.btn-flat).active:hover
+        background-color $colorPrimaryHoverBg !important
+        color $colorPrimaryHoverFg !important
+
+// *****************************************************************************
+// Pages
+// *****************************************************************************
+
+// .page-content
+//     margin-top 2rem
+// .page .page-edit-bar
+//     head()
+// .page .page-title
+//     font-size 2rem
+//     font-weight bold
+// .page .page-content-edit input,
+// .page .page-content-edit textarea
+//     font-family monospace
+//     padding 2rem
+// .page .pages-form-edit textarea
+//     min-height 40rem
+//     resize vertical
+// .page-content-version
+//     border-bottom 1px solid colorGrayFg1
+//     padding-bottom 1rem
+// .page-content-version .page-content-version-dateTime
+//     float left
+//     background-color colorGrayFg1
+//     padding 1rem
+//     margin-right 2rem
+//     max-width 20%
+// .page-content-version .page-content-version-title
+//     font-size 2rem
+//     font-weight bold
+// .page-content-version .page-content-version-title-and-by
+//     float left
+//     max-width 40%
+//     padding-top .4rem
+// .page-content-version .page-content-version-actions
+//     float right
+//     max-width 40%
+//     padding-top .8rem
+// .page-content-version .page-content-version-content
+//     height 0
+//     visibility hidden;
+//     opacity 0
+//     transition visibility 0s, opacity 0.5s linear
+// .page-content-version .page-content-version-content.active
+//     height auto
+//     background-color white
+//     border 1px solid colorGrayFg2
+//     padding 2rem
+//     visibility visible
+//     opacity 1
+// .page-content-version .page-content-version-by
+//     font-style italic
+// .page-content-version .pages-versions-open i
+//     display none
+// .page-content-version .pages-versions-open i.active
+//     display inline
+
+// *****************************************************************************
+// CodeMirror extension
+// *****************************************************************************
+
+.form-control-editor .CodeMirror
+    height auto
+    border 1px solid #ccc
+    border-radius 4px
+    font-family 'Bitstream Vera Sans Mono', Consolas, Courier, monospace
+.form-control-editor .CodeMirror-lines
+    padding 1rem 0
+.form-control-editor .CodeMirror-code > div > pre
+    padding .25rem 1rem
+// .form-control-editor .CodeMirror-code > div:nth-child(2n+1) > pre
+//     background-color #f8f8f8

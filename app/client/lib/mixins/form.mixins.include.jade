@@ -1,0 +1,66 @@
+//- ****************************************************************************
+//- Error handler
+//- ****************************************************************************
+
+mixin errorHandler(strErr, strTranslation)
+    span&attributes({ 'data-ng-if': strErr })
+        if (strTranslation)
+            |{{ '#{strTranslation}'|translate }}
+        else
+            |{{ #{strErr}|translate }}
+
+//- ****************************************************************************
+//- Input template for all
+//- ****************************************************************************
+
+mixin inputAll(strType, strModel, strErr, strLabel, strId, strName, strValue, numTabIndex, strChange, isMandatory)
+    label&attributes({ 'for': strId })
+        |{{ '#{strLabel}' | translate }}:
+        if (isMandatory)
+            |&nbsp;&#42;
+    input.form-control&attributes({
+        'type'          : strType,
+        'id'            : strId,
+        'name'          : strName,
+        'value'         : strValue,
+        'tabindex'      : numTabIndex,
+        'data-ng-blur'  : strChange,
+        'data-ng-model' : strModel,
+        'data-ng-class' : "{ error: " + strErr + " }",
+    })
+
+//- ****************************************************************************
+//- Input text
+//- ****************************************************************************
+
+mixin inputText(strModel, strErr, strLabel, strId, strName, strValue, numTabIndex, strChange, isMandatory)
+    +inputAll('text', strModel, strErr, strLabel, strId, strName, strValue, numTabIndex, strChange, isMandatory)
+
+//- ****************************************************************************
+//- Input password
+//- ****************************************************************************
+
+mixin inputPassword(strModel, strErr, strLabel, strId, strName, strValue, numTabIndex, strChange, isMandatory)
+    +inputAll('password', strModel, strErr, strLabel, strId, strName, strValue, numTabIndex, strChange, isMandatory)
+
+//- ****************************************************************************
+//- Input password
+//- ****************************************************************************
+
+mixin inputRadio(strModel, strErr, strLabel, strId, strName, strValue, numTabIndex, strChange, isMandatory)
+    input.form-control&attributes({
+        'type'          : 'radio',
+        'id'            : strId,
+        'name'          : strName,
+        'value'         : strValue,
+        'tabindex'      : numTabIndex,
+        'data-ng-blur'  : strChange,
+        'data-ng-model' : strModel,
+        'data-ng-class' : "{ error: " + strErr + " }",
+    })
+    label&attributes({ 'for': strId })
+        |{{ '#{strLabel}' | translate }}
+        if (isMandatory)
+            |&#42;
+
+//- ****************************************************************************

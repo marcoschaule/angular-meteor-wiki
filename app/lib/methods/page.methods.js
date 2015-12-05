@@ -1,0 +1,143 @@
+Meteor.methods({
+
+// ********************************************************************************
+// Page methods
+// ********************************************************************************
+
+/**
+ * Method to read one page by find object.
+ * 
+ * @param  {Object} objFind  object to find page, like "{ _id: id }" etc.
+ * @return {Object}          object of result
+ */
+pagesReadOne: function(objFind) {
+    var objPage = Pages.findOne(objFind);
+    return objPage;
+},
+
+// ********************************************************************************
+
+/**
+ * Method to create one page by create object.
+ * 
+ * @param  {Object} objCreate  object to create a page
+ * @return {Object}            object of write result like "{ "nInserted" : 1 }"
+ */
+pagesCreateOne: function(objCreate) {
+    var objCreateFull = {
+        _idCreatedBy : Meteor.userId(),
+        dateCreatedAt: new Date(),
+        strName      : objCreate.strName,
+        arrVersions  : [{
+            _idChangedBy : Meteor.userId(),
+            dateChangedAt: new Date(),
+            strTitle     : objCreate.strTitle,
+            strContent   : objCreate.strContent,
+            strParser    : objCreate.strParser || 'markdown',
+        }],
+        isPublished      : !!objCreate.isPublished,
+        isPrivate        : !!objCreate.isPrivate,
+    };
+    return Pages.insert(objCreateFull);
+},
+
+// ********************************************************************************
+
+/**
+ * Method to update one page by find and update object.
+ * 
+ * @param  {Object} objFind    object to find a page
+ * @param  {Object} objUpdate  object to the found page
+ * @return {Object}            object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
+ */
+pagesUpdateOne: function(objFind, objUpdate) {
+    var objUpdateElement = {
+        _idChangedBy : Meteor.userId(),
+        dateChangedAt: new Date(),
+        strTitle     : objUpdate.strTitle,
+        strContent   : objUpdate.strContent,
+        strParser    : objUpdate.strParser || 'markdown',
+    };
+    var objUpdateFull = {
+        $set: {
+            strName    : objUpdate.strName,
+            isPrivate  : !!objUpdate.isPrivate,
+            isPublished: !!objUpdate.isPublished,
+        },
+        $push: {
+            arrVersions: {
+                $each    : [ objUpdateElement ],
+                $position: 0,
+            },
+        },
+    };
+    return Pages.update(objFind, objUpdateFull);
+},
+
+// ********************************************************************************
+
+/**
+ * Method to delete one page by find object.
+ * 
+ * @param  {Object} objFind  object to find a page
+ * @return {Object}          object of write result like "{ nRemoved: 4 }"
+ */
+pagesDeleteOne: function(objFind) {
+    return Pages.remove(objFind);
+},
+
+// ********************************************************************************
+
+/**
+ * [pagesTogglePrivateOne description]
+ */
+/**
+ * Method to delete one page by find object.
+ * 
+ * @param  {Object}  objFind    object to find a page
+ * @param  {Boolean} isPrivate  boolean of private state; true if private
+ * @return {Object}             object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
+ */
+pagesTogglePrivateOne: function(objFind, isPrivate) {
+    return Pages.update(objFind, { $set: { isPrivate: !!isPrivate } });
+},
+
+// ********************************************************************************
+
+/**
+ * Method to reset one page version.
+ * 
+ * @param  {Object} objFind   object to find a page
+ * @param  {Object} numIndex  number of which version to reset
+ * @return {Object}           object of write result like "{ nRemoved: 4 }"
+ */
+pagesResetOneVersion: function(objFind, numIndex) {
+    var objPage         = Pages.findOne(objFind);
+    var objVersionReset = objPage.arrVersions[numIndex];
+
+    objVersionReset._idChangedBy  = Meteor.userId();
+    objVersionReset.dateChangedAt = new Date();
+
+    return Pages.update(objFind, { $push: { arrVersions: { $each: [ objVersionReset ], $position: 0 } } });
+},
+
+// ********************************************************************************
+
+/**
+ * Method to delete one page version.
+ * 
+ * @param  {Object} objFind   object to find a page
+ * @param  {Object} numIndex  number of which version to reset
+ * @return {Object}           object of write result like "{ nRemoved: 4 }"
+ */
+pagesDeleteOneVersion: function(objFind, numIndex) {
+    var objPage        = Pages.findOne(objFind);
+    var arrVersionsNew = objPage.arrVersions;
+    arrVersionsNew.splice(numIndex, 1);
+
+    return Pages.update(objFind, { $set: { arrVersions: arrVersionsNew } });
+}
+
+// ********************************************************************************
+
+});

@@ -1,0 +1,19 @@
+div(data-ng-controller="AmwSidebarContentCtrl as vm", tabindex="-1")
+    h6 Navigation
+    div
+        a.btn.btn-primary(
+                title="Home",
+                tabindex="-1",
+                data-ui-sref="home",
+                data-ui-sref-active="active") Home
+        a.btn.btn-primary(
+                title="Help",
+                tabindex="-1",
+                data-ui-sref="help",
+                data-ui-sref-active="active") Help
+    div(data-ng-if="vm.isSignedIn")
+        a.btn.btn-primary(
+                title="Sign out",
+                tabindex="-1",
+                data-ui-sref="sign-out",
+                data-ui-sref-active="active") Sign out

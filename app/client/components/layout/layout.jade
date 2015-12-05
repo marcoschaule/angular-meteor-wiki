@@ -1,0 +1,26 @@
+head
+    base(href='/')
+    link(href='https://fonts.googleapis.com/icon?family=Material+Icons', rel='stylesheet')
+    link(href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700', rel='stylesheet', type='text/css')
+    
+body(class="test")
+    #container.container-fluid(data-ng-app='amw')
+        main#main.row
+
+            //- sidebar
+            nav#sidebar.col-md-3(role='navigation', tabindex='-1')
+                #sidebar-header.header(role='navigation-header')
+                    div(data-ng-include="'sidebar-header.template.html'")
+                |                 
+                #sidebar-content(role='navigation-content')
+                    div(data-ng-include="'sidebar-content.template.html'")
+
+            //- article
+            article#article.col-md-9(role='article', tabindex='-1')
+                header#article-header.header(role='header')
+                    div(data-ui-view='header')
+                #article-content(role='content')
+                    div(data-ui-view='content')
+
+        footer#footer(role='footer')
+            .footer(data-ng-include="'footer-static.template.html'")

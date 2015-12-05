@@ -1,0 +1,21 @@
+div(data-ng-controller="AmwSidebarHeaderCtrl as vm", tabindex="-1")
+    h6 &nbsp;
+    div(data-ng-if="vm.isSignedIn")
+        span.badge: i.mdi-action-perm-identity
+        button.btn.btn-simple
+            span.username oncemac
+            span &nbsp;&#9656;
+    div(data-ng-if="!vm.isSignedIn")
+        a.btn.btn-simple(
+                title="Sign in",
+                tabindex="-1",
+                data-ui-sref="sign-in",
+                data-ui-sref-active="active")
+            |{{ 'navigation.title.SignIn' | translate }}
+        span.color-bg-2 &nbsp;&nbsp;|&nbsp;&nbsp;
+        a.btn.btn-simple(
+                title="Sign up",
+                tabindex="-1",
+                data-ui-sref="sign-up",
+                data-ui-sref-active="active")
+            |{{ 'navigation.title.SignUp' | translate }}

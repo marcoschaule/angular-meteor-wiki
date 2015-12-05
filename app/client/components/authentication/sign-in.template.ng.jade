@@ -1,0 +1,28 @@
+include client/lib/mixins/form.mixins.include.jade
+
+//- ****************************************************************************
+
+h2 {{ 'authentication.title.SignIn' | translate }}
+
+form#form-sign-in.well(
+        name="formSignIn",
+        method="POST",
+        data-ng-submit="vm.signIn()")
+    
+    .alert.alert-danger(data-ng-if="vm.objErrs.strSignIn")
+        |{{ vm.objErrs.strSignIn | translate }}
+    
+    .row
+        fieldset.col-sm-6
+            +inputText('vm.objUser.strUsername', 'vm.objErrs.strUsername',
+                    'authentication.Username', 'sign-in-username',
+                    'signInUsername', '', 10, 'vm.isInvalidSignIn()')
+        fieldset.col-sm-6
+            +inputPassword('vm.objUser.strPassword', 'vm.objErrs.strPassword',
+                    'authentication.Password', 'sign-in-password',
+                    'signInPassword', '', 10, 'vm.isInvalidSignIn()')
+    .row
+        fieldset.col-xs-12.no-margin.right
+            button.btn.btn-primary(tabindex="100")
+                |{{ 'authentication.title.SignIn' | translate }}
+                
