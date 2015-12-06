@@ -12,6 +12,7 @@ angular
         $stateProvider
             .state('home',    getRouteObjectHome())
             .state('help',    getRouteObjectHelp())
+            .state('profile', getRouteObjectProfile())
             .state('sign-in', getRouteObjectSignIn())
             .state('sign-up', getRouteObjectSignUp())
             ;
@@ -53,6 +54,24 @@ function getRouteObjectHelp() {
         views: {
             content: {
                 templateUrl  : 'help.template.html',
+            },
+        },
+    });
+}
+
+// *****************************************************************************
+
+/**
+ * Function to get the route object for "home".
+ * 
+ * @return {Object}  object for route
+ */
+function getRouteObjectProfile() {
+    return _extendWithStaticHeader({
+        url  : '/profile',
+        views: {
+            content: {
+                templateUrl  : 'profile.template.html',
             },
         },
     });

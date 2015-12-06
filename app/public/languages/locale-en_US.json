@@ -52,6 +52,8 @@
   
   "help.Title"                                                 : "Help",
 
+  "profile.Title"                                              : "Profile",
+
   "Privacy"                                                    : "Privacy",
   "privacy.Public"                                             : "Public",
   "privacy.Private"                                            : "Private",

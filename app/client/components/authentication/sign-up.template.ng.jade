@@ -49,9 +49,10 @@ form#form-sign-up.well(
             fieldset
                 +inputText('vm.objUserNew.strUsername', 'vm.objErrs.strUsername',
                         'authentication.Username', 'sign-up-username',
-                        'signUpUsername', '', '310', 'vm.isInvalidSignUp(\'signUpUsername\')', true)
+                        'signUpUsername', '', '310', 'vm.isInvalidSignUp(\'Username\')', true)
             .errorField
-                +errorHandler('vm.objErrs.strUsername')
+                +errorHandler('vm.objErrs.isUsernameMissing', 'authentication.error.UsernameMissing')
+                +errorHandler('vm.objErrs.isUsernameInvalid', 'authentication.error.UsernameInvalid')
        
     .vmargin-2rem
     .row
@@ -59,16 +60,18 @@ form#form-sign-up.well(
             fieldset
                 +inputText('vm.objUserNew.strEmail', 'vm.objErrs.strEmail',
                         'authentication.Email', 'sign-up-email',
-                        'signUpEmail', '', '410', 'vm.isInvalidSignUp(\'signUpEmail\')', true)
+                        'signUpEmail', '', '410', 'vm.isInvalidSignUp(\'Email\')', true)
             .errorField
-                +errorHandler('vm.objErrs.strEmail')
+                +errorHandler('vm.objErrs.isEmailMissing', 'authentication.error.EmailMissing')
+                +errorHandler('vm.objErrs.isEmailInvalid', 'authentication.error.EmailInvalid')
         .col-sm-6
             fieldset
                 +inputText('vm.objUserNew.strEmailConfirmation', 'vm.objErrs.strEmailConfirmation',
                         'authentication.EmailConfirmation', 'sign-up-email-confirmation',
-                        'signUpEmailConfirmation', '', '420', 'vm.isInvalidSignUp(\'signUpEmailConfirmation\')', true)
+                        'signUpEmailConfirmation', '', '420', 'vm.isInvalidSignUp(\'EmailConfirmation\')', true)
             .errorField
-                +errorHandler('vm.objErrs.strEmailConfirmation')
+                +errorHandler('vm.objErrs.isEmailConfirmationMissing', 'authentication.error.EmailConfirmationMissing')
+                +errorHandler('vm.objErrs.isEmailConfirmationInvalid', 'authentication.error.EmailConfirmationInvalid')
                 +errorHandler('vm.objErrs.isEmailNotConfirmed', 'authentication.error.EmailNotConfirmed')
     
         .row
@@ -76,16 +79,18 @@ form#form-sign-up.well(
             fieldset
                 +inputPassword('vm.objUserNew.strPassword', 'vm.objErrs.strPassword',
                         'authentication.Password', 'sign-up-password',
-                        'signUpPassword', '', '510', 'vm.isInvalidSignUp(\'signUpPassword\')', true)
+                        'signUpPassword', '', '510', 'vm.isInvalidSignUp(\'Password\')', true)
             .errorField
-                +errorHandler('vm.objErrs.strPassword')
+                +errorHandler('vm.objErrs.isPasswordMissing', 'authentication.error.PasswordMissing')
+                +errorHandler('vm.objErrs.isPasswordInvalid', 'authentication.error.PasswordInvalid')
         .col-sm-6
             fieldset
                 +inputPassword('vm.objUserNew.strPasswordConfirmation', 'vm.objErrs.strPasswordConfirmation',
                         'authentication.PasswordConfirmation', 'sign-up-password-confirmation',
-                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalidSignUp(\'signUpPasswordConfirmation\')', true)
+                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalidSignUp(\'PasswordConfirmation\')', true)
             .errorField
-                +errorHandler('vm.objErrs.strPasswordConfirmation')
+                +errorHandler('vm.objErrs.isPasswordConfirmationMissing', 'authentication.error.PasswordConfirmationMissing')
+                +errorHandler('vm.objErrs.isPasswordConfirmationInvalid', 'authentication.error.PasswordConfirmationInvalid')
                 +errorHandler('vm.objErrs.isPasswordNotConfirmed', 'authentication.error.PasswordNotConfirmed')
     
         .row

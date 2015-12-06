@@ -4,10 +4,7 @@
 
 mixin errorHandler(strErr, strTranslation)
     span&attributes({ 'data-ng-if': strErr })
-        if (strTranslation)
             |{{ '#{strTranslation}'|translate }}
-        else
-            |{{ #{strErr}|translate }}
 
 //- ****************************************************************************
 //- Input template for all

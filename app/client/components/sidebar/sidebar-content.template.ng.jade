@@ -13,6 +13,11 @@ div(data-ng-controller="AmwSidebarContentCtrl as vm", tabindex="-1")
                 data-ui-sref-active="active") Help
     div(data-ng-if="vm.isSignedIn")
         a.btn.btn-primary(
+                title="Profile",
+                tabindex="-1",
+                data-ui-sref="profile",
+                data-ui-sref-active="active") Profile
+        a.btn.btn-primary(
                 title="Sign out",
                 tabindex="-1",
                 data-ui-sref="sign-out",

@@ -20,7 +20,7 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($rootScope) {
+function Controller($rootScope, $state, AuthService) {
     var vm = this;
 
     // *****************************************************************************
@@ -31,168 +31,60 @@ function Controller($rootScope) {
     // Public variables
     // *****************************************************************************
 
-    vm.objUserNew = {};
+    vm.objUserNew = AuthService.objUserNew;
     vm.objErrs    = {};
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.signUp          = signUp;
-    vm.isInvalidSignUp = isInvalidSignUp;
+    vm.signUp        = signUp;
+    vm.isSignUpValid = isSignUpValid;
 
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
 
+    /**
+     * Controller function to accomplish a sign up supported by the 
+     * authentication service.
+     */
     function signUp() {
         $rootScope.isProcessing = true;
+        return AuthService.signUp(objOptions, function(err) {
 
-        if (isInvalidSignUp(false)) {
-            $rootScope.isProcessing = false;
-            return false;
-        }
-
-        // options including profile
-        var objOptions = {
-            username : vm.objUserNew.strUsername,
-            email    : vm.objUserNew.strEmail,
-            password : vm.objUserNew.strPassword,
-            profile  : {
-                gender    : vm.objUserNew.strGender,
-                firstName : vm.objUserNew.strFirstName,
-                lastName  : vm.objUserNew.strLastName,
-            },
-        };
-
-        // Create user with user name, email and password.
-        return Accounts.createUser(objOptions, function(err) {
-            $rootScope.isProcessing = false;
-
-            // handle errors
-            if (err && err.reason.indexOf('Username already exists') >= 0) {
-                vm.objErrs.strGeneral = 'authentication.error.UsernameAlreadyExists';
-                return false;
-            }
-            if (err && err.reason.indexOf('Email already exists') >= 0) {
-                vm.objErrs.strGeneral = 'authentication.error.EmailAlreadyExists';
-                return false;
+            if (err) {
+                vm.objErrs.strGeneral = err;
+                $rootScope.isProcessing = false;
+                return;
             }
 
-            // reset and redirect
-            _resetUser();
+            // disable processing, reset user and redirect
+            $state.go('profile');
+            $rootScope.isProcessing = false;
 
-            return false;
+            return;
         });
     }
 
     // *****************************************************************************
 
-    function isInvalidSignUp(strFieldValue) {
-
-        [ // field validation
-            'Username',
-            'Email',
-            'EmailConfirmation',
-            'Password',
-            'PasswordConfirmation',
-        ].forEach(function(strFieldName) {
-            _validateField(strFieldName, strFieldValue);
-        });
-
-        [ // field confirmation
-            'Email',
-            'Password',
-        ].forEach(function(strFieldName) {
-            _confirmField(strFieldName, strFieldValue);
-        });
-
-        console.log(">>> Debug ====================; vm.objErrs:", vm.objErrs, '\n\n');
-        if (Object.keys(vm.objErrs).length > 0) {
-            return true;
-        }
-        return false;
+    /**
+     * Controller method to delegate the test for valid sign up form to the
+     * authentication service.
+     * 
+     * @param  {String}  strFieldName   string of the field's name
+     * @param  {String}  strFieldValue  string of the field's value
+     * @return {Boolean}                true if form is valid
+     */
+    function isSignUpValid(strFieldName) {
+        var strTranslation = 'authentication.error.' + strFieldName + 'Missing';
+        return AuthService.isSignUpValid(strFieldName, vm.objUserNew['str' + strFieldName]);
     }
 
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
-
-    /**
-     * Helper function to reset the user object.
-     */
-    function _resetUser() {
-        vm.objUser = {};
-
-        // vm.objUser.strGender               = '';
-        // vm.objUser.strFirstName            = '';
-        // vm.objUser.strLastName             = '';
-        // vm.objUser.strUsername             = '';
-        // vm.objUser.strEmail                = '';
-        // vm.objUser.strEmailConfirmation    = '';
-        // vm.objUser.strPassword             = '';
-        // vm.objUser.strPasswordConfirmation = '';
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Helper function to validate the form fields.
-     * 
-     * @param {Object} strFieldName   string of the name of the field
-     * @param {Object} strFieldValue  string of the value of the field
-     */
-    function _validateField(strFieldName, strFieldValue) {
-        var strFieldNameFirst  = 'str' + strFieldName;
-        var strSignUpFieldName = 'signUp' + strFieldName;
-        var strTranslation     = 'authentication.error.' + strFieldName + 'Missing';
-
-        if (undefined === strFieldValue || (!vm.objUserNew[strFieldNameFirst] &&
-                strSignUpFieldName === strFieldValue)) {
-            vm.objErrs[strFieldNameFirst] = strTranslation;
-        } else if (vm.objUserNew[strFieldNameFirst] &&
-                vm.objErrs[strFieldNameFirst] &&
-                strSignUpFieldName === strFieldValue) {
-            delete vm.objErrs[strFieldNameFirst];
-        }
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Helper function to confirm the form fields.
-     * 
-     * @param {Object} strFieldName   string of the name of the field
-     * @param {Object} strFieldValue  string of the value of the field
-     */
-    function _confirmField(strFieldName, strFieldValue) {
-        var strFieldNameFirst              = 'str' + strFieldName;
-        var strFieldNameConfirmation       = 'str' + strFieldName + 'Confirmation';
-        var strSignUpFieldName             = 'signUp' + strFieldName;
-        var strSignUpFieldNameConfirmation = 'signUp' + strFieldName + 'Confirmation';
-        var strIsFieldNameNotConfirmed     = 'is' + strFieldName + 'NotConfirmed';
-
-        var isFieldSetFirst                = !!vm.objUserNew[strFieldNameFirst];
-        var isFieldSetConfirmation         = !!vm.objUserNew[strFieldNameConfirmation];
-        var isFieldsEqual                  = vm.objUserNew[strFieldNameFirst] === vm.objUserNew[strFieldNameConfirmation];
-        var isFieldsNotEqual               = !isFieldsEqual;
-        var isFieldCurrentFirst            = strSignUpFieldName === strFieldValue;
-        var isFieldCurrentConfirmed        = strSignUpFieldNameConfirmation === strFieldValue;
-
-        if (!isFieldSetFirst || !isFieldSetConfirmation) {
-            return;
-        }
-
-        if (isFieldsNotEqual && (
-                    isFieldCurrentFirst ||
-                    isFieldCurrentConfirmed)) {
-            vm.objErrs[strIsFieldNameNotConfirmed] = true;
-        } else if (isFieldsEqual && (
-                    isFieldCurrentFirst ||
-                    isFieldCurrentConfirmed)) {
-            vm.objErrs[strIsFieldNameNotConfirmed] = false;
-        }
-    }
 
     // *****************************************************************************
 }
