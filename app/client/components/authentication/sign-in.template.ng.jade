@@ -13,16 +13,28 @@ form#form-sign-in.well(
         |{{ vm.objErrs.strSignIn | translate }}
     
     .row
-        fieldset.col-sm-6
-            +inputText('vm.objUser.strUsername', 'vm.objErrs.strUsername',
-                    'authentication.Username', 'sign-in-username',
-                    'signInUsername', '', 10, 'vm.isInvalidSignIn()')
-        fieldset.col-sm-6
-            +inputPassword('vm.objUser.strPassword', 'vm.objErrs.strPassword',
-                    'authentication.Password', 'sign-in-password',
-                    'signInPassword', '', 10, 'vm.isInvalidSignIn()')
+        .col-sm-12
+            +errorAlert('general')
+    .row
+        .col-sm-6
+            fieldset
+                +inputText('vm.objUser.strUsername', 'vm.objErrs.strUsername',
+                        'authentication.Username', 'sign-in-email',
+                        'signUpUsername', '', '110', 'vm.isInvalid(\'strUsername\')', true)
+            .errorField
+                +errorHandler('strUsername')
+        .col-sm-6
+            fieldset
+                +inputPassword('vm.objUser.strPassword', 'vm.objErrs.strPassword',
+                        'authentication.Password', 'sign-in-password',
+                        'signUpPassword', '', '120', 'vm.isInvalid(\'strPassword\')', true)
+            .errorField
+                +errorHandler('strPassword')
+
     .row
         fieldset.col-xs-12.no-margin.right
-            button.btn.btn-primary(tabindex="100")
+            a.btn.btn-link(data-ui-sref="forgot-password")
+                |{{ 'authentication.title.ForgotPassword' | translate }}
+            button.btn.btn-primary(tabindex="1010")
                 |{{ 'authentication.title.SignIn' | translate }}
                 

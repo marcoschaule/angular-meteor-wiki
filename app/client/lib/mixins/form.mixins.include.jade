@@ -2,9 +2,13 @@
 //- Error handler
 //- ****************************************************************************
 
-mixin errorHandler(strErr, strTranslation)
-    span&attributes({ 'data-ng-if': strErr })
-            |{{ '#{strTranslation}'|translate }}
+mixin errorHandler(strErrName)
+    span&attributes({ 'data-ng-if': 'vm.objErrs.'+strErrName })
+        |{{ 'authentication.error.#{strErrName}.'+vm.objErrs.#{strErrName}|translate }}
+
+mixin errorAlert(strErrName)
+    .alert.alert-danger&attributes({ 'data-ng-if': 'vm.objErrs.'+strErrName })
+        |{{ 'authentication.error.#{strErrName}.'+vm.objErrs.#{strErrName}|translate }}
 
 //- ****************************************************************************
 //- Input template for all

@@ -21,13 +21,13 @@ form#form-sign-up.well(
             fieldset
                 +inputRadio('vm.objUserNew.strGender', 'vm.objErrs.strGender',
                         'authentication.gender.Female', 'sign-up-gender-female',
-                        'signUpGender', 'female', "110", 'vm.isInvalidSignUp()')
+                        'signUpGender', 'female', "110", '')
                 +inputRadio('vm.objUserNew.strGender', 'vm.objErrs.strGender',
                         'authentication.gender.Male', 'sign-up-gender-male',
-                        'signUpGender', 'male', "120", 'vm.isInvalidSignUp()')
+                        'signUpGender', 'male', "120", '')
                 +inputRadio('vm.objUserNew.strGender', 'vm.objErrs.strGender',
                         'authentication.gender.Other', 'sign-up-gender-other',
-                        'signUpGender', 'other', "130", 'vm.isInvalidSignUp()')
+                        'signUpGender', 'other', "130", '')
 
     .vmargin-2rem
     .row
@@ -35,13 +35,13 @@ form#form-sign-up.well(
             fieldset
                 +inputText('vm.objUserNew.strFirstName', 'vm.objErrs.strFirstName',
                         'authentication.FirstName', 'sign-up-first-name',
-                        'signUpFirstName', '', '210', 'vm.isInvalidSignUp()')
+                        'signUpFirstName', '', '210', '')
             .errorFieldEmpty
         .col-sm-6
             fieldset
                 +inputText('vm.objUserNew.strLastName', 'vm.objErrs.strLastName',
                         'authentication.LastName', 'sign-up-last-name',
-                        'signUpLastName', '', '220', 'vm.isInvalidSignUp()')
+                        'signUpLastName', '', '220', '')
             .errorFieldEmpty
 
     .row
@@ -49,49 +49,42 @@ form#form-sign-up.well(
             fieldset
                 +inputText('vm.objUserNew.strUsername', 'vm.objErrs.strUsername',
                         'authentication.Username', 'sign-up-username',
-                        'signUpUsername', '', '310', 'vm.isInvalidSignUp(\'Username\')', true)
+                        'signUpUsername', '', '310', 'vm.isInvalid(\'strUsername\')', true)
             .errorField
-                +errorHandler('vm.objErrs.isUsernameMissing', 'authentication.error.UsernameMissing')
-                +errorHandler('vm.objErrs.isUsernameInvalid', 'authentication.error.UsernameInvalid')
-       
+                +errorHandler('strUsername')
+
     .vmargin-2rem
     .row
         .col-sm-6
             fieldset
                 +inputText('vm.objUserNew.strEmail', 'vm.objErrs.strEmail',
                         'authentication.Email', 'sign-up-email',
-                        'signUpEmail', '', '410', 'vm.isInvalidSignUp(\'Email\')', true)
+                        'signUpEmail', '', '410', 'vm.isInvalid(\'strEmail\')', true)
             .errorField
-                +errorHandler('vm.objErrs.isEmailMissing', 'authentication.error.EmailMissing')
-                +errorHandler('vm.objErrs.isEmailInvalid', 'authentication.error.EmailInvalid')
+                +errorHandler('strEmail')
         .col-sm-6
             fieldset
                 +inputText('vm.objUserNew.strEmailConfirmation', 'vm.objErrs.strEmailConfirmation',
                         'authentication.EmailConfirmation', 'sign-up-email-confirmation',
-                        'signUpEmailConfirmation', '', '420', 'vm.isInvalidSignUp(\'EmailConfirmation\')', true)
+                        'signUpEmailConfirmation', '', '420', 'vm.isInvalid(\'strEmailConfirmation\')', true)
             .errorField
-                +errorHandler('vm.objErrs.isEmailConfirmationMissing', 'authentication.error.EmailConfirmationMissing')
-                +errorHandler('vm.objErrs.isEmailConfirmationInvalid', 'authentication.error.EmailConfirmationInvalid')
-                +errorHandler('vm.objErrs.isEmailNotConfirmed', 'authentication.error.EmailNotConfirmed')
+                +errorHandler('strEmailConfirmation')
     
         .row
         .col-sm-6
             fieldset
                 +inputPassword('vm.objUserNew.strPassword', 'vm.objErrs.strPassword',
                         'authentication.Password', 'sign-up-password',
-                        'signUpPassword', '', '510', 'vm.isInvalidSignUp(\'Password\')', true)
+                        'signUpPassword', '', '510', 'vm.isInvalid(\'strPassword\')', true)
             .errorField
-                +errorHandler('vm.objErrs.isPasswordMissing', 'authentication.error.PasswordMissing')
-                +errorHandler('vm.objErrs.isPasswordInvalid', 'authentication.error.PasswordInvalid')
+                +errorHandler('strPassword')
         .col-sm-6
             fieldset
                 +inputPassword('vm.objUserNew.strPasswordConfirmation', 'vm.objErrs.strPasswordConfirmation',
                         'authentication.PasswordConfirmation', 'sign-up-password-confirmation',
-                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalidSignUp(\'PasswordConfirmation\')', true)
+                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalid(\'strPasswordConfirmation\')', true)
             .errorField
-                +errorHandler('vm.objErrs.isPasswordConfirmationMissing', 'authentication.error.PasswordConfirmationMissing')
-                +errorHandler('vm.objErrs.isPasswordConfirmationInvalid', 'authentication.error.PasswordConfirmationInvalid')
-                +errorHandler('vm.objErrs.isPasswordNotConfirmed', 'authentication.error.PasswordNotConfirmed')
+                +errorHandler('strPasswordConfirmation')
     
         .row
         .col-xs-12.no-margin.right

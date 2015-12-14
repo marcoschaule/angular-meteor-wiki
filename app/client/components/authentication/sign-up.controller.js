@@ -1,5 +1,5 @@
 /**
- * @name        AmwSignInCtrl
+ * @name        AmwSignUpCtrl
  * @author      Marco Schaule <marco.schaule@net-designer.net>
  * @file        This file is an AngularJS controller.
  * 
@@ -24,25 +24,32 @@ function Controller($rootScope, $state, AuthService) {
     var vm = this;
 
     // *****************************************************************************
-    // Private variables
-    // *****************************************************************************
-
-    // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.objUserNew = AuthService.objUserNew;
+    vm.objUserNew = {};
     vm.objErrs    = {};
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.signUp        = signUp;
-    vm.isSignUpValid = isSignUpValid;
+    vm.init      = init;
+    vm.signUp    = signUp;
+    vm.isInvalid = isInvalid;
 
     // *****************************************************************************
     // Controller function definition
+    // *****************************************************************************
+
+    /**
+     * Service method to initialize controller. Is called immediately or can
+     * be called from within controller.
+     */
+    function init() {
+        _resetUser();
+    } init();
+
     // *****************************************************************************
 
     /**
@@ -51,19 +58,14 @@ function Controller($rootScope, $state, AuthService) {
      */
     function signUp() {
         $rootScope.isProcessing = true;
-        return AuthService.signUp(objOptions, function(err) {
 
-            if (err) {
-                vm.objErrs.strGeneral = err;
-                $rootScope.isProcessing = false;
-                return;
-            }
-
-            // disable processing, reset user and redirect
-            $state.go('profile');
+        return AuthService.signUp(vm.objUserNew, function(objErrs) {
             $rootScope.isProcessing = false;
-
-            return;
+            if (objErrs) {
+                return (vm.objErrs = objErrs);
+            }
+            _resetUser();
+            return $state.go('profile');
         });
     }
 
@@ -73,18 +75,39 @@ function Controller($rootScope, $state, AuthService) {
      * Controller method to delegate the test for valid sign up form to the
      * authentication service.
      * 
-     * @param  {String}  strFieldName   string of the field's name
-     * @param  {String}  strFieldValue  string of the field's value
-     * @return {Boolean}                true if form is valid
+     * @param  {String}  strFieldName  string of the field's name
+     * @return {Boolean}               true if form is valid
      */
-    function isSignUpValid(strFieldName) {
-        var strTranslation = 'authentication.error.' + strFieldName + 'Missing';
-        return AuthService.isSignUpValid(strFieldName, vm.objUserNew['str' + strFieldName]);
+    function isInvalid(strFieldName) {
+        var objErrs = AuthService.getErrs(vm.objUserNew[strFieldName], strFieldName, 'signUp');
+        if (!objErrs && vm.objErrs[strFieldName]) {
+            delete vm.objErrs[strFieldName];
+            return false;
+        }
+
+        _.extend(vm.objErrs, objErrs);
+        return true;
     }
 
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
+
+    /**
+     * Helper function to reset the signing up user.
+     */
+    function _resetUser() {
+        vm.objUserNew = {
+            // strGender               : 'mal',
+            // strFirstName            : 'Ma',
+            // strLastName             : 'Schaule',
+            // strUsername             : 'OnceMac3',
+            // strEmail                : 'marco.schaule@gmx.de',
+            // strEmailConfirmation    : 'abc',
+            // strPassword             : '123123',
+            // strPasswordConfirmation : '123',
+        };
+    }
 
     // *****************************************************************************
 }

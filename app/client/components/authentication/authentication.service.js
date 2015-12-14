@@ -1,7 +1,7 @@
 /**
- * @name        AmwSignInCtrl
+ * @name        AuthService
  * @author      Marco Schaule <marco.schaule@net-designer.net>
- * @file        This file is an AngularJS controller.
+ * @file        This file is an AngularJS service.
  * 
  * @copyright   (c) 2015  net-designer.net, Marco Schaule <marco.schaule@net-designer.net>
  * @license     https://github.com/OnceMac/net-designer.net/blob/master/LICENSE
@@ -17,69 +17,186 @@ angular
     .factory('AuthService', Service);
 
 // *****************************************************************************
-// Service definition function
+// Local variables
 // *****************************************************************************
 
-function Service($rootScope) {
-    var service = {};
+var service = {};
 
-    // *****************************************************************************
-    // Private variables
-    // *****************************************************************************
+// *****************************************************************************
+// Service object
+// *****************************************************************************
+
+function Service($rootScope, $state) {
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    service.objUser    = {};
-    service.objUserNew = {};
-    service.objErrs    = {};
-    service.isSignedIn = false;
+    var objFieldsKeysAndMessages = {
+        
+        // fields, keys and messages for sign in
+        'signIn': [{
+            'message': 'User not found',
+            'key'    : 'userOrPasswordIncorrect',
+            'field'  : 'general',
+        }, {
+            'message': 'Incorrect password',
+            'key'    : 'userOrPasswordIncorrect',
+            'field'  : 'general',
+        }],
+
+        // fields, keys and messages for sign up
+        'signUp': [{
+            'message': 'Username already exists',
+            'key'    : 'alreadyExists',
+            'field'  : 'strUsername',
+        }, {
+            'message': 'Email already exists',
+            'key'    : 'alreadyExists',
+            'field'  : 'strEmail',
+        }],
+
+        // fields, keys and messages for forgotten password
+        'forgotPassword': [],
+
+        // fields, keys and messages for password reset
+        'resetPassword': [],
+    };
 
     // *****************************************************************************
     // Service function linking
     // *****************************************************************************
 
-    service.signUp          = signUp;
-    service.signUpResetUser = signUpResetUser;
-    service.isSignedIn      = isSignedIn;
-    service.isSignUpValid   = isSignUpValid;
+    service.signIn         = signIn;
+    service.signUp         = signUp;
+    service.signOut        = signOut;
+    service.forgotPassword = forgotPassword;
+    service.resetPassword  = resetPassword;
+    service.isSignedIn     = isSignedIn;
+    service.getErrs        = getErrs;
 
     // *****************************************************************************
     // Service function definition
     // *****************************************************************************
 
     /**
-     * Service function to sign up a user.
-     * 
+     * Service function to sign in a user.
+     *
+     * @param  {Object}   objUser           object of user data like user name
+     *                                      or email and password
      * @param  {Function} callback          function for callback
      * @param  {Function} callback.objErrs  object of error send to callback
      */
-    function signUp(callback) {
-        if (isInvalidSignUp('all')) {
-            return ('function' === typeof callback && callback(service.objErrs));
+    function signIn(objUser, callback) {
+        var objErrs = getErrs(objUser, 'all', 'signIn');
+        if (objErrs) {
+            return ('function' === typeof callback && callback(objErrs));
         }
 
-        var objOptions = _signUpGetOptions();
-
-        return Accounts.createUser(objOptions, function(err, objUser) {
+        return Meteor.loginWithPassword(objUser.strUsername, objUser.strPassword,
+                function(objErr) {
 
             // handle errors
-            if (err && err.reason.indexOf('Username already exists') >= 0) {
-                service.objErrs.strGeneral = 'authentication.error.UsernameAlreadyExists';
-                return ('function' === typeof callback && callback(err));
-            }
-            if (err && err.reason.indexOf('Email already exists') >= 0) {
-                service.objErrs.strGeneral = 'authentication.error.EmailAlreadyExists';
-                return ('function' === typeof callback && callback(err));
+            objErrs = objErr && objErr.reason && getErrsSignIn(objErr.reason,
+                    'server', 'signUp');
+            if (objErrs) {
+                return ('function' === typeof callback && callback(objErrs));
             }
 
-            // reset user
-            _signUpResetUser();
+            return ('function' === typeof callback && callback(null));
+        });
+    }
 
-            // set "isSignedIn" to true and set local user
-            service.isSignedIn = true;
-            service.objUser    = objUser;
+    // *****************************************************************************
+
+    /**
+     * Service function to sign up a user.
+     * 
+     * @param  {Object}   objUserNew        object of the new user (flat)
+     * @param  {Function} callback          function for callback
+     * @param  {Function} callback.objErrs  object of error send to callback
+     */
+    function signUp(objUserNew, callback) {
+        var objOptions = _getOptions(objUserNew, 'signUp');
+        var objErrs    = getErrsSignUp(objUserNew, 'all');
+        if (objErrs) {
+            return ('function' === typeof callback && callback(objErrs));
+        }
+
+        return Accounts.createUser(objOptions, function(objErr) {
+
+            // handle errors
+            objErrs = objErr && objErr.reason && getErrsSignUp(objErr.reason,
+                    'server', 'signUp');
+            if (objErrs) {
+                return ('function' === typeof callback && callback(objErrs));
+            }
+
+            return ('function' === typeof callback && callback(null));
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to simply sign out.
+     *
+     * @param {Function} callback  function for callback if necessary
+     */
+    function signOut(callback) {
+        Meteor.logout(function(err) {
+            $state.go('home');
+            return ('function' === typeof callback && callback());
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to inform server about forgotten password and to generate
+     * a token to reset the password in the next step.
+     * 
+     * @param  {String}   strEmail  string of email the new password should be send to
+     * @param  {Function} callback  function for callback
+     */
+    function forgotPassword(strEmail, callback) {
+        var objData    = { strEmail: strEmail };
+        var objErrs    = getErrs(objData, 'all', 'forgotPassword');
+        if (objErrs) {
+            return ('function' === typeof callback && callback(objErrs));
+        }
+
+        // send a "reset password" email to user
+        return Accounts.forgotPassword({ email: strEmail },
+                'function' === typeof callback && callback || function(){});
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to reset a password.
+     * 
+     * @param  {Object}   objData   object of data including password and token
+     * @param  {Function} callback  function for callback
+     */
+    function resetPassword(objData, callback) {
+        var objErrs = getErrs(objData, 'all', 'resetPassword');
+        if (objErrs) {
+            return ('function' === typeof callback && callback(objErrs));
+        }
+
+        // send a "reset password" email to user
+        return Accounts.resetPassword(
+                objData.strToken, 
+                objData.strPassword,
+                function(objErr) {
+
+            // handle errors
+            objErrs = objErr && objErr.reason && getErrs(objErr.reason,
+                    'server', 'resetPassword');
+            if (objErrs) {
+                return ('function' === typeof callback && callback(objErrs));
+            }
 
             return ('function' === typeof callback && callback(null));
         });
@@ -91,63 +208,81 @@ function Service($rootScope) {
      * Service function to test whether a user is signed in or not.
      */
     function isSignedIn() {
-        return !!service.objUser.strUsername;
+        return !!Meteor.userId();
     }
 
     // *****************************************************************************
 
     /**
-     * Service function to test whether the sign up form is filled out
-     * correctly or not. To do so, you can test either each field separately
-     * by it's name or use "all" to test all fields.
+     * Service function to get the errors of submitted data.
      * 
-     * @param  {String}  [strFieldName]  (optional) string of either field name or "all"
-     * @return {Boolean}                 true if sign up is valid
+     * Either an object is submitted with no field name or "all" as field name,
+     * then the whole schema is used to validate the data. Or only one field is
+     * submitted as a string to be tested. Also, an generated Meteor error is
+     * handled in case of an response from server.
+     *
+     * In any case, the response is an object of errors, with keys as the field
+     * names.
+     *
+     * @param  {Mixed}  mixUserFieldValues      object of the fields to be validated / 
+     *                                          string of the name of the field to be validated
+     * @param  {String} [strFieldName]          string of field name (optional) /
+     *                                          string "all" for all fields
+     * @param  {String} [strWhich]              string of which case the errors are to
+     *                                          be taked care of ("signIn", "signOut",
+     *                                          "forgotPassword" or "resetPassword") (optional)
+     * @return {Boolean}                        true if sign up is valid
      */
-    function isSignUpValid(strFieldName) {
-        var objErrs = {};
-        var isFieldNotEmpty;
-        var isFieldConfirmed;
-        var arrFieldNamesMissing;
-        var arrFieldNamesConfirmation;
+    function getErrs(mixUserFieldValues, strFieldName, strWhich) {
+        var objContext             = SchemaUser[strWhich].newContext();
+        var isInvalid              = false;
+        var objTemp                = {};
+        var objErrs                = {};
+        var arrErrs                = [];
+        var arrFieldsMessageAndKey = [];
+        var i;
 
-        // define field(s)
-        arrFieldNamesMissing = strFieldName && [strFieldName] || [
-            'Username',
-            'Email',
-            'EmailConfirmation',
-            'Password',
-            'PasswordConfirmation',
-        ];
-        arrFieldNamesConfirmation = [
-            'Email',
-            'Password',
-        ];
-        arrFieldNamesConfirmation = 'all' !== strFieldName && 
-                arrFieldNamesConfirmation.indexOf(strFieldName) >= 0 &&
-                [strFieldName] || arrFieldNamesConfirmation;
+        if (objFieldsKeysAndMessages[strWhich]) {
+            arrFieldsMessageAndKey = objFieldsKeysAndMessages[strWhich];
+        }
 
-        // test field(s)
-        arrFieldNamesMissing.forEach(function(strFieldName) {
-            isFieldNotEmpty = !!service.objUserNew['str' + strFieldName];
-            if (!isFieldNotEmpty) {
-                objErrs['is' + strFieldName + 'Missing'] = true;
+        // test all fields of given object
+        if (_.isObject(mixUserFieldValues) &&
+                (!strFieldName || 'all' === strFieldName)) {
+            isInvalid = !objContext.validate(mixUserFieldValues);
+        } 
+
+        // respond to Meteor error
+        else if (_.isString(mixUserFieldValues) && 'server' === strFieldName) {
+            for (i = 0; i < arrFieldsMessageAndKey.length; i += 1) {
+                if (mixUserFieldValues.indexOf(arrFieldsMessageAndKey[i].message) >= 0) {
+                    objErrs[arrFieldsMessageAndKey[i].field] = arrFieldsMessageAndKey[i].key;
+                    isInvalid = 'true';
+                    break;
+                }
             }
-        });
-        arrFieldNamesConfirmation.forEach(function(strFieldName) {
-            isFieldConfirmed = 
-                    !!service.objUserNew['str' + strFieldName] &&
-                    !!service.objUserNew['str' + strFieldName + 'Confirmation'] &&
-                    service.objUserNew['str' + strFieldName] === 
-                    service.objUserNew['str' + strFieldName + 'Confirmation'];
-            if (!isFieldConfirmed) {
-                objErrs['is' + strFieldName + 'NotConfirmed'] = true;
-            }
-        });
+        }
 
-        if (Object.keys(objErrs).length > 0) {
+        // test one field given as a string
+        else if (strFieldName) {
+            objTemp[strFieldName] = mixUserFieldValues;
+            isInvalid = !objContext.validateOne(objTemp, strFieldName);
+        }
+
+        // if field was tested, and no server response handled
+        if (true === isInvalid) {
+            arrErrs = objContext.invalidKeys();
+            for (i = 0; i < arrErrs.length; i += 1) {
+                objErrs[arrErrs[i].name] = arrErrs[i].type;
+            }
+        }
+
+        // if any error occurred
+        if (isInvalid) {
             return objErrs;
         }
+
+        // if no error occurred
         return false;
     }
 
@@ -158,97 +293,25 @@ function Service($rootScope) {
     /**
      * Helper function to get the user object as options needed by Meteor's
      * sign up function.
-     * 
-     * @return {Object}  object of options for Meteor's sign up
+     *
+     * @param  {Object} objUserNew  object of the new user to be created
+     * @return {Object}             object of options for Meteor's sign up
      */
-    function _signUpGetOptions() {
+    function _getOptionsSignUp(objUserNew) {
         var objOptions = {
-            username : service.objUserNew.strUsername,
-            email    : service.objUserNew.strEmail,
-            password : service.objUserNew.strPassword,
+            username : objUserNew.strUsername,
+            email    : objUserNew.strEmail,
+            emailConfirmation    : objUserNew.strEmailConfirmation,
+            password : objUserNew.strPassword,
+            passwordConfirmation : objUserNew.strPasswordConfirmation,
             profile  : {
-                gender    : service.objUserNew.strGender,
-                firstName : service.objUserNew.strFirstName,
-                lastName  : service.objUserNew.strLastName,
+                gender    : objUserNew.strGender,
+                firstName : objUserNew.strFirstName,
+                lastName  : objUserNew.strLastName,
             },
         };
 
         return objOptions;
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Helper function to reset the signing up user.
-     */
-    function _signUpResetUser() {
-        service.objUserNew = {};
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Helper function to validate the form fields.
-     * 
-     * @param {Object} strFieldName   string of the name of the field
-     * @param {Object} strFieldValue  string of the value of the field
-     */
-    function _signUpIsFieldNotEmpty(strFieldName, strFieldValue) {
-        var strFieldNameInModel = 'str' + strFieldName;
-        var strSignUpFieldName  = 'signUp' + strFieldName;
-        var strTranslation      = 'authentication.error.' + strFieldName + 'Missing';
-
-        return !!service.objUserNew[strFieldNameInModel];
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Helper function to confirm the form fields.
-     * 
-     * @param {Object} strFieldName   string of the name of the field
-     * @param {Object} strFieldValue  string of the value of the field
-     */
-    function _signUpIsFieldConfirmed(strFieldName, strFieldValue) {
-        var strFieldNameFirst              = 'str' + strFieldName;
-        var strFieldNameConfirmation       = 'str' + strFieldName + 'Confirmation';
-        var strSignUpFieldName             = 'signUp' + strFieldName;
-        var strSignUpFieldNameConfirmation = 'signUp' + strFieldName + 'Confirmation';
-        var strIsFieldNameNotConfirmed     = 'is' + strFieldName + 'NotConfirmed';
-
-        var isFieldSetFirst                = !!service.objUserNew[strFieldNameFirst];
-        var isFieldSetConfirmation         = !!service.objUserNew[strFieldNameConfirmation];
-        var isFieldsEqual                  = service.objUserNew[strFieldNameFirst] === service.objUserNew[strFieldNameConfirmation];
-        var isFieldsNotEqual               = !isFieldsEqual;
-        var isFieldCurrentFirst            = strSignUpFieldName === strFieldValue;
-        var isFieldCurrentConfirmed        = strSignUpFieldNameConfirmation === strFieldValue;
-
-
-
-        // if all fields are tested and error is set, delete it
-        if (service.objErrs[strIsFieldNameNotConfirmed]) {
-            delete service.objErrs[strIsFieldNameNotConfirmed];
-        }
-
-        // if neither first field nor confirmation field is set, return
-        else if (!isFieldSetFirst || !isFieldSetConfirmation) {
-            return;
-        }
-
-        // if field is not confirmed, add error
-        else if (isFieldsNotEqual && (
-                    isFieldCurrentFirst ||
-                    isFieldCurrentConfirmed)) {
-            service.objErrs[strIsFieldNameNotConfirmed] = true;
-        } 
-
-        // if field is confirmed, remove error
-        else if (isFieldsEqual && (
-                    isFieldCurrentFirst ||
-                    isFieldCurrentConfirmed) &&
-                    service.objErrs[strIsFieldNameNotConfirmed]) {
-            delete service.objErrs[strIsFieldNameNotConfirmed];
-        }
     }
 
     // *****************************************************************************

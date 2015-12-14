@@ -1,6 +1,10 @@
 (function() { 'use strict';
 
-// $.material.init();
+// *****************************************************************************
+// Meteor subscriptions
+// *****************************************************************************
+
+Meteor.subscribe("userData");
 
 // ********************************************************************************
 // Module definitions and organization
@@ -22,13 +26,25 @@ angular
     .module('amw')
     .config(function($translateProvider) {
         $translateProvider.useStaticFilesLoader({
-            prefix: 'languages/locale-',
-            suffix: '.json'
+            prefix: 'languages/',
+            suffix: '.locale.json'
         });
-        $translateProvider.preferredLanguage('en_US');
+        $translateProvider.preferredLanguage('en-US');
     });
 
 // ********************************************************************************
+
+angular
+    .module('amw')
+    .run(function ($rootScope, $state) {
+        $rootScope.$on('$stateChangeError', function(objEvent,
+                objToState, objToParams, objFromState, objFromParams, objError) {
+            console.log(">>> Debug ====================; Meteor.user():", Meteor.user(), '\n\n');
+            if (objError === 'AUTH_REQUIRED') {
+                $state.go('sign-in');
+            }
+        });
+    });
 
 // ********************************************************************************
 

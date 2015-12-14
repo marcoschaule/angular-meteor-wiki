@@ -10,11 +10,15 @@ angular
         $locationProvider.html5Mode(true);
 
         $stateProvider
-            .state('home',    getRouteObjectHome())
-            .state('help',    getRouteObjectHelp())
-            .state('profile', getRouteObjectProfile())
-            .state('sign-in', getRouteObjectSignIn())
-            .state('sign-up', getRouteObjectSignUp())
+            .state('home',                    getStateObjectHome())
+            .state('help',                    getStateObjectHelp())
+            .state('profile',                 getStateObjectProfile())
+            .state('sign-in',                 getStateObjectSignIn())
+            .state('sign-up',                 getStateObjectSignUp())
+            .state('sign-out',                getStateObjectSignOut())
+            .state('forgot-password',         getStateObjectResetPassword('forgot'))
+            .state('reset-password',          getStateObjectResetPassword('reset'))
+            .state('reset-password-complete', getStateObjectResetPassword('complete'))
             ;
 
         $urlRouterProvider.otherwise('/');
@@ -29,7 +33,7 @@ angular
  * 
  * @return {Object}  object for route
  */
-function getRouteObjectHome() {
+function getStateObjectHome() {
     return _extendWithStaticHeader({
         url  : '/',
         views: {
@@ -48,7 +52,7 @@ function getRouteObjectHome() {
  * 
  * @return {Object}  object for route
  */
-function getRouteObjectHelp() {
+function getStateObjectHelp() {
     return _extendWithStaticHeader({
         url  : '/help',
         views: {
@@ -66,8 +70,8 @@ function getRouteObjectHelp() {
  * 
  * @return {Object}  object for route
  */
-function getRouteObjectProfile() {
-    return _extendWithStaticHeader({
+function getStateObjectProfile() {
+    return _extendWithStaticHeaderSecure({
         url  : '/profile',
         views: {
             content: {
@@ -86,7 +90,7 @@ function getRouteObjectProfile() {
  * 
  * @return {Object}  object for route
  */
-function getRouteObjectSignIn() {
+function getStateObjectSignIn() {
     return _extendWithStaticHeader({
         url  : '/sign-in',
         views: {
@@ -98,14 +102,14 @@ function getRouteObjectSignIn() {
     });
 }
 
-// // *****************************************************************************
+// *****************************************************************************
 
 /**
  * Function to get the route object for "sign-up".
  * 
  * @return {Object}  object for route
  */
-function getRouteObjectSignUp() {
+function getStateObjectSignUp() {
     return _extendWithStaticHeader({
         url  : '/sign-up',
         views: {
@@ -117,28 +121,64 @@ function getRouteObjectSignUp() {
     });
 }
 
-// // *****************************************************************************
+// *****************************************************************************
 
-// /**
-//  * Function to get the route object for "forgot-password".
-//  * 
-//  * @return {Object}  object for route
-//  */
-// function getRouteObjectForgotPassword() {
-//     return {
-//         url        : '/forgot-password',
-//         templateUrl: 'client/components/authentication/forgot-password.template.html',
-//     };
-// }
+/**
+ * Function to get the route object for "sign-out".
+ * 
+ * @return {Object}  object for route
+ */
+function getStateObjectSignOut() {
+    return {
+        url: 'sign-out',
+        views: {
+            content: {
+                controller: 'AmwSignOutCtrl as vm',
+            },
+        },
+    };
+}
 
-// // *****************************************************************************
+// *****************************************************************************
+
+/**
+ * Function to get the route object for "reset-password" with the steps
+ * "forgot", "reset" and "complete".
+ * 
+ * @return {Object}  object for route
+ */
+function getStateObjectResetPassword(strStep) {
+    var objState = _extendWithStaticHeader({
+        views: {
+            content: {
+                templateUrl : 'client/components/authentication/reset-password.template.html',
+                controller  : 'AmwResetPasswordCtrl as vm',
+            },
+        },
+        data: {
+            strStep: strStep,
+        },
+    });
+    if ('forgot' === strStep) {
+        objState.url = '/forgot-password';
+    }
+    else if ('reset' === strStep) {
+        objState.url = '/reset-password/:strToken';
+    }
+    else if ('complete' === strStep) {
+        objState.url = '/reset-password-complete';
+    }
+    return objState;
+}
+
+// *****************************************************************************
 
 // /**
 //  * Function to get the route object for "reset-password".
 //  * 
 //  * @return {Object}  object for route
 //  */
-// function getRouteObjectResetPassword() {
+// function getStateObjectResetPassword() {
 //     return {
 //         url        : '/reset-password/:strToken',
 //         templateUrl: 'client/components/authentication/reset-password.template.html',
@@ -153,11 +193,24 @@ function getRouteObjectSignUp() {
 // Helpers
 // *****************************************************************************
 
-function _extendWithStaticHeader(objRoute) {
-    objRoute.views.header = {
+function _extendWithStaticHeader(objState) {
+    objState.views.header = {
         templateUrl  : 'client/components/header/header-static.template.html',
     };
-    return objRoute;
+    return objState;
+}
+
+// *****************************************************************************
+
+function _extendWithStaticHeaderSecure(objState) {
+    objState.resolve = objState.resolve || {};
+    objState.resolve.currentUser = function($q) {
+        if (!Meteor.userId()) {
+            return $q.reject('AUTH_REQUIRED');
+        }
+        return $q.resolve();
+    };
+    return _extendWithStaticHeader(objState);
 }
 
 // *****************************************************************************

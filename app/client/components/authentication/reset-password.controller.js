@@ -1,5 +1,5 @@
 /**
- * @name        AmwSignInCtrl
+ * @name        AmwResetPasswordCtrl
  * @author      Marco Schaule <marco.schaule@net-designer.net>
  * @file        This file is an AngularJS controller.
  * 
@@ -14,7 +14,7 @@
 
 angular
     .module('amw-controllers')
-    .controller('AmwSignInCtrl', Controller);
+    .controller('AmwResetPasswordCtrl', Controller);
 
 // *****************************************************************************
 // Controller definition function
@@ -27,16 +27,20 @@ function Controller($rootScope, $state, AuthService) {
     // Public variables
     // *****************************************************************************
 
-    vm.objUser = {};
-    vm.objErrs = {};
+    vm.strStep        = 'forgot';
+    vm.strEmail       = '';
+    vm.strPasswordNew = '';
+    vm.objData        = {};
+    vm.objErrs        = {};
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.init      = init;
-    vm.signIn    = signIn;
-    vm.isInvalid = isInvalid;
+    vm.init           = init;
+    vm.forgotPassword = forgotPassword;
+    vm.resetPassword  = resetPassword;
+    vm.isInvalid      = isInvalid;
 
     // *****************************************************************************
     // Controller function definition
@@ -47,40 +51,68 @@ function Controller($rootScope, $state, AuthService) {
      * be called from within controller.
      */
     function init() {
-        _resetUser();
+        if ('reset-password' === $state.current.name && $state.params.strToken) {
+            vm.strStep = 'reset';
+        }
+        else if ('reset-password-complete' === $state.current.name) {
+            vm.strStep = 'completed';
+        }
+        else {
+            vm.strStep = 'forgot';
+        }
     } init();
 
     // *****************************************************************************
-    // Controller function definition
-    // *****************************************************************************
 
     /**
-     * Controller function to sign in a user.
+     * Controller function to start a "forgot password" attempt.
      */
-    function signIn() {
+    function forgotPassword() {
         $rootScope.isProcessing = true;
 
-        return AuthService.signIn(vm.objUser, function(objErrs) {
+        return AuthService.forgotPassword(vm.strEmail, function(objErrs) {
             $rootScope.isProcessing = false;
             if (objErrs) {
                 return (vm.objErrs = objErrs);
             }
-            _resetUser();
-            return $state.go('profile');
+            vm.strEmail = '';
+            return $state.go('reset-password');
         });
     }
 
     // *****************************************************************************
 
     /**
-     * Controller method to delegate the test for valid sign in form to the
-     * authentication service.
+     * Controller method to exchange the password with the new entered.
+     */
+    function resetPassword() {
+        vm.objData.strToken = $state.params.strToken;
+        $rootScope.isProcessing = true;
+
+        return AuthService.resetPassword(vm.objData, function(objErrs) {
+            console.log(">>> Debug ====================; objErrs:", objErrs, '\n\n');
+            $rootScope.isProcessing = false;
+            if (objErrs) {
+                return (vm.objErrs = objErrs);
+            }
+            vm.objData = {};
+            return $state.go('reset-password-complete');
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller method to delegate the test for valid "resetPassword"
+     * password and password confirmation.
      * 
      * @param  {String}  strFieldName  string of the field's name
      * @return {Boolean}               true if form is valid
      */
     function isInvalid(strFieldName) {
-        var objErrs = AuthService.getErrs(vm.objUser[strFieldName], strFieldName, 'signIn');
+        var objErrs = AuthService.getErrs(vm.objData[strFieldName],
+                strFieldName, 'resetPassword');
+        
         if (!objErrs && vm.objErrs[strFieldName]) {
             delete vm.objErrs[strFieldName];
             return false;
@@ -93,14 +125,6 @@ function Controller($rootScope, $state, AuthService) {
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
-
-    /**
-     * Helper function to reset the user object.
-     */
-    function _resetUser() {
-        vm.objUser.strUsername = '';
-        vm.objUser.strPassword = '';
-    }
 
     // *****************************************************************************
 }
