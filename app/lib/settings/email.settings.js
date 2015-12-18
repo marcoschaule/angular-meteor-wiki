@@ -6,7 +6,15 @@
  * Email config object.
  * @type {Object}
  */
-C_CONFIG_EMAIL = { smtp: {}, info: {}, template: { common: {}, forgotPassword: {} } };
+C_CONFIG_EMAIL = {
+    smtp: {},
+    info: {},
+    template: {
+        common: {},
+        verifyEmail: {},
+        forgotPassword: {}
+    }
+};
 
 // ********************************************************************************
 // Email SMTP server configuration
@@ -86,6 +94,27 @@ C_CONFIG_EMAIL.template.common.siteName = 'AwesomeSite';
 C_CONFIG_EMAIL.template.common.from = 'AwesomeSite system <' + C_CONFIG_EMAIL.info.sender + '>';
 
 // ********************************************************************************
+// Email template verify email
+// ********************************************************************************
+
+/**
+ * Email template verify email subject.
+ * @type {String}
+ */
+C_CONFIG_EMAIL.template.verifyEmail.subject = 'MeteorWiki - verify email';
+
+/**
+ * Email template verify email text.
+ * @type {String}
+ */
+C_CONFIG_EMAIL.template.verifyEmail.text = [
+    'Dear user "#{strUserName}!"',
+    'To verify your email, simply click the link below.',
+    '    #{strUrlVerifyEmail}',
+    'Thanks.',
+].join('\n\n');
+
+// ********************************************************************************
 // Email template forgot password
 // ********************************************************************************
 
@@ -93,10 +122,15 @@ C_CONFIG_EMAIL.template.common.from = 'AwesomeSite system <' + C_CONFIG_EMAIL.in
  * Email template reset password subject.
  * @type {String}
  */
-C_CONFIG_EMAIL.template.forgotPassword.subject = 'Welcome to Awesome Town, #{strUserName}!';
+C_CONFIG_EMAIL.template.forgotPassword.subject = 'MeteorWiki - reset password';
 
 /**
  * Email template reset password text.
- * @type {Array}
+ * @type {String}
  */
-C_CONFIG_EMAIL.template.forgotPassword.text = 'Hello!\n\nTo reset your password, simply click the link below.\n\n\t#{strUrlForgotPassword}\n\nThanks.';
+C_CONFIG_EMAIL.template.forgotPassword.text = [
+    'Dear user "#{strUserName}!"',
+    'To reset your password, simply click the link below.',
+    '    #{strUrlForgotPassword}',
+    'Thanks.',
+].join('\n\n');

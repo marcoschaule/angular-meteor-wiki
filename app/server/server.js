@@ -1,5 +1,11 @@
 (function() { 'use strict';
 
+ var fs = Npm.require('fs');
+ var path = Npm.require('path');
+
+ var _strDirTemplatesEmail    = '../resources/templates/email/';
+ var _regexTemplateFileEnding = /\.template\.[a-z]{2}\-[A-Z]{2}\.html/;
+
 // ********************************************************************************
 // Startup functions
 // ********************************************************************************
@@ -15,36 +21,55 @@ function startupServer() {
 
         // setup email templates
         _setupEmailTemplates();
+
+        // setup automatic sending service
+        Accounts.config({
+            sendVerificationEmail: true
+        });
     });
 
 } startupServer();
 
 // ********************************************************************************
-// Support functions
+// Helper functions
 // ********************************************************************************
 
 /**
- * Support function to setup email templates.
+ * Helper function to setup email templates.
  */
 function _setupEmailTemplates() {
 
     // global email template settings
     Accounts.emailTemplates.siteName = C_CONFIG_EMAIL.template.common.siteName;
     Accounts.emailTemplates.from     = C_CONFIG_EMAIL.template.common.from;
-
+    
+    // email urls
+    Accounts.urls.verifyEmail = function(strToken) {
+        return Meteor.absoluteUrl('verify-email/' + strToken);
+    };
     Accounts.urls.resetPassword = function(strToken) {
         return Meteor.absoluteUrl('reset-password/' + strToken);
     };
 
+    // email subjects
+    Accounts.emailTemplates.verifyEmail.subject = function(objUser) {
+        return C_CONFIG_EMAIL.template.verifyEmail.subject
+            .replace('#{strUserName}', objUser.username);
+    };
     Accounts.emailTemplates.resetPassword.subject = function(objUser) {
         return C_CONFIG_EMAIL.template.forgotPassword.subject
             .replace('#{strUserName}', objUser.username);
     };
-    
-    Accounts.emailTemplates.resetPassword.text = function(objUser, strUrl) {
+
+    // email texts    
+    Accounts.emailTemplates.verifyEmail.text = function(objUser, strUrl) {
         var strToken = objUser.services.password.reset.token;
         return C_CONFIG_EMAIL.template.forgotPassword.text
             .replace('#{strUrlForgotPassword}', strUrl);
+    };
+    Accounts.emailTemplates.resetPassword.text = function(objUser, strUrl) {
+        return C_CONFIG_EMAIL.template.forgotPassword.text
+            .replace('#{strUrlVerifyEmail}', strUrl);
     };
 }
 
