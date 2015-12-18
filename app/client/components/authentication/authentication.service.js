@@ -97,13 +97,9 @@ function Service($rootScope, $state) {
                 function(objErr) {
 
             // handle errors
-            objErrs = objErr && objErr.reason && getErrsSignIn(objErr.reason,
+            objErrs = objErr && objErr.reason && getErrs(objErr.reason,
                     'server', 'signUp');
-            if (objErrs) {
-                return ('function' === typeof callback && callback(objErrs));
-            }
-
-            return ('function' === typeof callback && callback(null));
+            return ('function' === typeof callback && callback(objErrs));
         });
     }
 
@@ -118,21 +114,19 @@ function Service($rootScope, $state) {
      */
     function signUp(objUserNew, callback) {
         var objOptions = _getOptions(objUserNew, 'signUp');
-        var objErrs    = getErrsSignUp(objUserNew, 'all');
+        var objErrs    = getErrs(objUserNew, 'all', 'signUp');
         if (objErrs) {
             return ('function' === typeof callback && callback(objErrs));
         }
 
+        // send email verification mail to given email
+
         return Accounts.createUser(objOptions, function(objErr) {
 
             // handle errors
-            objErrs = objErr && objErr.reason && getErrsSignUp(objErr.reason,
+            objErrs = objErr && objErr.reason && getErrs(objErr.reason,
                     'server', 'signUp');
-            if (objErrs) {
-                return ('function' === typeof callback && callback(objErrs));
-            }
-
-            return ('function' === typeof callback && callback(null));
+            return ('function' === typeof callback && callback(objErrs));
         });
     }
 
@@ -167,8 +161,9 @@ function Service($rootScope, $state) {
         }
 
         // send a "reset password" email to user
-        return Accounts.forgotPassword({ email: strEmail },
-                'function' === typeof callback && callback || function(){});
+        return Accounts.forgotPassword({ email: strEmail }, function(objErrs) {
+            return ('function' === typeof callback && callback(objErrs));
+        });
     }
 
     // *****************************************************************************
@@ -194,11 +189,7 @@ function Service($rootScope, $state) {
             // handle errors
             objErrs = objErr && objErr.reason && getErrs(objErr.reason,
                     'server', 'resetPassword');
-            if (objErrs) {
-                return ('function' === typeof callback && callback(objErrs));
-            }
-
-            return ('function' === typeof callback && callback(null));
+            return ('function' === typeof callback && callback(objErrs));
         });
     }
 
@@ -246,8 +237,36 @@ function Service($rootScope, $state) {
             arrFieldsMessageAndKey = objFieldsKeysAndMessages[strWhich];
         }
 
+        // If a field is tested, that needs to be confirmed by another field,
+        // validate this one field (like "strEmailConfirmation") and send the
+        // source field to be compared (like "strEmail") along as extended
+        // custom context.
+        if (_.isObject(mixUserFieldValues) && 'confirmation' === strFieldName) {
+            var objTempCustomContext = {};
+
+            // Define the field to be compared (like "strEmail") for the
+            // extended custom context. This field is just send for the matter
+            // of comparison.
+            objTempCustomContext[mixUserFieldValues.strKey] = 
+                    mixUserFieldValues.strField;
+
+            // Define the field to be tested (like "strEmailComfirmation") for
+            // the extended custom context. Since it needs to be confirmed be
+            // the source field, it is send wich that along.
+            objTemp[mixUserFieldValues.strKeyConfirmation] = 
+                    mixUserFieldValues.strFieldConfirmation;
+
+            // Validate one field. Also, the extended custom context is added
+            // as third parameter.
+            isInvalid = !objContext.validateOne(
+                    objTemp,
+                    mixUserFieldValues.strKeyConfirmation,
+                    { extendedCustomContext: objTempCustomContext });
+                    
+        }
+
         // test all fields of given object
-        if (_.isObject(mixUserFieldValues) &&
+        else if (_.isObject(mixUserFieldValues) &&
                 (!strFieldName || 'all' === strFieldName)) {
             isInvalid = !objContext.validate(mixUserFieldValues);
         } 
@@ -297,7 +316,7 @@ function Service($rootScope, $state) {
      * @param  {Object} objUserNew  object of the new user to be created
      * @return {Object}             object of options for Meteor's sign up
      */
-    function _getOptionsSignUp(objUserNew) {
+    function _getOptions(objUserNew) {
         var objOptions = {
             username : objUserNew.strUsername,
             email    : objUserNew.strEmail,
@@ -313,6 +332,10 @@ function Service($rootScope, $state) {
 
         return objOptions;
     }
+
+    // *****************************************************************************
+
+    function _() {}
 
     // *****************************************************************************
 

@@ -90,7 +90,6 @@ function Controller($rootScope, $state, AuthService) {
         $rootScope.isProcessing = true;
 
         return AuthService.resetPassword(vm.objData, function(objErrs) {
-            console.log(">>> Debug ====================; objErrs:", objErrs, '\n\n');
             $rootScope.isProcessing = false;
             if (objErrs) {
                 return (vm.objErrs = objErrs);

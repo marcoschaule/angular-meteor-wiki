@@ -29,7 +29,7 @@ angular
             prefix: 'languages/',
             suffix: '.locale.json'
         });
-        $translateProvider.preferredLanguage('en-US');
+        $translateProvider.preferredLanguage(C_CONFIG_COMMON.language.default);
     });
 
 // ********************************************************************************
@@ -39,7 +39,6 @@ angular
     .run(function ($rootScope, $state) {
         $rootScope.$on('$stateChangeError', function(objEvent,
                 objToState, objToParams, objFromState, objFromParams, objError) {
-            console.log(">>> Debug ====================; Meteor.user():", Meteor.user(), '\n\n');
             if (objError === 'AUTH_REQUIRED') {
                 $state.go('sign-in');
             }

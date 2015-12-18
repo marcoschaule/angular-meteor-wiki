@@ -16,7 +16,7 @@ C_CONFIG_COMMON = { server: {}, language: {}, pages: {} };
  * Common language default.
  * @type {String}
  */
-C_CONFIG_COMMON.language.default = 'en';
+C_CONFIG_COMMON.language.default = 'en-US';
 
 // ********************************************************************************
 // Pages configuration

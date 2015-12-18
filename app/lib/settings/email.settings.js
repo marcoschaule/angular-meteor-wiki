@@ -16,7 +16,7 @@ C_CONFIG_EMAIL = { smtp: {}, info: {}, template: { common: {}, forgotPassword: {
  * Email SMTP host.
  * @type {String}
  */
-C_CONFIG_EMAIL.smtp.host = '';
+C_CONFIG_EMAIL.smtp.host = 'smtp.udag.de';
 
 // ********************************************************************************
 

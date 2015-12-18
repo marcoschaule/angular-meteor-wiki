@@ -129,6 +129,13 @@ SchemaUser.signUp = new SimpleSchema(schemaUserSignUp);
 
 // *****************************************************************************
 
+var schemaUserForgotPassword = {
+    'strEmail' : schemaUserSignUp.strEmail,
+};
+SchemaUser.forgotPassword = new SimpleSchema(schemaUserForgotPassword);
+
+// *****************************************************************************
+
 var schemaUserResetPassword = {
     'strToken'               : { type: String },
     'strPassword'            : schemaUserSignUp.strPassword,
@@ -154,7 +161,11 @@ Meteor.users.attachSchema(SchemaUser.user);
  */
 function _getMissmatch(strFieldName) {
     return function() {
-        if (this.value !== this.field(strFieldName).value) {
+        var strConfirmation = this[strFieldName];
+        if (this.field(strFieldName).value) {
+            strConfirmation = this.field(strFieldName).value;
+        }
+        if (this.value !== strConfirmation) {
             return 'misMatch';
         }
     };

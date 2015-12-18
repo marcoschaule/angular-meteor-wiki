@@ -78,8 +78,21 @@ function Controller($rootScope, $state, AuthService) {
      * @param  {String}  strFieldName  string of the field's name
      * @return {Boolean}               true if form is valid
      */
-    function isInvalid(strFieldName) {
-        var objErrs = AuthService.getErrs(vm.objUserNew[strFieldName], strFieldName, 'signUp');
+    function isInvalid(strFieldName, strFieldNameSource) {
+        var mixField         = vm.objUserNew[strFieldName];
+        var strFieldNameReal = strFieldName;
+
+        if (strFieldNameSource) {
+            mixField = {
+                strKey               : strFieldNameSource,
+                strField             : vm.objUserNew[strFieldNameSource],
+                strKeyConfirmation   : strFieldName,
+                strFieldConfirmation : vm.objUserNew[strFieldName],
+            };
+            strFieldNameReal = 'confirmation';
+        }
+
+        var objErrs = AuthService.getErrs(mixField, strFieldNameReal, 'signUp');
         if (!objErrs && vm.objErrs[strFieldName]) {
             delete vm.objErrs[strFieldName];
             return false;
@@ -98,14 +111,14 @@ function Controller($rootScope, $state, AuthService) {
      */
     function _resetUser() {
         vm.objUserNew = {
-            // strGender               : 'mal',
-            // strFirstName            : 'Ma',
-            // strLastName             : 'Schaule',
-            // strUsername             : 'OnceMac3',
-            // strEmail                : 'marco.schaule@gmx.de',
-            // strEmailConfirmation    : 'abc',
-            // strPassword             : '123123',
-            // strPasswordConfirmation : '123',
+            strGender               : 'male',
+            strFirstName            : 'Marco',
+            strLastName             : 'Schaule',
+            strUsername             : 'MarcoSchaule',
+            strEmail                : 'marco.schaule@net-designer',
+            strEmailConfirmation    : 'marco.schaule@net-designer',
+            strPassword             : '123123',
+            strPasswordConfirmation : '123123',
         };
     }
 

@@ -24,3 +24,4 @@ less
 twbs:bootstrap
 marcstark:meteor-angular-jade-extended
 aldeed:collection2
+email

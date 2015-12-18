@@ -76,5 +76,7 @@
   "common.Cancel"                                              : "Cancel",
   "common.Back"                                                : "Back",
 
+  "email.resetPassword.template.subject"                       : "Link to reset your password",
+
   "endOfFile": "endOfFile"
 }

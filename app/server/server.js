@@ -24,19 +24,11 @@ function startupServer() {
 // ********************************************************************************
 
 /**
- * Support function to get the language.
- */
-function _getUserLanguage() {
-    return C_CONFIG_COMMON.language.default;
-}
-
-// ********************************************************************************
-
-/**
  * Support function to setup email templates.
  */
 function _setupEmailTemplates() {
 
+    // global email template settings
     Accounts.emailTemplates.siteName = C_CONFIG_EMAIL.template.common.siteName;
     Accounts.emailTemplates.from     = C_CONFIG_EMAIL.template.common.from;
 

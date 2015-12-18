@@ -66,7 +66,7 @@ form#form-sign-up.well(
             fieldset
                 +inputText('vm.objUserNew.strEmailConfirmation', 'vm.objErrs.strEmailConfirmation',
                         'authentication.EmailConfirmation', 'sign-up-email-confirmation',
-                        'signUpEmailConfirmation', '', '420', 'vm.isInvalid(\'strEmailConfirmation\')', true)
+                        'signUpEmailConfirmation', '', '420', 'vm.isInvalid(\'strEmailConfirmation\', \'strEmail\')', true)
             .errorField
                 +errorHandler('strEmailConfirmation')
     
@@ -82,7 +82,7 @@ form#form-sign-up.well(
             fieldset
                 +inputPassword('vm.objUserNew.strPasswordConfirmation', 'vm.objErrs.strPasswordConfirmation',
                         'authentication.PasswordConfirmation', 'sign-up-password-confirmation',
-                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalid(\'strPasswordConfirmation\')', true)
+                        'signUpPasswordConfirmation', '', '520', 'vm.isInvalid(\'strPasswordConfirmation\', \'strPassword\')', true)
             .errorField
                 +errorHandler('strPasswordConfirmation')
     
