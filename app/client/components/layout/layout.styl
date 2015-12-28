@@ -2,7 +2,7 @@
 // Imports and requires
 // *****************************************************************************
 
-@import _variables
+@import "../../includes/stylus/variables.styl"
 
 // *****************************************************************************
 // General
@@ -271,16 +271,13 @@ input.form-control-alt
     .badge
         border-radius 100px
         background-color $colorBackground2
-        margin-right 1rem
-        padding .8rem
+        padding 1rem
     .username
         font-size 1.6rem
 #sidebar-content h6, #article-content h6
-        margin 0 0 .6rem 0
-#sidebar-content
-    h6
+        margin 0
         padding 0 2rem
-    .btn-primary:not(.btn-link):not(.btn-flat)
+#sidebar-content .btn-primary:not(.btn-link):not(.btn-flat)
         background-color $colorButtonSidebarNormalBg
         border none
         box-shadow none !important
@@ -292,14 +289,14 @@ input.form-control-alt
         text-align left
         width 100%
         box-shadow none
-    .btn-primary:not(.btn-link):not(.btn-flat):hover
+#sidebar-content .btn-primary:not(.btn-link):not(.btn-flat):hover
         background-color $colorButtonSidebarHoverBg !important
         color $colorButtonSidebarHoverFg !important
         box-shadow none
-    .btn-primary:not(.btn-link):not(.btn-flat).active
+#sidebar-content .btn-primary:not(.btn-link):not(.btn-flat).active
         background-color $colorButtonSidebarActiveBg
         color $colorButtonSidebarActiveFg
-    .btn-primary:not(.btn-link):not(.btn-flat).active:hover
+#sidebar-content .btn-primary:not(.btn-link):not(.btn-flat).active:hover
         background-color $colorPrimaryHoverBg !important
         color $colorPrimaryHoverFg !important
 

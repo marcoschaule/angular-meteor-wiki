@@ -14,14 +14,14 @@ tracker                 # Meteor's client-side reactive programming library
 standard-minifiers      # JS/CSS minifiers run for production mode
 es5-shim                # ECMAScript 5 compatibility for older browsers.
 
+accounts-password
+email
 angular
-mquandalle:stylus
 angularui:angular-ui-router
 planettraining:angular-translate
 planettraining:angular-translate-loader-static-files
-accounts-password
-less
-twbs:bootstrap
 marcstark:meteor-angular-jade-extended
+mquandalle:stylus
+twbs:bootstrap
 aldeed:collection2
-email
+angularui:angular-ui-bootstrap

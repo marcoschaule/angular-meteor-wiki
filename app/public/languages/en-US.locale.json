@@ -1,4 +1,9 @@
 {
+  "header.title.Toolbar"                                       : "Toolbar",
+  "header.title.Search"                                        : "Search",
+  
+  "navigation.title"                                           : "Navigation",
+  "navigation.title.System"                                    : "System",
   "navigation.title.Index"                                     : "Index",
   "navigation.title.Home"                                      : "Home",
   "navigation.title.Help"                                      : "Help",
@@ -8,6 +13,7 @@
   "navigation.title.SignOut"                                   : "Sign out",
   "navigation.title.ForgotPassword"                            : "Forgot password",
   "navigation.title.ResetPassword"                             : "Reset password",
+  "navigation.title.Profile"                                   : "Profile",
 
   "authentication.title.SignIn"                                : "Sign in",
   "authentication.title.SignUp"                                : "Sign up",
