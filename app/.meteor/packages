@@ -25,3 +25,6 @@ mquandalle:stylus
 twbs:bootstrap
 aldeed:collection2
 angularui:angular-ui-bootstrap
+hhravn:angular-ui-codemirror
+angular:angular-sanitize
+chuangbo:marked

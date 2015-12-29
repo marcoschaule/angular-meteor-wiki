@@ -30,10 +30,10 @@ h6
     text-transform uppercase
     
 fieldset
-    margin-bottom .5rem
+    margin 2rem 0 .5rem 0
 label
     font-weight normal
-input, textarea
+input, textarea, button, button *
     color $colorWhite !important
 input[type="radio"], input[type="checkbox"]
     display inline
@@ -42,6 +42,8 @@ input[type="radio"], input[type="checkbox"]
     width auto
 input[type="radio"] + label, input[type="checkbox"] + label
     margin-right 3rem
+textarea
+    min-height 12em
 
 // *****************************************************************************
 // General classes
@@ -274,7 +276,7 @@ input.form-control-alt
         padding 1rem
     .username
         font-size 1.6rem
-#sidebar-content h6, #article-content h6
+#sidebar-content h6
         margin 0
         padding 0 2rem
 #sidebar-content .btn-primary:not(.btn-link):not(.btn-flat)
@@ -361,14 +363,24 @@ input.form-control-alt
 // CodeMirror extension
 // *****************************************************************************
 
-.form-control-editor .CodeMirror
-    height auto
-    border 1px solid #ccc
-    border-radius 4px
-    font-family 'Bitstream Vera Sans Mono', Consolas, Courier, monospace
-.form-control-editor .CodeMirror-lines
-    padding 1rem 0
-.form-control-editor .CodeMirror-code > div > pre
-    padding .25rem 1rem
+.CodeMirror
+    background-color $colorBrighten1
+    color $colorWhite
+    border-radius $radiusDefault
+.CodeMirror-gutters
+    background-color $colorBrighten2
+    border none
+.CodeMirror-cursor
+    border-color $colorBrighten3
+
+// .form-control-editor .CodeMirror
+//     height auto
+//     border 1px solid #ccc
+//     border-radius 4px
+//     font-family 'Bitstream Vera Sans Mono', Consolas, Courier, monospace
+// .form-control-editor .CodeMirror-lines
+//     padding 1rem 0
+// .form-control-editor .CodeMirror-code > div > pre
+//     padding .25rem 1rem
 // .form-control-editor .CodeMirror-code > div:nth-child(2n+1) > pre
 //     background-color #f8f8f8

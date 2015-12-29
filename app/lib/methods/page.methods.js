@@ -24,16 +24,20 @@ pagesReadOne: function(objFind) {
  * @return {Object}            object of write result like "{ "nInserted" : 1 }"
  */
 pagesCreateOne: function(objCreate) {
+    if (objCreate._id) {
+        delete objCreate._id;
+    }
+
     var objCreateFull = {
-        _idCreatedBy : Meteor.userId(),
-        dateCreatedAt: new Date(),
-        strName      : objCreate.strName,
-        arrVersions  : [{
-            _idChangedBy : Meteor.userId(),
-            dateChangedAt: new Date(),
-            strTitle     : objCreate.strTitle,
-            strContent   : objCreate.strContent,
-            strParser    : objCreate.strParser || 'markdown',
+        createdBy : Meteor.userId(),
+        createdAt : new Date(),
+        name      : objCreate.name,
+        versions  : [{
+            changedBy : Meteor.userId(),
+            changedAt : new Date(),
+            title     : objCreate.title,
+            content   : objCreate.content,
+            parser    : objCreate.parser || 'markdown',
         }],
         isPublished      : !!objCreate.isPublished,
         isPrivate        : !!objCreate.isPrivate,
@@ -52,20 +56,19 @@ pagesCreateOne: function(objCreate) {
  */
 pagesUpdateOne: function(objFind, objUpdate) {
     var objUpdateElement = {
-        _idChangedBy : Meteor.userId(),
-        dateChangedAt: new Date(),
-        strTitle     : objUpdate.strTitle,
-        strContent   : objUpdate.strContent,
-        strParser    : objUpdate.strParser || 'markdown',
+        changedBy    : Meteor.userId(),
+        changedAt    : new Date(),
+        title        : objUpdate.title,
+        content      : objUpdate.content,
+        parser       : objUpdate.parser || 'markdown',
     };
     var objUpdateFull = {
         $set: {
-            strName    : objUpdate.strName,
             isPrivate  : !!objUpdate.isPrivate,
             isPublished: !!objUpdate.isPublished,
         },
         $push: {
-            arrVersions: {
+            versions: {
                 $each    : [ objUpdateElement ],
                 $position: 0,
             },

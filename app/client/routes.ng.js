@@ -19,6 +19,7 @@ angular
             .state('forgot-password',         getStateObjectResetPassword('forgot'))
             .state('reset-password',          getStateObjectResetPassword('reset'))
             .state('reset-password-complete', getStateObjectResetPassword('complete'))
+            .state('page',                    getStateObjectPage())
             ;
 
         $urlRouterProvider.otherwise('/');
@@ -34,7 +35,7 @@ angular
  * @return {Object}  object for route
  */
 function getStateObjectHome() {
-    return _extendWithStaticHeader({
+    return _extendWithStaticViews({
         url  : '/',
         views: {
             content: {
@@ -53,7 +54,7 @@ function getStateObjectHome() {
  * @return {Object}  object for route
  */
 function getStateObjectHelp() {
-    return _extendWithStaticHeader({
+    return _extendWithStaticViews({
         url  : '/help',
         views: {
             content: {
@@ -71,7 +72,7 @@ function getStateObjectHelp() {
  * @return {Object}  object for route
  */
 function getStateObjectProfile() {
-    return _extendWithStaticHeaderSecure({
+    return _extendWithStaticViewsSecure({
         url  : '/profile',
         views: {
             content: {
@@ -79,6 +80,34 @@ function getStateObjectProfile() {
             },
         },
     });
+}
+
+// *****************************************************************************
+
+/**
+ * Function to get the route object for "home".
+ * 
+ * @return {Object}  object for route
+ */
+function getStateObjectPage() {
+    var objState = {
+        url  : '/:page?edit',
+        views: {
+            header: {
+                templateUrl: 'client/components/pages/page-toolbar.template.html',
+                controller : 'AmwPageToolbarCtrl as vm',
+            },
+            sidebar: {
+                templateUrl: 'client/components/pages/page-sidebar.template.html',
+                controller : 'AmwPageSidebarCtrl as vm',
+            },
+            content: {
+                templateUrl: 'page.template.html',
+                controller : 'AmwPageCtrl as vm',
+            },
+        },
+    };
+    return objState;
 }
 
 // *****************************************************************************
@@ -91,12 +120,12 @@ function getStateObjectProfile() {
  * @return {Object}  object for route
  */
 function getStateObjectSignIn() {
-    return _extendWithStaticHeader({
+    return _extendWithStaticViews({
         url  : '/sign-in',
         views: {
             content: {
                 templateUrl: 'sign-in.template.html',
-                controller   : 'AmwSignInCtrl as vm',
+                controller : 'AmwSignInCtrl as vm',
             },
         },
     });
@@ -110,7 +139,7 @@ function getStateObjectSignIn() {
  * @return {Object}  object for route
  */
 function getStateObjectSignUp() {
-    return _extendWithStaticHeader({
+    return _extendWithStaticViews({
         url  : '/sign-up',
         views: {
             content: {
@@ -148,7 +177,7 @@ function getStateObjectSignOut() {
  * @return {Object}  object for route
  */
 function getStateObjectResetPassword(strStep) {
-    var objState = _extendWithStaticHeader({
+    var objState = _extendWithStaticViews({
         views: {
             content: {
                 templateUrl : 'client/components/authentication/reset-password.template.html',
@@ -172,20 +201,6 @@ function getStateObjectResetPassword(strStep) {
 }
 
 // *****************************************************************************
-
-// /**
-//  * Function to get the route object for "reset-password".
-//  * 
-//  * @return {Object}  object for route
-//  */
-// function getStateObjectResetPassword() {
-//     return {
-//         url        : '/reset-password/:strToken',
-//         templateUrl: 'client/components/authentication/reset-password.template.html',
-//     };
-// }
-
-// *****************************************************************************
 // Routing object definitions - Pages
 // *****************************************************************************
 
@@ -193,16 +208,23 @@ function getStateObjectResetPassword(strStep) {
 // Helpers
 // *****************************************************************************
 
-function _extendWithStaticHeader(objState) {
+function _extendWithStaticViews(objState) {
+    if (!objState.views) {
+        objState.views = {};
+    }
     objState.views.header = {
-        templateUrl  : 'client/components/header/header-static.template.html',
+        templateUrl: 'client/components/header/header-static.template.html',
+    };
+    objState.views.sidebar = {
+        templateUrl: 'client/components/sidebar/sidebar-content.template.html',
+        controller : 'AmwSidebarContentCtrl as vm',
     };
     return objState;
 }
 
 // *****************************************************************************
 
-function _extendWithStaticHeaderSecure(objState) {
+function _extendWithStaticViewsSecure(objState) {
     objState.resolve = objState.resolve || {};
     objState.resolve.currentUser = function($q) {
         if (!Meteor.userId()) {
@@ -210,7 +232,7 @@ function _extendWithStaticHeaderSecure(objState) {
         }
         return $q.resolve();
     };
-    return _extendWithStaticHeader(objState);
+    return _extendWithStaticViews(objState);
 }
 
 // *****************************************************************************

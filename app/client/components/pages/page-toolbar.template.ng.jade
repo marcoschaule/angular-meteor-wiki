@@ -1,0 +1,21 @@
+div(data-ng-if="!vm.isEditable")
+    button.btn.btn-primary(
+            data-ng-click="vm.editPage()")
+        i.fa.fa-lg.fa-pencil
+        |&nbsp;
+        |{{ 'common.Edit' | translate }}
+    button.btn.btn-primary(
+            data-ng-click="vm.copyPage()")
+        i.fa.fa-lg.fa-copy
+        |&nbsp;
+        |{{ 'common.Copy' | translate }}
+    button.btn.btn-danger(
+            data-ng-click="vm.deletePage()")
+        i.fa.fa-lg.fa-eraser
+        |&nbsp;
+        |{{ 'common.Delete' | translate }}
+
+div(data-ng-if="vm.isEditable")
+    button.btn.btn-primary(
+            data-ng-click="vm.updatePage()")
+        i.fa.fa-lg.fa-floppy-o

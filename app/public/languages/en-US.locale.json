@@ -56,6 +56,9 @@
   "authentication.error.strTokenExpired"                       : "Token expired. Please send email again.",
   "authentication.error.general.userOrPasswordIncorrect"       : "User name or password incorrect.",
 
+  "pages.EditPage"                                             : "Edit page",
+  "pages.Title"                                                : "Page title",
+  "pages.Content"                                              : "Page content",
   "pages.form.edit.Name"                                       : "Page name",
   "pages.form.edit.Title"                                      : "Page title",
   "pages.form.edit.Content"                                    : "Page content",
@@ -73,13 +76,18 @@
   "privacy.IsThisPagePrivate"                                  : "Is this page private?",
 
   "common.Versions"                                            : "Versions",
+  "common.Create"                                              : "Create",
+  "common.CreateAndReturn"                                     : "Create and return",
   "common.Edit"                                                : "Edit",
   "common.Reset"                                               : "Reset",
   "common.Open"                                                : "Open",
   "common.Delete"                                              : "Delete",
+  "common.Copy"                                                : "Copy",
   "common.Save"                                                : "Save",
+  "common.SaveAndReturn"                                       : "Save and return",
   "common.Okay"                                                : "Okay",
   "common.Cancel"                                              : "Cancel",
+  "common.CancelAndReturn"                                     : "Cancel and return",
   "common.Back"                                                : "Back",
 
   "email.resetPassword.template.subject"                       : "Link to reset your password",

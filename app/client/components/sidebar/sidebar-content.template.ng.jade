@@ -1,0 +1,26 @@
+h6 {{ 'navigation.title' | translate }}
+div(data-ng-if="!vm.isSignedIn()")
+    a.btn.btn-primary(
+            tabindex="-1",
+            title="{{ 'navigation.title.Home' | translate }}",
+            data-ui-sref="home",
+            data-ui-sref-active="active")
+        |{{ 'navigation.title.Home' | translate }}
+    a.btn.btn-primary(
+            tabindex="-1",
+            title="{{ 'navigation.title.SignIn' | translate }}",
+            data-ui-sref="sign-in",
+            data-ui-sref-active="active")
+        |{{ 'navigation.title.SignIn' | translate }}
+    a.btn.btn-primary(
+            tabindex="-1",
+            title="{{ 'navigation.title.SignUp' | translate }}",
+            data-ui-sref="sign-up",
+            data-ui-sref-active="active")
+        |{{ 'navigation.title.SignUp' | translate }}
+    a.btn.btn-primary(
+            tabindex="-1",
+            title="{{ 'navigation.title.ForgotPassword' | translate }}",
+            data-ui-sref="forgot-password",
+            data-ui-sref-active="active")
+        |{{ 'navigation.title.ForgotPassword' | translate }}

@@ -1,3 +1,21 @@
+mixin header
+    .row
+        .col-md-9
+            h6.upper-title {{ 'header.title.Toolbar' | translate }}
+            div(data-ui-view='header')
+        .col-md-3.right
+            form(id="formSearch",
+                    name="formSearch"
+                    class="aor")
+                h6 {{ 'header.title.Search' | translate }}
+                .btn-group-alt
+                    input.form-control-alt(type="text",
+                            id="search"
+                            name="search")
+                    button.btn.btn-link
+                        i.fa.fa-lg.fa-search
+
+
 head
     base(href='/')
     link(href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700', rel='stylesheet', type='text/css')
@@ -12,14 +30,13 @@ body
                 #sidebar-header.header(role='navigation-header')
                     include client/components/sidebar/sidebar-header.template.include.jade
                 #sidebar-content(role='navigation-content')
-                    include client/components/sidebar/sidebar-content.template.include.jade
+                    div(data-ui-view='sidebar')
 
             //- article
             article#article.col-md-9(role='article', tabindex='-1')
                 header#article-header.header(role='header')
-                    div(data-ui-view='header')
+                    include client/components/header/header.template.include.jade
                 #article-content(role='content')
-                    h6 &nbsp;
                     div(data-ui-view='content')
 
         footer#footer(role='footer')

@@ -10,7 +10,7 @@ Meteor.subscribe("userData");
 // Module definitions and organization
 // ********************************************************************************
 
-angular.module('amw-packages',    ['angular-meteor', 'ui.router', 'ui.bootstrap', 'pascalprecht.translate']);
+angular.module('amw-packages',    ['angular-meteor', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.codemirror', 'pascalprecht.translate']);
 angular.module('amw-filters',     []);
 angular.module('amw-directives',  []);
 angular.module('amw-services',    []);

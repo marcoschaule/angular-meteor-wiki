@@ -9,25 +9,22 @@ div(data-ng-controller="AmwSidebarHeaderCtrl as vm", tabindex="-1")
                     data-toggle='dropdown',
                     aria-haspopup='true',
                     aria-expanded='false',
-                    popover-placement="bottom",
-                    uib-popover="On the Bottom!")
+                    data-popover-placement="bottom",
+                    data-uib-popover="On the Bottom!")
                 span.username oncemac
                 span &nbsp;
                 span.caret
             ul.dropdown-menu
                 li: a(tabindex="-1",
                         title="{{ 'navigation.title.Profile' | translate }}",
-                        data-ui-sref="profile",
-                        data-ui-sref-active="active")
+                        data-ui-sref="profile")
                     |{{ 'navigation.title.Profile' | translate }}
                 li: a(tabindex="-1",
                         title="{{ 'navigation.title.Help' | translate }}",
-                        data-ui-sref="help",
-                        data-ui-sref-active="active")
+                        data-ui-sref="help")
                     |{{ 'navigation.title.Help' | translate }}
                 li.divider(role='separator')
                 li: a(tabindex="-1",
                         title="{{ 'navigation.title.SignOut' | translate }}",
-                        data-ui-sref="sign-out",
-                        data-ui-sref-active="active")
+                        data-ui-sref="sign-out")
                     |{{ 'navigation.title.SignOut' | translate }}
