@@ -10,7 +10,7 @@ angular
         $locationProvider.html5Mode(true);
 
         $stateProvider
-            .state('home',                    getStateObjectHome())
+            // .state('home',                    getStateObjectHome())
             .state('help',                    getStateObjectHelp())
             .state('profile',                 getStateObjectProfile())
             .state('sign-in',                 getStateObjectSignIn())
@@ -91,7 +91,7 @@ function getStateObjectProfile() {
  */
 function getStateObjectPage() {
     var objState = {
-        url  : '/:page?edit',
+        url  : '/:page?edit&first',
         views: {
             header: {
                 templateUrl: 'client/components/pages/page-toolbar.template.html',

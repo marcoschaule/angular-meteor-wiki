@@ -1,7 +1,7 @@
 
 div(data-ng-if="!vm.isEditable")
     h6 {{ vm.objPageView.title }}
-    h2(data-ng-bind="vm.objPageView.title")
+    //- h2(data-ng-bind="vm.objPageView.title")
     div(data-ng-bind-html="vm.objPageView.content")
 
 div(data-ng-if="vm.isEditable")
@@ -27,18 +27,23 @@ div(data-ng-if="vm.isEditable")
                     data-ui-codemirror-opts="vm.editorOptions")
         fieldset
             span
-                button.btn.btn-primary(
+                button.btn.btn-success(
                         data-ng-click="vm.updatePage()")
                     i.fa.fa-lg.fa-floppy-o
                     |&nbsp;
                     |{{ 'common.Save' | translate }}
-                button.btn.btn-primary(
+                button.btn.btn-success(
                         data-ng-click="vm.updatePage(true)")
                     i.fa.fa-lg.fa-floppy-o
                     |&nbsp;
                     |{{ 'common.SaveAndReturn' | translate }}
             span(data-ng-if="!vm.isFirstEdit")
-                button.btn.btn-primary
+                button.btn.btn-danger
+                    i.fa.fa-lg.fa-undo
+                    |&nbsp;
+                    |{{ 'common.Reset' | translate }}
+                button.btn.btn-warning(
+                        data-ng-click="vm.cancelPage()")
                     i.fa.fa-lg.fa-ban
                     |&nbsp;
-                    |{{ 'common.CancelAndReturn' | translate }}
+                    |{{ 'common.Cancel' | translate }}

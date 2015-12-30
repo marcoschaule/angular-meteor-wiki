@@ -20,12 +20,15 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller() {
+function Controller($state, $sce) {
     var vm = this;
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
+
+    vm.strPageName    = '';
+    vm.objPageSidebar = {};
 
     // *****************************************************************************
     // Controller function linking
@@ -42,11 +45,38 @@ function Controller() {
      * be called from within controller.
      */
     function init() {
+        vm.strPageName = $state.params.page || '/';
+
+        Meteor.subscribe('pages', function() {
+            var objPage = Pages.findOne({ name: 'sidebar' });
+
+            if (objPage) {
+                vm.objPageSidebar = {
+                    title  : objPage.versions[0].title,
+                    content: _setCurrentLinkActive(marked(objPage.versions[0].content)),
+                };
+            }
+        });
     } init();
 
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
+
+    function _setCurrentLinkActive(strContent) {
+        var objContent    = $('<div>' + strContent + '</div>');
+        var regexLinkView = new RegExp(vm.strPageName + '$');
+        var regexLinkEdit = new RegExp(vm.strPageName + '\\?edit=true$');
+        
+        $('a', objContent).filter(function() {
+            if ($state.params.edit && !$state.params.first) {
+                return regexLinkEdit.test(this.href);
+            }
+            return regexLinkView.test(this.href);
+        }).addClass('active');
+
+        return objContent.html();
+    }
 
     // *****************************************************************************
 }

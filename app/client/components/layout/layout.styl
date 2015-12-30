@@ -28,12 +28,15 @@ h6
     margin 0 0 .2rem 0
     padding 0
     text-transform uppercase
-    
+
+hr
+    border-color $colorBrighten2
+
 fieldset
     margin 2rem 0 .5rem 0
 label
     font-weight normal
-input, textarea, button, button *
+input, button, button *
     color $colorWhite !important
 input[type="radio"], input[type="checkbox"]
     display inline
@@ -42,8 +45,8 @@ input[type="radio"], input[type="checkbox"]
     width auto
 input[type="radio"] + label, input[type="checkbox"] + label
     margin-right 3rem
-textarea
-    min-height 12em
+// textarea
+//     min-height 12em
 
 // *****************************************************************************
 // General classes
@@ -133,6 +136,12 @@ textarea
     padding-top 0
 .no-padding-bottom
     padding-bottom 0
+.hpadding-1rem
+    padding-left 1rem
+    padding-right 1rem
+.hpadding-2rem
+    padding-left 2rem
+    padding-right 2rem
 
 // colors
 .color-bg-2
@@ -250,7 +259,7 @@ input.form-control-alt
 // *****************************************************************************
 
 #container
-    max-width 1200px
+    max-width 1600px
     min-height 100%
     padding 4rem 2rem
     position relative
@@ -277,30 +286,32 @@ input.form-control-alt
     .username
         font-size 1.6rem
 #sidebar-content h6
-        margin 0
-        padding 0 2rem
+    margin 0
+    padding 0 2rem
 #sidebar-content .btn-primary:not(.btn-link):not(.btn-flat)
-        background-color $colorButtonSidebarNormalBg
-        border none
-        box-shadow none !important
-        color $colorButtonSidebarNormalFg
-        display block
-        margin 0 0 .2rem 0
-        padding-left 2rem
-        padding-right 2rem
-        text-align left
-        width 100%
-        box-shadow none
+    background-color $colorButtonSidebarNormalBg
+    border none
+    box-shadow none !important
+    color $colorButtonSidebarNormalFg
+    display block
+    margin 0 0 .2rem 0
+    padding-left 2rem
+    padding-right 2rem
+    text-align left
+    width 100%
+    box-shadow none
 #sidebar-content .btn-primary:not(.btn-link):not(.btn-flat):hover
-        background-color $colorButtonSidebarHoverBg !important
-        color $colorButtonSidebarHoverFg !important
-        box-shadow none
+    background-color $colorButtonSidebarHoverBg !important
+    color $colorButtonSidebarHoverFg !important
+    box-shadow none
 #sidebar-content .btn-primary:not(.btn-link):not(.btn-flat).active
-        background-color $colorButtonSidebarActiveBg
-        color $colorButtonSidebarActiveFg
+    background-color $colorButtonSidebarActiveBg
+    color $colorButtonSidebarActiveFg
 #sidebar-content .btn-primary:not(.btn-link):not(.btn-flat).active:hover
-        background-color $colorPrimaryHoverBg !important
-        color $colorPrimaryHoverFg !important
+    background-color $colorPrimaryHoverBg !important
+    color $colorPrimaryHoverFg !important
+#sidebar-content a.active
+    color $colorWhite
 
 // *****************************************************************************
 // Pages
@@ -364,14 +375,14 @@ input.form-control-alt
 // *****************************************************************************
 
 .CodeMirror
-    background-color $colorBrighten1
+    background-color $colorBrighten1 !important
     color $colorWhite
     border-radius $radiusDefault
 .CodeMirror-gutters
-    background-color $colorBrighten2
+    background-color $colorBrighten2 !important
     border none
 .CodeMirror-cursor
-    border-color $colorBrighten3
+    border-color $colorWhite !important
 
 // .form-control-editor .CodeMirror
 //     height auto

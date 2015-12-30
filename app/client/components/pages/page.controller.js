@@ -33,16 +33,16 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
     // Public variables
     // *****************************************************************************
 
+    vm.strPageName   = '';
     vm.objPage       = {};
     vm.objPageView   = {};
     vm.objPageEdit   = {};
     vm.isEditable    = false;
     vm.isFirstEdit   = false;
     vm.editorOptions = {
-        lineWrapping: false,
         lineNumbers : true,
-        readOnly    : false,
         mode        : 'markdown',
+        theme       : 'monokai',
     };
 
     // *****************************************************************************
@@ -51,7 +51,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
 
     vm.init       = init;
     vm.updatePage = updatePage;
-    vm.closePage  = closePage;
+    vm.cancelPage = cancelPage;
 
     // *****************************************************************************
     // Controller function definition
@@ -62,6 +62,9 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
      * be called from within controller.
      */
     function init() {
+        vm.strPageName = $state.params.page  || 'index';
+        vm.isFirstEdit = $state.params.first || false;
+
         Meteor.subscribe('pages', function() {
             $timeout(function() {
                 _readPage();
@@ -85,7 +88,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
 
         // If "edit" state needs to be canceled, cancel page editing. 
         if (isEditableCanceled) {
-            return closePage();
+            return cancelPage();
         }
         
         vm.isEditable  = !isEditableCanceled;
@@ -96,8 +99,8 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
 
     // *****************************************************************************
 
-    function closePage() {
-        $state.go('page', { page: $state.params.page, edit: null }, { reload: true });
+    function cancelPage() {
+        $state.go('page', { page: vm.strPageName, edit: null, first: null }, { reload: true });
     }
 
     // *****************************************************************************
@@ -105,31 +108,38 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
     // *****************************************************************************
 
     function _readPage() {
-        vm.objPage      = Pages.findOne({ name: $state.params.page });
-        vm.isEditable   = !!$state.params.edit;
+        var strTitle, strContent;
+        vm.objPage = Pages.findOne({ name: vm.strPageName });
 
-        if (!vm.objPage) {
+        if (!!$state.params.edit && Meteor.userId()) {
+            strTitle = vm.objPage &&
+                    vm.objPage.versions &&
+                    vm.objPage.versions[0].title ||
+                    _.parseTitle(vm.strPageName);
+            strContent = vm.objPage &&
+                    vm.objPage.versions &&
+                    vm.objPage.versions[0].content || '';
+
             vm.isEditable  = true;
-            vm.isFirstEdit = true;
             vm.objPageEdit = {
-                name   : $state.params.page,
-                title  : _.parseTitle($state.params.page),
-                content: '',
+                title  : strTitle,
+                content: strContent,
             };
         }
 
-        else if (vm.isEditable) {
-            vm.objPageEdit = {
-                title  : vm.objPage.versions[0].title,
-                content: vm.objPage.versions[0].content,
-            };
+        else if (!vm.objPage && Meteor.userId()) {
+            $state.go('page', { page: vm.strPageName, edit: true, first: true });
         }
 
-        else {
+        else if (vm.objPage && vm.objPage.versions) {
             vm.objPageView = {
                 title  : vm.objPage.versions[0].title,
                 content: $window.marked(vm.objPage.versions[0].content),
             };
+        }
+        else {
+            vm.isEditable = false;
+            $state.go('page', { page: vm.strPageName }, { notify: false });
         }
     }
 

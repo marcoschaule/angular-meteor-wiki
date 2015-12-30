@@ -1,2 +1,4 @@
-h6 {{ 'navigation.title' | translate }}
-div {{ vm.objPageSidebar.content }}
+h6(data-ng-bind="'navigation.title' | translate")
+.vmargin-1rem
+.hpadding-2rem(
+        data-ng-bind-html="vm.objPageSidebar.content")

@@ -1,25 +1,8 @@
-mixin header
-    .row
-        .col-md-9
-            h6.upper-title {{ 'header.title.Toolbar' | translate }}
-            div(data-ui-view='header')
-        .col-md-3.right
-            form(id="formSearch",
-                    name="formSearch"
-                    class="aor")
-                h6 {{ 'header.title.Search' | translate }}
-                .btn-group-alt
-                    input.form-control-alt(type="text",
-                            id="search"
-                            name="search")
-                    button.btn.btn-link
-                        i.fa.fa-lg.fa-search
-
-
 head
     base(href='/')
     link(href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700', rel='stylesheet', type='text/css')
     link(href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css", rel="stylesheet")
+    link(href="http://codemirror.net/theme/monokai.css", rel="stylesheet", type="text/css")
     
 body
     #container.container-fluid(data-ng-app='amw')
@@ -41,3 +24,5 @@ body
 
         footer#footer(role='footer')
             .footer(data-ng-include="'footer-static.template.html'")
+
+    script(src="http://codemirror.net/mode/markdown/markdown.js")
