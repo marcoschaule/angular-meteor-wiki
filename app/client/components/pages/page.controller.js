@@ -33,7 +33,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
     // Public variables
     // *****************************************************************************
 
-    vm.strPageName   = '';
+    vm.strPageName   = $state.params.page  || 'index';
     vm.objPage       = {};
     vm.objPageView   = {};
     vm.objPageEdit   = {};
@@ -62,8 +62,6 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
      * be called from within controller.
      */
     function init() {
-        vm.strPageName = $state.params.page  || 'index';
-
         Meteor.subscribe('pages', function() {
             $timeout(function() {
                 _readPage();
@@ -128,6 +126,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
             vm.objPageEdit = {
                 title  : strTitle,
                 content: strContent,
+                name   : vm.strPageName,
             };
 
             return;
@@ -149,6 +148,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
             vm.objPageEdit = {
                 title  : strTitle,
                 content: strContent,
+                name   : vm.strPageName,
             };
         }
 

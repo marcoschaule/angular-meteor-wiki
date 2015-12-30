@@ -27,8 +27,9 @@ function Controller($scope, $state) {
     // Public variables
     // *****************************************************************************
 
-    vm.isEditable  = false;
     vm.strPageName = $state.params.page || 'index';
+    vm.isEditable  = false;
+    vm.isIndexPage = !$state.params.page;
 
     // *****************************************************************************
     // Controller function linking

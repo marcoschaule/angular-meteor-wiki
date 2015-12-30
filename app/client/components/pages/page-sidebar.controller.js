@@ -27,8 +27,9 @@ function Controller($state, $sce) {
     // Public variables
     // *****************************************************************************
 
-    vm.strPageName    = '';
+    vm.strPageName    = $state.params.page || 'index';
     vm.objPageSidebar = {};
+    vm.isIndexPage    = !$state.params.page || 'index' === $state.params.page;
 
     // *****************************************************************************
     // Controller function linking
@@ -45,7 +46,7 @@ function Controller($state, $sce) {
      * be called from within controller.
      */
     function init() {
-        vm.strPageName = $state.params.page || '/';
+        
 
         Meteor.subscribe('pages', function() {
             var objPageSidebar = Pages.findOne({ name: 'sidebar' });
@@ -64,15 +65,19 @@ function Controller($state, $sce) {
     // *****************************************************************************
 
     function _setCurrentLinkActive(strContent) {
-        var objContent    = $('<div>' + strContent + '</div>');
-        var regexLinkView = new RegExp(vm.strPageName + '$');
-        var regexLinkEdit = new RegExp(vm.strPageName + '\\?edit=true$');
-        var isEditable    = !!$state.params.edit;
+        var strPageUrl     = vm.isIndexPage ? '/' : vm.strPageName;
+        var objContent     = $('<div>' + strContent + '</div>');
+        var regexLinkView  = new RegExp(strPageUrl + '$');
+        var regexLinkEdit  = new RegExp(strPageUrl + '\\?edit=true$');
+        var isEditable     = !!$state.params.edit;
+        
+        var arrLinkView    = $('a', objContent).filter(function() { return regexLinkView.test(this.href); });
+        var arrLinkEdit    = $('a', objContent).filter(function() { return regexLinkEdit.test(this.href); });
 
-        var arrLinkView   = $('a', objContent).filter(function() { return regexLinkView.test(this.href); });
-        var arrLinkEdit   = $('a', objContent).filter(function() { return regexLinkEdit.test(this.href); });
-
-        if (arrLinkEdit.length > 0 && isEditable) {
+        if (vm.isIndexPage && arrLinkView.length) {
+            arrLinkView.addClass('active');
+        }
+        else if (arrLinkEdit.length > 0 && isEditable) {
             arrLinkEdit.addClass('active');
         }
         else if (arrLinkView.length > 0) {
