@@ -27,14 +27,17 @@ function Controller($scope, $state) {
     // Public variables
     // *****************************************************************************
 
-    vm.isEditable = false;
+    vm.isEditable  = false;
+    vm.strPageName = $state.params.page || 'index';
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.init     = init;
-    vm.editPage = editPage;
+    vm.init       = init;
+    vm.editPage   = editPage;
+    vm.copyPage   = copyPage;
+    vm.deletePage = deletePage;
 
     // *****************************************************************************
     // Controller function definition
@@ -50,7 +53,20 @@ function Controller($scope, $state) {
     // *****************************************************************************
 
     function editPage() {
-        $state.go('page', { page: $state.params.page, edit: true });
+        $state.go('page', { page: vm.strPageName, edit: true });
+    }
+
+    // *****************************************************************************
+
+    function copyPage() {
+        $state.go('page', { page: vm.strPageName + '-copy', copyOf: vm.strPageName, edit: true });
+        console.log(">>> Debug ====================; copy page", '\n\n');
+    }
+
+    // *****************************************************************************
+
+    function deletePage() {
+        console.log(">>> Debug ====================; delete page", '\n\n');
     }
 
     // *****************************************************************************

@@ -2,7 +2,8 @@
   "header.title.Toolbar"                                       : "Toolbar",
   "header.title.Search"                                        : "Search",
   
-  "navigation.title"                                           : "Navigation",
+  "navigation.title.Common"                                    : "Common navigation",
+  "navigation.title.Wiki"                                      : "Wiki navigation",
   "navigation.title.System"                                    : "System",
   "navigation.title.Index"                                     : "Index",
   "navigation.title.Home"                                      : "Home",

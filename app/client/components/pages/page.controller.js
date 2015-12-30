@@ -115,8 +115,26 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
      */
     function _readPage() {
         var strTitle, strContent;
-        vm.objPage = Pages.findOne({ name: vm.strPageName });
 
+        if ($state.params.copyOf) {
+            vm.objPage = Pages.findOne({ name: $state.params.copyOf });
+            strTitle = _.parseTitle($state.params.page);
+            strContent = vm.objPage &&
+                    vm.objPage.versions &&
+                    vm.objPage.versions[0].content || '';
+
+            vm.isEditable  = true;
+            vm.isFirstEdit = true;
+            vm.objPageEdit = {
+                title  : strTitle,
+                content: strContent,
+            };
+
+            return;
+        }
+
+        vm.objPage = Pages.findOne({ name: vm.strPageName });
+        
         if (!!$state.params.edit && Meteor.userId()) {
             strTitle = vm.objPage &&
                     vm.objPage.versions &&

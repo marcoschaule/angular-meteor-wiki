@@ -91,7 +91,7 @@ function getStateObjectProfile() {
  */
 function getStateObjectPage() {
     var objState = {
-        url  : '/:page?edit',
+        url  : '/:page?edit&copyOf',
         views: {
             header: {
                 templateUrl: 'client/components/pages/page-toolbar.template.html',
@@ -104,6 +104,34 @@ function getStateObjectPage() {
             content: {
                 templateUrl: 'page.template.html',
                 controller : 'AmwPageCtrl as vm',
+            },
+        },
+    };
+    return objState;
+}
+
+// *****************************************************************************
+
+/**
+ * Function to get the route object for "home".
+ * 
+ * @return {Object}  object for route
+ */
+function getStateObjectWikiPageList() {
+    var objState = {
+        url  : '/wiki/page-list',
+        views: {
+            header: {
+                templateUrl: 'client/components/pages/page-list-toolbar.template.html',
+                controller : 'AmwPageListToolbarCtrl as vm',
+            },
+            sidebar: {
+                templateUrl: 'client/components/pages/page-sidebar.template.html',
+                controller : 'AmwPageSidebarCtrl as vm',
+            },
+            content: {
+                templateUrl: 'page-list.template.html',
+                controller : 'AmwPageListCtrl as vm',
             },
         },
     };
