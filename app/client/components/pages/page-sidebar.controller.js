@@ -48,12 +48,12 @@ function Controller($state, $sce) {
         vm.strPageName = $state.params.page || '/';
 
         Meteor.subscribe('pages', function() {
-            var objPage = Pages.findOne({ name: 'sidebar' });
+            var objPageSidebar = Pages.findOne({ name: 'sidebar' });
 
-            if (objPage) {
+            if (objPageSidebar) {
                 vm.objPageSidebar = {
-                    title  : objPage.versions[0].title,
-                    content: _setCurrentLinkActive(marked(objPage.versions[0].content)),
+                    title  : objPageSidebar.versions[0].title,
+                    content: _setCurrentLinkActive(marked(objPageSidebar.versions[0].content)),
                 };
             }
         });
@@ -67,13 +67,17 @@ function Controller($state, $sce) {
         var objContent    = $('<div>' + strContent + '</div>');
         var regexLinkView = new RegExp(vm.strPageName + '$');
         var regexLinkEdit = new RegExp(vm.strPageName + '\\?edit=true$');
-        
-        $('a', objContent).filter(function() {
-            if ($state.params.edit && !$state.params.first) {
-                return regexLinkEdit.test(this.href);
-            }
-            return regexLinkView.test(this.href);
-        }).addClass('active');
+        var isEditable    = !!$state.params.edit;
+
+        var arrLinkView   = $('a', objContent).filter(function() { return regexLinkView.test(this.href); });
+        var arrLinkEdit   = $('a', objContent).filter(function() { return regexLinkEdit.test(this.href); });
+
+        if (arrLinkEdit.length > 0 && isEditable) {
+            arrLinkEdit.addClass('active');
+        }
+        else if (arrLinkView.length > 0) {
+            arrLinkView.addClass('active');
+        }
 
         return objContent.html();
     }

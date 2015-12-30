@@ -91,7 +91,7 @@ function getStateObjectProfile() {
  */
 function getStateObjectPage() {
     var objState = {
-        url  : '/:page?edit&first',
+        url  : '/:page?edit',
         views: {
             header: {
                 templateUrl: 'client/components/pages/page-toolbar.template.html',

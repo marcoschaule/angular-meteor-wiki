@@ -63,7 +63,6 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
      */
     function init() {
         vm.strPageName = $state.params.page  || 'index';
-        vm.isFirstEdit = $state.params.first || false;
 
         Meteor.subscribe('pages', function() {
             $timeout(function() {
@@ -99,6 +98,9 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
 
     // *****************************************************************************
 
+    /**
+     * Controller function to cancel page editing.
+     */
     function cancelPage() {
         $state.go('page', { page: vm.strPageName, edit: null, first: null }, { reload: true });
     }
@@ -107,6 +109,10 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
     // Controller helper definitions
     // *****************************************************************************
 
+    /**
+     * Helper function to read a page if available and if not, switch into
+     * editing mode to create a new one.
+     */
     function _readPage() {
         var strTitle, strContent;
         vm.objPage = Pages.findOne({ name: vm.strPageName });
@@ -121,6 +127,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
                     vm.objPage.versions[0].content || '';
 
             vm.isEditable  = true;
+            vm.isFirstEdit = !vm.objPage;
             vm.objPageEdit = {
                 title  : strTitle,
                 content: strContent,
@@ -128,7 +135,7 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
         }
 
         else if (!vm.objPage && Meteor.userId()) {
-            $state.go('page', { page: vm.strPageName, edit: true, first: true });
+            $state.go('page', { page: vm.strPageName, edit: true });
         }
 
         else if (vm.objPage && vm.objPage.versions) {
