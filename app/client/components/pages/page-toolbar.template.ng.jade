@@ -10,7 +10,7 @@ div(data-ng-if="!vm.isEditable")
         |&nbsp;
         |{{ 'common.Copy' | translate }}
     button.btn.btn-link(
-            data-ng-disabled="vm.isIndexPage",
+            data-ng-disabled="vm.isIndexPage || vm.isFirstEdit",
             data-ng-click="vm.deletePage()")
         i.fa.fa-lg.fa-eraser
         |&nbsp;

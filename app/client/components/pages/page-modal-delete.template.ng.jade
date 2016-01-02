@@ -1,0 +1,16 @@
+.modal-header
+    h4 Do you want to delete that page?
+.modal-body
+    p.
+        This page with {{ numVersions }} versions, created
+        at {{ strCreatedAt }} by {{ strCreatedBy }} will be
+        deleted. Are you sure?
+.modal-footer
+    button.btn.btn-danger(
+            type="button",
+            data-ng-click="vm.proceed(true)")
+        |Yes (delete)
+    button.btn.btn-danger(
+            type="button",
+            data-ng-click="vm.proceed(false)")
+        |No (cancel)

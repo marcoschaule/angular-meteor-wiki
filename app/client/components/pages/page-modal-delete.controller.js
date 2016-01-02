@@ -1,5 +1,5 @@
 /**
- * @name        AmwPageToolbarCtrl
+ * @name        AmwPageModalDeleteCtrl
  * @author      Marco Schaule <marco.schaule@net-designer.net>
  * @file        This file is an AngularJS controller.
  * 
@@ -14,34 +14,25 @@
 
 angular
     .module('amw-controllers')
-    .controller('AmwPageToolbarCtrl', Controller);
+    .controller('AmwPageModalDeleteCtrl', Controller);
 
 // *****************************************************************************
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $rootScope, $modal) {
+function Controller($modalInstance) {
     var vm = this;
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.strPageName = $state.params.page || 'index';
-    vm.isEditable  = false;
-    vm.isIndexPage = !$state.params.page;
-    vm.isFirstEdit = $rootScope.isFirstEdit;
-
-    console.log(">>> Debug ====================; vm.isFirstEdit:", vm.isFirstEdit, '\n\n');
-
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.init       = init;
-    vm.editPage   = editPage;
-    vm.copyPage   = copyPage;
-    vm.deletePage = deletePage;
+    vm.init    = init;
+    vm.proceed = proceed;
 
     // *****************************************************************************
     // Controller function definition
@@ -56,42 +47,23 @@ function Controller($state, $rootScope, $modal) {
 
     // *****************************************************************************
 
-    function editPage() {
-        $state.go('page', { page: vm.strPageName, edit: true });
-    }
-
-    // *****************************************************************************
-
-    function copyPage() {
-        $state.go('page', { page: vm.strPageName + '-copy', copyOf: vm.strPageName, edit: true });
-    }
-
-    // *****************************************************************************
-
-    function deletePage() {
-        _confirmDeletePage(function() {
-            Meteor.call('pagesDeleteOne', { name: vm.strPageName });
-            $state.go('page', { page: vm.strPageName, edit: true });
-        });
+    /**
+     * Controller function to proceed with model either confirming or
+     * canceling the deletion of the current page.
+     * 
+     * @param  {Boolean} isConfirmed  true if deletion is confirmed, false otherwise
+     */
+    function proceed(isConfirmed) {
+        if (isConfirmed) {
+            return $modalInstance.close('confirmed');
+        } else {
+            return $modalInstance.dismiss('cancel');
+        }
     }
 
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
-
-    function _confirmDeletePage(callback) {
-        var objModalInst = $modal.open({
-            animation  : true,
-            templateUrl: 'page-modal-delete.template.html',
-            controller : 'AmwPageModalDeleteCtrl as vm',
-        });
-
-        return objModalInst.result.then(function() {
-            return callback();
-        }, function() {
-            return;
-        });
-    }
 
     // *****************************************************************************
 }

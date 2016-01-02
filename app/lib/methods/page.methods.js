@@ -80,7 +80,8 @@ pagesUpdateOne: function(objFind, objUpdate) {
 // ********************************************************************************
 
 /**
- * Method to delete one page by find object.
+ * Method to delete one page by find object. Since there should only be one
+ * page per name, it deletes all pages with the same name.
  * 
  * @param  {Object} objFind  object to find a page
  * @return {Object}          object of write result like "{ nRemoved: 4 }"
