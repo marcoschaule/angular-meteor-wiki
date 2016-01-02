@@ -20,25 +20,17 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
+function Controller($scope, $state, $timeout, $sce, $window, PageService) {
     var vm = this;
-
-    // make "this" reactively and attach scope to it
-    // $reactive(vm).attach($scope);
-
-    // subscribe to "pages" collection
-    // vm.subscribe('pages', function() { init(); });
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.strPageName   = $state.params.page  || 'index';
-    vm.objPage       = {};
-    vm.objPageView   = {};
-    vm.objPageEdit   = {};
-    vm.isEditable    = false;
-    vm.isFirstEdit   = false;
+    vm.objPageView   = null;
+    vm.objPageEdit   = null;
+    vm.isEditActive  = null;
+    vm.isEditFirst   = null;
     vm.editorOptions = {
         lineNumbers : true,
         mode        : 'markdown',
@@ -62,12 +54,13 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
      * be called from within controller.
      */
     function init() {
-        Meteor.subscribe('pages', function() {
-            $timeout(function() {
-                _readPage();
-            });
+        return PageService.pageRead(function() {
+            vm.objPageView   = PageService.objPageView;
+            vm.objPageEdit   = PageService.objPageEdit;
+            vm.isEditActive  = PageService.isEditActive;
+            vm.isEditFirst   = PageService.isEditFirst;
         });
-    } init();
+    }
 
     // *****************************************************************************
 
@@ -167,6 +160,10 @@ function Controller($scope, $state, $reactive, $timeout, $sce, $window) {
             $state.go('page', { page: vm.strPageName }, { notify: false });
         }
     }
+
+    // *****************************************************************************
+
+    init();
 
     // *****************************************************************************
 }

@@ -1,10 +1,10 @@
 
-div(data-ng-if="!vm.isEditable")
+div(data-ng-if="!vm.isEditActive")
     h6 {{ vm.objPageView.title }}
     //- h2(data-ng-bind="vm.objPageView.title")
     div(data-ng-bind-html="vm.objPageView.content")
 
-div(data-ng-if="vm.isEditable")
+div(data-ng-if="vm.isEditActive")
     h6 {{ vm.objPageEdit.title }}
     h2 {{ 'pages.EditPage' | translate }}
     form(name="formPageEdit")

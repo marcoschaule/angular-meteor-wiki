@@ -32,8 +32,6 @@ function Controller($state, $rootScope, $modal) {
     vm.isIndexPage = !$state.params.page;
     vm.isFirstEdit = $rootScope.isFirstEdit;
 
-    console.log(">>> Debug ====================; vm.isFirstEdit:", vm.isFirstEdit, '\n\n');
-
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************

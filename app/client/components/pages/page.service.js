@@ -37,34 +37,28 @@ function Service($rootScope, $state, $timeout) {
     service.objPageEdit  = null;
     service.isEditActive = !!$state.params.edit;
     service.isEditFirst  = false;
+    service.isInit       = false;
 
     // *****************************************************************************
     // Service function linking
     // *****************************************************************************
 
-    service.init          = init;
-    service.pageRead      = pageRead;
-    service.pageUpdate    = pageUpdate;
-    service.pageDelete    = pageDelete;
-    service.pageEditOpen  = pageEditOpen;
-    service.pageEditClose = pageEditClose;
+    service.pageRead      = _wrapInit(pageRead);
+    service.pageUpdate    = _wrapInit(pageUpdate);
+    service.pageDelete    = _wrapInit(pageDelete);
+    service.pageEditOpen  = _wrapInit(pageEditOpen);
+    service.pageEditClose = _wrapInit(pageEditClose);
 
     // *****************************************************************************
     // Service function definition
-    // *****************************************************************************
-
-    function init(callback) {
-        return Meteor.subscribe('pages', callback);
-    } 
-
     // *****************************************************************************
 
     /**
      * Service function to read a page depending on whether it is a new page,
      * a copied page, an edited page or just a viewed page.
      */
-    function pageRead() {
-        var strPageName = $state.params.copyOf || service.strPageName;
+    function pageRead(argStrPageName, callback) {
+        var strPageName = argStrPageName || $state.params.copyOf || service.strPageName;
         var strTitle, strContent;
 
         // load the page even if it doesn't exist
@@ -75,6 +69,11 @@ function Service($rootScope, $state, $timeout) {
         var isPageExisting = !!service.objPage;
         var isUserSignedIn = !!Meteor.userId();
         var isPageCopy     = !!$state.params.copyOf;
+
+        // console.log(">>> Debug ====================; isEditActive:", isEditActive);
+        // console.log(">>> Debug ====================; isPageExisting:", isPageExisting);
+        // console.log(">>> Debug ====================; isUserSignedIn:", isUserSignedIn);
+        // console.log(">>> Debug ====================; isPageCopy:", isPageCopy);
 
         // If user is singed in and page is copied,
         // use the page to be copied and as a new page.
@@ -121,9 +120,19 @@ function Service($rootScope, $state, $timeout) {
         // Otherwise just load the page.
         else {
             $state.go('page', { page: strPageName }, { notify: false });
-            service.objPageView  = service.objPage;
+            service.objPageView  = {
+                name   : service.objPage.name,
+                title  : service.objPage &&
+                    service.objPage.versions &&
+                    service.objPage.versions[0].title,
+                content: service.objPage &&
+                    service.objPage.versions &&
+                    service.objPage.versions[0].content,
+            };
             service.isEditActive = false;
         }
+
+        return ('function' === typeof callback && callback());
     }
 
     // *****************************************************************************
@@ -137,9 +146,31 @@ function Service($rootScope, $state, $timeout) {
     // Service helper definitions
     // *****************************************************************************
 
+    /**
+     * Helper function to wrap any function accessing the "pages" collection
+     * with the subscription to that collection, which will be done only the
+     * first time. Every second time any function is called, the service is
+     * already initialized and doesn't need a subscription any more.
+     * 
+     * @param  {Function} fun  function to actually be called
+     * @return {Function}      function that replaces the function actually be called;
+     *                         has a callback as argument
+     */
+    function _wrapInit(fun) {
+        return function() {
+            if (service.isInit) {
+                return fun.apply(fun, arguments);
+            }
+            return Meteor.subscribe('pages', function() {
+                service.isInit = true;
+                return fun.apply(fun, arguments);
+            });
+        };
+    }
+
     // *****************************************************************************
 
-    return init() || service;
+    return service;
 
     // *****************************************************************************
 }
