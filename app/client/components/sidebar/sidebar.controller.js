@@ -14,13 +14,13 @@
 
 angular
     .module('amw-controllers')
-    .controller('AmwPageSidebarCtrl', Controller);
+    .controller('AmwSidebarCtrl', Controller);
 
 // *****************************************************************************
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $sce, PageService) {
+function Controller($state, $sce, AuthService, PageService) {
     var vm = this;
 
     // *****************************************************************************
@@ -33,9 +33,30 @@ function Controller($state, $sce, PageService) {
     // Controller function linking
     // *****************************************************************************
 
+    vm.signOut    = signOut;
+    vm.isSignedIn = isSignedIn;
+
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
+
+    /**
+     * Controller function to sign out.
+     */
+    function signOut() {
+        AuthService.signOut();
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller function to test whether user is singed in or not.
+     * 
+     * @return {Boolean}  true if user is signed in
+     */
+    function isSignedIn() {
+        return !!Meteor.userId();
+    }
 
     // *****************************************************************************
     // Controller helper definitions

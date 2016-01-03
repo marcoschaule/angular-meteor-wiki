@@ -76,7 +76,7 @@ function Controller($rootScope, $state, AuthService) {
                 return (vm.objErrs = objErrs);
             }
             vm.strEmail = '';
-            return $state.go('reset-password');
+            return $state.go('resetPassword');
         });
     }
 
@@ -95,7 +95,7 @@ function Controller($rootScope, $state, AuthService) {
                 return (vm.objErrs = objErrs);
             }
             vm.objData = {};
-            return $state.go('reset-password-complete');
+            return $state.go('resetPasswordComplete');
         });
     }
 

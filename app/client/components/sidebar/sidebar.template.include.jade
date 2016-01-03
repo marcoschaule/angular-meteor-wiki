@@ -1,0 +1,82 @@
+#sidebar-header.header(
+        tabindex="-1",
+        role='navigation-header')
+
+    div(data-ng-if="!vm.isSignedIn()")
+        h6 {{ 'navigation.title.Authentication' | translate }}
+        a(tabindex="-1",
+                data-ui-sref="signIn",
+                data-ui-sref-active="active")
+            |{{ 'authentication.title.SignIn' | translate }}
+        span &nbsp;&nbsp;|&nbsp;&nbsp;
+        a(tabindex="-1",
+                data-ui-sref="signUp",
+                data-ui-sref-active="active")
+            |{{ 'authentication.title.SignUp' | translate }}
+    
+    div(data-ng-if="vm.isSignedIn()")
+        h6 &nbsp;
+        span.badge
+            i.fa.fa-lg.fa-user
+        .btn-group
+            button.btn.btn-link.dropdown-toggle(
+                    type='button',
+                    data-toggle='dropdown',
+                    aria-haspopup='true',
+                    aria-expanded='false',
+                    data-popover-placement="bottom",
+                    data-uib-popover="On the Bottom!")
+                span.username oncemac
+                span &nbsp;
+                span.caret
+            ul.dropdown-menu
+                li: a(tabindex="-1",
+                        title="{{ 'navigation.title.Profile' | translate }}",
+                        data-ui-sref="profile"
+                        data-ui-sref-active="active")
+                    |{{ 'navigation.title.Profile' | translate }}
+                li: a(tabindex="-1",
+                        title="{{ 'navigation.title.Help' | translate }}",
+                        data-ui-sref="help"
+                        data-ui-sref-active="active")
+                    |{{ 'navigation.title.Help' | translate }}
+                li.divider(role='separator')
+                li: a(tabindex="-1",
+                        title="{{ 'navigation.title.SignOut' | translate }}",
+                        data-ui-sref="signOut"
+                        data-ui-sref-active="active")
+                    |{{ 'navigation.title.SignOut' | translate }}
+
+//- *****************************************************************************
+
+#sidebar-content(
+        tabindex="-1",
+        role='navigation-content')
+
+    //- h6 {{ 'navigation.title.System' | translate }}
+    //- .hpadding-2rem(data-ng-if="!vm.isSignedIn()")
+    //-     a(tabindex="-1",
+    //-             title="{{ 'navigation.title.SignIn' | translate }}",
+    //-             data-ui-sref="signIn",
+    //-             data-ui-sref-active="active")
+    //-         |{{ 'navigation.title.SignIn' | translate }}
+    //-     br
+    //-     a(tabindex="-1",
+    //-             title="{{ 'navigation.title.SignUp' | translate }}",
+    //-             data-ui-sref="signUp",
+    //-             data-ui-sref-active="active")
+    //-         |{{ 'navigation.title.SignUp' | translate }}
+    //-     br
+    //-     a(tabindex="-1",
+    //-             title="{{ 'navigation.title.ForgotPassword' | translate }}",
+    //-             data-ui-sref="forgotPassword",
+    //-             data-ui-sref-active="active")
+    //-         |{{ 'navigation.title.ForgotPassword' | translate }}
+    //- .vmargin-2rem
+
+    h6 {{ 'navigation.title.Wiki' | translate }}
+    .hpadding-2rem
+        a(href="/wiki/page-list") All pages
+        div(data-ng-bind-html="vm.objPageSidebar.content")
+
+    

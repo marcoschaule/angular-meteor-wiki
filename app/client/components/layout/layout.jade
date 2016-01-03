@@ -9,17 +9,22 @@ body
         main#main.row
 
             //- sidebar
-            nav#sidebar.col-md-3(role='navigation', tabindex='-1')
-                #sidebar-header.header(role='navigation-header')
-                    include client/components/sidebar/sidebar-header.template.include.jade
-                #sidebar-content(role='navigation-content')
-                    div(data-ui-view='sidebar')
+            nav#sidebar.col-md-3(
+                    tabindex='-1',
+                    role='navigation',
+                    data-ng-controller="AmwSidebarCtrl as vm")
+                include client/components/sidebar/sidebar.template.include.jade
 
-            //- article
+            //- header and content
             article#article.col-md-9(role='article', tabindex='-1')
-                header#article-header.header(role='header')
+                header#article-header.header(
+                        tabindex="-1",
+                        role='header',
+                        data-ng-controller="AmwHeaderCtrl as vm")
                     include client/components/header/header.template.include.jade
-                #article-content(role='content')
+                #article-content(
+                        tabindex="-1",
+                        role='content')
                     div(data-ui-view='content')
 
         footer#footer(role='footer')

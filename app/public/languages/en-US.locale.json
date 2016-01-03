@@ -3,6 +3,7 @@
   "header.title.Search"                                        : "Search",
   
   "navigation.title.Common"                                    : "Common navigation",
+  "navigation.title.Authentication"                            : "Authentication",
   "navigation.title.Wiki"                                      : "Wiki navigation",
   "navigation.title.System"                                    : "System",
   "navigation.title.Index"                                     : "Index",

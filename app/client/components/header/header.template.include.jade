@@ -10,5 +10,21 @@
                     i.fa.fa-lg.fa-search
     .col-xs-8.right
         h6 &nbsp;
-        //- h6.upper-title {{ 'header.title.Toolbar' | translate }}
-        div(data-ui-view='header')
+        span(data-ng-if="!vm.flags.isEditActive && vm.flags.isUserSignedIn")
+            button.btn.btn-link(
+                    data-ng-click="vm.pageEditOpen()")
+                i.fa.fa-lg.fa-pencil
+                |&nbsp;
+                |{{ 'common.Edit' | translate }}
+        span(data-ng-if="vm.flags.isUserSignedIn")
+            button.btn.btn-link(
+                    data-ng-click="vm.pageCopy()")
+                i.fa.fa-lg.fa-copy
+                |&nbsp;
+                |{{ 'common.Copy' | translate }}
+            button.btn.btn-link(
+                    data-ng-disabled="vm.isIndexPage || vm.flags.isEditFirst",
+                    data-ng-click="vm.pageDelete()")
+                i.fa.fa-lg.fa-eraser
+                |&nbsp;
+                |{{ 'common.Delete' | translate }}

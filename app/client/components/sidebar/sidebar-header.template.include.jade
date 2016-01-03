@@ -1,30 +1,38 @@
-div(data-ng-controller="AmwSidebarHeaderCtrl as vm", tabindex="-1")
+div(data-ng-if="!vm.isSignedIn()")
+    h6 # System
+    button.btn.btn-link(
+            data-ui-sref="signIn")
+        |{{ 'authentication.title.SignIn' | translate }}
+    span &nbsp;|
+    button.btn.btn-link(
+            data-ui-sref="signUp")
+        |{{ 'authentication.title.SignUp' | translate }}
+div(data-ng-if="vm.isSignedIn()")
     h6 &nbsp;
-    div(data-ng-if="vm.isSignedIn()")
-        span.badge
-            i.fa.fa-lg.fa-user
-        .btn-group
-            button.btn.btn-link.dropdown-toggle(
-                    type='button',
-                    data-toggle='dropdown',
-                    aria-haspopup='true',
-                    aria-expanded='false',
-                    data-popover-placement="bottom",
-                    data-uib-popover="On the Bottom!")
-                span.username oncemac
-                span &nbsp;
-                span.caret
-            ul.dropdown-menu
-                li: a(tabindex="-1",
-                        title="{{ 'navigation.title.Profile' | translate }}",
-                        data-ui-sref="profile")
-                    |{{ 'navigation.title.Profile' | translate }}
-                li: a(tabindex="-1",
-                        title="{{ 'navigation.title.Help' | translate }}",
-                        data-ui-sref="help")
-                    |{{ 'navigation.title.Help' | translate }}
-                li.divider(role='separator')
-                li: a(tabindex="-1",
-                        title="{{ 'navigation.title.SignOut' | translate }}",
-                        data-ui-sref="sign-out")
-                    |{{ 'navigation.title.SignOut' | translate }}
+    span.badge
+        i.fa.fa-lg.fa-user
+    .btn-group
+        button.btn.btn-link.dropdown-toggle(
+                type='button',
+                data-toggle='dropdown',
+                aria-haspopup='true',
+                aria-expanded='false',
+                data-popover-placement="bottom",
+                data-uib-popover="On the Bottom!")
+            span.username oncemac
+            span &nbsp;
+            span.caret
+        ul.dropdown-menu
+            li: a(tabindex="-1",
+                    title="{{ 'navigation.title.Profile' | translate }}",
+                    data-ui-sref="profile")
+                |{{ 'navigation.title.Profile' | translate }}
+            li: a(tabindex="-1",
+                    title="{{ 'navigation.title.Help' | translate }}",
+                    data-ui-sref="help")
+                |{{ 'navigation.title.Help' | translate }}
+            li.divider(role='separator')
+            li: a(tabindex="-1",
+                    title="{{ 'navigation.title.SignOut' | translate }}",
+                    data-ui-sref="signOut")
+                |{{ 'navigation.title.SignOut' | translate }}

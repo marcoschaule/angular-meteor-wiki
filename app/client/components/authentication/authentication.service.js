@@ -139,7 +139,7 @@ function Service($rootScope, $state) {
      */
     function signOut(callback) {
         Meteor.logout(function(err) {
-            $state.go('home');
+            $state.go('page', { page: 'index' });
             return ('function' === typeof callback && callback());
         });
     }

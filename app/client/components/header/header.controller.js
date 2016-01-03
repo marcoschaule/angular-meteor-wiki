@@ -14,7 +14,7 @@
 
 angular
     .module('amw-controllers')
-    .controller('AmwPageToolbarCtrl', Controller);
+    .controller('AmwHeaderCtrl', Controller);
 
 // *****************************************************************************
 // Controller definition function
@@ -34,12 +34,34 @@ function Controller($state, $modal, PageService) {
     // Controller function linking
     // *****************************************************************************
 
+    vm.signOut      = signOut;
+    vm.isSignedIn   = isSignedIn;
     vm.pageEditOpen = pageEditOpen;
     vm.pageCopy     = pageCopy;
     vm.pageDelete   = pageDelete;
 
     // *****************************************************************************
     // Controller function definition
+    // *****************************************************************************
+
+    /**
+     * Controller function to sign out.
+     */
+    function signOut() {
+        AuthService.signOut();
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller function to test whether user is singed in or not.
+     * 
+     * @return {Boolean}  true if user is signed in
+     */
+    function isSignedIn() {
+        return !!Meteor.userId();
+    }
+    
     // *****************************************************************************
 
     /**

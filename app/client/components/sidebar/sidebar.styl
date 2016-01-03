@@ -8,18 +8,25 @@
 // Sidebar
 // *****************************************************************************
 
+#sidebar a
+    display inline
+    text-align left
+#sidebar a.active
+    color $colorWhite
+
 #sidebar-header, #article-header
     border-bottom 1px solid #434857
     margin-bottom 2*$paddingDefault
     min-height 8rem
 #sidebar-header
     padding-left 2rem
-    .badge
-        border-radius 100px
-        background-color $colorBackground2
-        padding 1rem
-    .username
-        font-size 1.6rem
+#sidebar-header .badge
+    border-radius 100px
+    background-color $colorBackground2
+    padding 1rem
+#sidebar-header .username
+    font-size 1.6rem
+
 #sidebar-content h6
     margin 0
     padding 0 2rem
@@ -45,5 +52,4 @@
 #sidebar-content .btn-primary:not(.btn-link):not(.btn-flat).active:hover
     background-color $colorPrimaryHoverBg !important
     color $colorPrimaryHoverFg !important
-#sidebar-content a.active
-    color $colorWhite
+    

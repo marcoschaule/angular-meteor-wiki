@@ -10,16 +10,17 @@ angular
         $locationProvider.html5Mode(true);
 
         $stateProvider
-            // .state('home',                    getStateObjectHome())
-            .state('help',                    getStateObjectHelp())
-            .state('profile',                 getStateObjectProfile())
-            .state('sign-in',                 getStateObjectSignIn())
-            .state('sign-up',                 getStateObjectSignUp())
-            .state('sign-out',                getStateObjectSignOut())
-            .state('forgot-password',         getStateObjectResetPassword('forgot'))
-            .state('reset-password',          getStateObjectResetPassword('reset'))
-            .state('reset-password-complete', getStateObjectResetPassword('complete'))
-            .state('page',                    getStateObjectPage())
+            // .state('home',                  getStateObjectHome())
+            .state('help',                  getStateObjectHelp())
+            .state('profile',               getStateObjectProfile())
+            .state('signIn',                getStateObjectSignIn())
+            .state('signUp',                getStateObjectSignUp())
+            .state('signOut',               getStateObjectSignOut())
+            .state('forgotPassword',        getStateObjectResetPassword('forgot'))
+            .state('resetPassword',         getStateObjectResetPassword('reset'))
+            .state('resetPasswordComplete', getStateObjectResetPassword('complete'))
+            .state('page',                  getStateObjectPage())
+            .state('pageList',              getStateObjectPage())
             ;
 
         $urlRouterProvider.otherwise('/');
@@ -93,14 +94,6 @@ function getStateObjectPage() {
     var objState = {
         url  : '/:page?edit&copyOf',
         views: {
-            header: {
-                templateUrl: 'client/components/pages/page-toolbar.template.html',
-                controller : 'AmwPageToolbarCtrl as vm',
-            },
-            sidebar: {
-                templateUrl: 'client/components/pages/page-sidebar.template.html',
-                controller : 'AmwPageSidebarCtrl as vm',
-            },
             content: {
                 templateUrl: 'page.template.html',
                 controller : 'AmwPageCtrl as vm',
@@ -121,14 +114,6 @@ function getStateObjectWikiPageList() {
     var objState = {
         url  : '/wiki/page-list',
         views: {
-            header: {
-                templateUrl: 'client/components/pages/page-list-toolbar.template.html',
-                controller : 'AmwPageListToolbarCtrl as vm',
-            },
-            sidebar: {
-                templateUrl: 'client/components/pages/page-sidebar.template.html',
-                controller : 'AmwPageSidebarCtrl as vm',
-            },
             content: {
                 templateUrl: 'page-list.template.html',
                 controller : 'AmwPageListCtrl as vm',
@@ -187,7 +172,7 @@ function getStateObjectSignUp() {
  */
 function getStateObjectSignOut() {
     return {
-        url: 'sign-out',
+        url: '/sign-out',
         views: {
             content: {
                 controller: 'AmwSignOutCtrl as vm',
@@ -240,13 +225,6 @@ function _extendWithStaticViews(objState) {
     if (!objState.views) {
         objState.views = {};
     }
-    objState.views.header = {
-        templateUrl: 'client/components/header/header-static.template.html',
-    };
-    objState.views.sidebar = {
-        templateUrl: 'client/components/sidebar/sidebar-content.template.html',
-        controller : 'AmwSidebarContentCtrl as vm',
-    };
     return objState;
 }
 
