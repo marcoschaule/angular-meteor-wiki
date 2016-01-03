@@ -28,8 +28,6 @@ function Controller($state, $sce, PageService) {
     // *****************************************************************************
 
     vm.objPageSidebar = null;
-    vm.strPageName    = $state.params.page || 'index';
-    vm.isIndexPage    = !$state.params.page || 'index' === $state.params.page;
 
     // *****************************************************************************
     // Controller function linking
@@ -50,7 +48,9 @@ function Controller($state, $sce, PageService) {
      * @param {String} strContent  string of content including active link
      */
     function _setCurrentLinkActive(strContent) {
-        var strPageUrl     = vm.isIndexPage ? '/' : vm.strPageName;
+        var strPageName    = $state.params.page || 'index';
+        var isIndexPage    = !$state.params.page || 'index' === $state.params.page;
+        var strPageUrl     = isIndexPage ? '/' : strPageName;
         var objContent     = $('<div>' + strContent + '</div>');
         var regexLinkView  = new RegExp(strPageUrl + '$');
         var regexLinkEdit  = new RegExp(strPageUrl + '\\?edit=true$');

@@ -27,6 +27,9 @@ function Controller($state, $modal, PageService) {
     // Public variables
     // *****************************************************************************
 
+    vm.flags                = PageService.flags;
+    vm.flags.isUserSignedIn = !!Meteor.userId();
+
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************

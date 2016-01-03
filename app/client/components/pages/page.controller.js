@@ -29,8 +29,7 @@ function Controller($scope, $state, $sce, PageService) {
 
     vm.objPageView   = null;
     vm.objPageEdit   = null;
-    vm.isEditActive  = PageService.isEditActive;
-    vm.isEditFirst   = PageService.isEditFirst;
+    vm.flags         = PageService.flags;
     vm.editorOptions = {
         lineNumbers : true,
         mode        : 'markdown',
@@ -85,8 +84,6 @@ function Controller($scope, $state, $sce, PageService) {
             if (objResult.objPageEdit) {
                 vm.objPageEdit = objResult.objPageEdit;
             }
-            vm.isEditActive = objResult.isEditActive;
-            vm.isEditFirst  = objResult.isEditFirst;
         });
     } _init();
 

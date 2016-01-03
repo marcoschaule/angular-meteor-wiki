@@ -1,10 +1,10 @@
 
-div(data-ng-if="!vm.isEditActive")
+div(data-ng-if="!vm.flags.isEditActive")
     h6 {{ vm.objPageView.title }}
     //- h2(data-ng-bind="vm.objPageView.title")
     div(data-ng-bind-html="vm.objPageView.content")
 
-div(data-ng-if="vm.isEditActive")
+div(data-ng-if="vm.flags.isEditActive")
     h6 {{ vm.objPageEdit.title }}
     h2 {{ 'pages.EditPage' | translate }}
     form(name="formPageEdit")
@@ -37,7 +37,7 @@ div(data-ng-if="vm.isEditActive")
                     i.fa.fa-lg.fa-floppy-o
                     |&nbsp;
                     |{{ 'common.SaveAndReturn' | translate }}
-            span(data-ng-if="!vm.isFirstEdit")
+            span(data-ng-if="!vm.flags.isFirstEdit")
                 button.btn.btn-danger
                     i.fa.fa-lg.fa-undo
                     |&nbsp;

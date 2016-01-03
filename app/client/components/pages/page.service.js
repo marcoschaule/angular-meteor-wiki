@@ -37,7 +37,10 @@ function Service($rootScope, $state, $q, $location) {
     // Service variables
     // *****************************************************************************
 
-    service.isInit = false;
+    service.flags              = {};
+    service.flags.isInit       = false;
+    service.flags.isEditActive = false;
+    service.flags.isEditFirst  = false;
 
     // *****************************************************************************
     // Service function linking
@@ -109,8 +112,8 @@ function Service($rootScope, $state, $q, $location) {
             };
 
             strPageName  = strPageName;
-            isEditFirst  = isPageCopy;
             isEditActive = true;
+            isEditFirst  = isPageCopy;
         }
 
         // If user is singed in and requested page (copy or edit)
@@ -125,8 +128,8 @@ function Service($rootScope, $state, $q, $location) {
                 title  : _.parseTitle(strPageName),
                 content: '',
             };
-            isEditFirst  = true;
             isEditActive = true;
+            isEditFirst  = true;
         }
 
         // Otherwise just load the page.
@@ -146,6 +149,9 @@ function Service($rootScope, $state, $q, $location) {
             };
             isEditActive = false;
         }
+
+        service.flags.isEditActive = isEditActive;
+        service.flags.isEditFirst  = isEditFirst;
 
         // result to be returned
         objResult = {
@@ -261,7 +267,7 @@ function Service($rootScope, $state, $q, $location) {
         _deferred = $q.defer();
 
         Meteor.subscribe('pages', function() {
-            service.isInit = true;
+            service.flags.isInit = true;
             return _deferred.resolve();
         });
 
@@ -284,7 +290,7 @@ function Service($rootScope, $state, $q, $location) {
 
             // If service is already initialized,
             // call given function immediately.
-            if (service.isInit) {
+            if (service.flags.isInit) {
                 return fun.apply(fun, _arguments);
             }
 
