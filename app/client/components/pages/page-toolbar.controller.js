@@ -20,57 +20,48 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $rootScope, $modal) {
+function Controller($state, $modal, PageService) {
     var vm = this;
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.strPageName = $state.params.page || 'index';
-    vm.isEditable  = false;
-    vm.isIndexPage = !$state.params.page;
-    vm.isFirstEdit = $rootScope.isFirstEdit;
-
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.init       = init;
-    vm.editPage   = editPage;
-    vm.copyPage   = copyPage;
-    vm.deletePage = deletePage;
+    vm.pageEditOpen = pageEditOpen;
+    vm.pageCopy     = pageCopy;
+    vm.pageDelete   = pageDelete;
 
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
 
     /**
-     * Service method to initialize controller. Is called immediately or can
-     * be called from within controller.
+     * Controller function to open the page's edit mode.
      */
-    function init() {
-    } init();
-
-    // *****************************************************************************
-
-    function editPage() {
-        $state.go('page', { page: vm.strPageName, edit: true });
+    function pageEditOpen() {
+        PageService.pageEditOpen();
     }
 
     // *****************************************************************************
 
-    function copyPage() {
-        $state.go('page', { page: vm.strPageName + '-copy', copyOf: vm.strPageName, edit: true });
+    /**
+     * Controller function to copy a page.
+     */
+    function pageCopy() {
+        PageService.pageCopy();
     }
 
     // *****************************************************************************
 
-    function deletePage() {
-        _confirmDeletePage(function() {
-            Meteor.call('pagesDeleteOne', { name: vm.strPageName });
-            $state.go('page', { page: vm.strPageName, edit: true });
-        });
+    /**
+     * Controller method to delete a page (including all versions).
+     */
+    function pageDelete() {
+        _confirmDeletePage(PageService.pageDelete);
     }
 
     // *****************************************************************************

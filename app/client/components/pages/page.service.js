@@ -46,8 +46,9 @@ function Service($rootScope, $state, $q, $location) {
     service.pageRead      = _wrapInit(pageRead);
     service.pageUpdate    = _wrapInit(pageUpdate);
     service.pageDelete    = _wrapInit(pageDelete);
-    service.pageEditOpen  = _wrapInit(pageEditOpen);
-    service.pageEditClose = _wrapInit(pageEditClose);
+    service.pageCopy      = pageCopy;
+    service.pageEditOpen  = pageEditOpen;
+    service.pageEditClose = pageEditClose;
 
     // *****************************************************************************
     // Service function definition
@@ -146,6 +147,7 @@ function Service($rootScope, $state, $q, $location) {
             isEditActive = false;
         }
 
+        // result to be returned
         objResult = {
             objPageView : objPageView,
             objPageEdit : objPageEdit,
@@ -153,15 +155,90 @@ function Service($rootScope, $state, $q, $location) {
             isEditFirst : isEditFirst,
         };
 
-        return ('function' === typeof callback && callback(null, objResult));
+        return (_.isFunction(callback) && callback(null, objResult));
     }
 
     // *****************************************************************************
 
-    function pageUpdate() {}
-    function pageDelete() {}
-    function pageEditOpen() {}
-    function pageEditClose() {}
+    /**
+     * Service function to update a page.
+     * 
+     * @param {Boolean} isEditDisabled  true if after updating the "edit" mode is deactivated
+     */
+    function pageUpdate(objUpdate, isEditDisabled) {
+
+        // call defined create or update function
+        Meteor.call('pagesCreateOrUpdateOne', { name: $state.params.page }, objUpdate);
+        
+        // If "edit" state needs to be canceled, cancel page editing. 
+        if (isEditDisabled) {
+            return pageEditClose();
+        }
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to delete a page (including all versions).
+     */
+    function pageDelete() {
+
+        // call defined delete method
+        Meteor.call('pagesDeleteOne', { name: $state.params.page });
+        
+        $state.go(
+                // state name to go to
+                'page',
+                // query params
+                { page: $state.params.page, edit: true },
+                // options
+                {});
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to copy a page to a new page.
+     */
+    function pageCopy() {
+        $state.go(
+                // state name to go to
+                'page',
+                // query params
+                { page: $state.params.page + '-copy', copyOf: $state.params.page, edit: true },
+                // options
+                {});
+    }
+
+    // *****************************************************************************
+    
+    /**
+     * Service function to open the page edit mode.
+     */
+    function pageEditOpen() {
+        $state.go(
+                // state name to go to
+                'page',
+                // query params
+                { page: $state.params.page, edit: true, first: null }, 
+                // options
+                {});
+    }
+
+    // *****************************************************************************
+    
+    /**
+     * Service function to cancel or close page editing. Forces page to reload.
+     */
+    function pageEditClose() {
+        $state.go(
+                // state name to go to
+                'page',
+                // query params
+                { page: $state.params.page, edit: null, first: null },
+                // options
+                { reload: true });
+    }
 
     // *****************************************************************************
     // Service helper definitions

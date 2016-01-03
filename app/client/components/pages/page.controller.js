@@ -29,8 +29,8 @@ function Controller($scope, $state, $sce, PageService) {
 
     vm.objPageView   = null;
     vm.objPageEdit   = null;
-    vm.isEditActive  = null;
-    vm.isEditFirst   = null;
+    vm.isEditActive  = PageService.isEditActive;
+    vm.isEditFirst   = PageService.isEditFirst;
     vm.editorOptions = {
         lineNumbers : true,
         mode        : 'markdown',
@@ -41,19 +41,40 @@ function Controller($scope, $state, $sce, PageService) {
     // Controller function linking
     // *****************************************************************************
 
-    vm.init       = init;
-    vm.updatePage = updatePage;
-    vm.cancelPage = cancelPage;
+    vm.pageUpdate    = pageUpdate;
+    vm.pageEditClose = pageEditClose;
 
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
 
     /**
-     * Service method to initialize controller. Is called immediately or can
-     * be called from within controller.
+     * Controller function to update a edited page.
+     * 
+     * @param  {Boolean} isEditDisabled  true if after editing edit mode should be deactivated
      */
-    function init() {
+    function pageUpdate(isEditDisabled) {
+        return PageService.pageUpdate(vm.objPageEdit, isEditDisabled);
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller function to close page's edit mode.
+     */
+    function pageEditClose() {
+        return PageService.pageEditClose();
+    }
+
+    // *****************************************************************************
+    // Controller helper definitions
+    // *****************************************************************************
+
+    /**
+     * Helper function to initialize controller. 
+     * This function is invoked immediately.
+     */
+    function _init() {
         return PageService.pageRead(function callback(objErr, objResult) {
             if (objResult.objPageView) {
                 vm.objPageView = {
@@ -64,51 +85,10 @@ function Controller($scope, $state, $sce, PageService) {
             if (objResult.objPageEdit) {
                 vm.objPageEdit = objResult.objPageEdit;
             }
-
             vm.isEditActive = objResult.isEditActive;
             vm.isEditFirst  = objResult.isEditFirst;
         });
-    } init();
-
-    // *****************************************************************************
-
-    function updatePage(isEditableCanceled) {
-        
-        // If page document does not exist in database, yet, create it.
-        if (!vm.objPage || !vm.objPage.name) {
-            Meteor.call('pagesCreateOne', vm.objPageEdit);
-        } 
-
-        // If page document exists, update it (by adding another entry to "versions"). 
-        else {
-            Meteor.call('pagesUpdateOne', { name: vm.objPage.name }, vm.objPageEdit);
-        }
-
-        // If "edit" state needs to be canceled, cancel page editing. 
-        if (isEditableCanceled) {
-            return cancelPage();
-        }
-        
-        vm.isEditable  = !isEditableCanceled;
-        vm.isFirstEdit = false;
-        
-        _readPage();
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Controller function to cancel page editing.
-     */
-    function cancelPage() {
-        $state.go('page', { page: vm.strPageName, edit: null, first: null }, { reload: true });
-    }
-
-    // *****************************************************************************
-    // Controller helper definitions
-    // *****************************************************************************
-
-    
+    } _init();
 
     // *****************************************************************************
 }

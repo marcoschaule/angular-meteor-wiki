@@ -28,12 +28,12 @@ div(data-ng-if="vm.isEditActive")
         fieldset
             span
                 button.btn.btn-success(
-                        data-ng-click="vm.updatePage()")
+                        data-ng-click="vm.pageUpdate()")
                     i.fa.fa-lg.fa-floppy-o
                     |&nbsp;
                     |{{ 'common.Save' | translate }}
                 button.btn.btn-success(
-                        data-ng-click="vm.updatePage(true)")
+                        data-ng-click="vm.pageUpdate(true)")
                     i.fa.fa-lg.fa-floppy-o
                     |&nbsp;
                     |{{ 'common.SaveAndReturn' | translate }}
@@ -43,7 +43,7 @@ div(data-ng-if="vm.isEditActive")
                     |&nbsp;
                     |{{ 'common.Reset' | translate }}
                 button.btn.btn-warning(
-                        data-ng-click="vm.cancelPage()")
+                        data-ng-click="vm.pageEditClose()")
                     i.fa.fa-lg.fa-ban
                     |&nbsp;
                     |{{ 'common.Cancel' | translate }}

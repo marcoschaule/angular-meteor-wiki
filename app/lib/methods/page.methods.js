@@ -18,6 +18,38 @@ pagesReadOne: function(objFind) {
 // ********************************************************************************
 
 /**
+ * Method to create or update a given page.
+ * 
+ * @param  {Object} objFind    object to find a page
+ * @param  {Object} objUpdate  object to the found page
+ * @return {Object}            object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
+ */
+pagesCreateOrUpdateOne: function(objFind, objUpdate) {
+    var objUpdateElement = {
+        changedBy    : Meteor.userId(),
+        changedAt    : new Date(),
+        title        : objUpdate.title,
+        content      : objUpdate.content,
+        parser       : objUpdate.parser || 'markdown',
+    };
+    var objUpdateFull = {
+        $set: {
+            isPrivate  : !!objUpdate.isPrivate,
+            isPublished: !!objUpdate.isPublished,
+        },
+        $push: {
+            versions: {
+                $each    : [ objUpdateElement ],
+                $position: 0,
+            },
+        },
+    };
+    return Pages.update(objFind, objUpdateFull, { upsert: true });
+},
+
+// ********************************************************************************
+
+/**
  * Method to create one page by create object.
  * 
  * @param  {Object} objCreate  object to create a page

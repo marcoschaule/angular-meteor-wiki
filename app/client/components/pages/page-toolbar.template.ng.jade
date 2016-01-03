@@ -1,22 +1,22 @@
 div(data-ng-if="!vm.isEditable")
     button.btn.btn-link(
-            data-ng-click="vm.editPage()")
+            data-ng-click="vm.pageEditOpen()")
         i.fa.fa-lg.fa-pencil
         |&nbsp;
         |{{ 'common.Edit' | translate }}
     button.btn.btn-link(
-            data-ng-click="vm.copyPage()")
+            data-ng-click="vm.pageCopy()")
         i.fa.fa-lg.fa-copy
         |&nbsp;
         |{{ 'common.Copy' | translate }}
     button.btn.btn-link(
             data-ng-disabled="vm.isIndexPage || vm.isFirstEdit",
-            data-ng-click="vm.deletePage()")
+            data-ng-click="vm.pageDelete()")
         i.fa.fa-lg.fa-eraser
         |&nbsp;
         |{{ 'common.Delete' | translate }}
 
-div(data-ng-if="vm.isEditable")
-    button.btn.btn-primary(
-            data-ng-click="vm.updatePage()")
-        i.fa.fa-lg.fa-floppy-o
+//- div(data-ng-if="vm.isEditable")
+//-     button.btn.btn-primary(
+//-             data-ng-click="vm.updatePage()")
+//-         i.fa.fa-lg.fa-floppy-o
