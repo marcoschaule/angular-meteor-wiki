@@ -118,8 +118,8 @@ pagesUpdateOne: function(objFind, objUpdate) {
  * @param  {Object} objFind  object to find a page
  * @return {Object}          object of write result like "{ nRemoved: 4 }"
  */
-pagesDeleteOne: function(objFind) {
-    return Pages.remove(objFind);
+pagesDeleteOne: function(objFind, callback) {
+    return Pages.remove(objFind, callback);
 },
 
 // ********************************************************************************

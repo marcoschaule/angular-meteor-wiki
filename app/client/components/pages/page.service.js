@@ -49,6 +49,7 @@ function Service($rootScope, $state, $q, $location) {
     service.pageRead      = _wrapInit(pageRead);
     service.pageUpdate    = _wrapInit(pageUpdate);
     service.pageDelete    = _wrapInit(pageDelete);
+    service.pageReset     = pageReset;
     service.pageCopy      = pageCopy;
     service.pageEditOpen  = pageEditOpen;
     service.pageEditClose = pageEditClose;
@@ -73,11 +74,6 @@ function Service($rootScope, $state, $q, $location) {
         var isEditActive = !!$state.params.edit || false;
         var strTitle, strContent, objPage, objPageEdit, objPageView, objResult;
 
-        if ('sidebar' === arguments[arguments.length - 2]) {
-            isEditActive = false;
-            isEditFirst  = false;
-        }
-
         // load the page even if it doesn't exist
         objPage = Pages.findOne({ name: strPageName });
 
@@ -87,13 +83,27 @@ function Service($rootScope, $state, $q, $location) {
         var isPageExisting = !!objPage;
         var isEditFirst    = false;
 
+        if ('sidebar' === arguments[arguments.length - 2]) {
+            isEditActive = false;
+            isEditFirst  = false;
+            isPageCopy   = false;
+        }
+
+        // if ('sidebar' !== strPageName) {
+        //     console.log(">>> Debug ====================; isEditActive:", isEditActive);
+        //     console.log(">>> Debug ====================; isPageCopy:", isPageCopy);
+        //     console.log(">>> Debug ====================; isUserSignedIn:", isUserSignedIn);
+        //     console.log(">>> Debug ====================; isPageExisting:", isPageExisting);
+        //     console.log(">>> Debug ====================; isEditFirst:", isEditFirst);
+        // }
+
         // If user is singed in and page is copied,
         // use the page to be copied and as a new page.
         // Or:
         // If user is singed in and page is edited,
         // use the existing page for editing and updating.
         if ((isUserSignedIn && isPageCopy) || 
-                (isUserSignedIn && isEditActive)) {
+                (isUserSignedIn && isEditActive && isPageExisting)) {
 
             strTitle = !isPageCopy && 
                     objPage &&
@@ -119,10 +129,7 @@ function Service($rootScope, $state, $q, $location) {
         // If user is singed in and requested page (copy or edit)
         // does not exist, create a new page to be created.
         else if (isUserSignedIn && !isPageExisting) {
-
-            // set "edit" query param since it is edit mode
-            // $location.path('/' + strPageName).search({ edit: 'true' });
-
+            
             objPageEdit = {
                 name   : strPageName,
                 title  : _.parseTitle(strPageName),
@@ -134,10 +141,7 @@ function Service($rootScope, $state, $q, $location) {
 
         // Otherwise just load the page.
         else {
-
-            // replace every query param since it is only view mode
-            // $location.path('/' + strPageName).search({});
-
+            
             objPageView = {
                 name   : objPage.name,
                 title  : objPage &&
@@ -175,6 +179,10 @@ function Service($rootScope, $state, $q, $location) {
 
         // call defined create or update function
         Meteor.call('pagesCreateOrUpdateOne', { name: $state.params.page }, objUpdate);
+
+        // change flags
+        service.flags.isEditActive = !isEditDisabled;
+        service.flags.isEditFirst  = false;
         
         // If "edit" state needs to be canceled, cancel page editing. 
         if (isEditDisabled) {
@@ -190,15 +198,30 @@ function Service($rootScope, $state, $q, $location) {
     function pageDelete() {
 
         // call defined delete method
-        Meteor.call('pagesDeleteOne', { name: $state.params.page });
-        
+        Meteor.call('pagesDeleteOne', { name: $state.params.page }, function() {
+            $state.go(
+                    // state name to go to
+                    'page',
+                    // query params
+                    { page: $state.params.page, edit: true },
+                    // options
+                    { reload: true });
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to reset a changed page.
+     */
+    function pageReset() {
         $state.go(
                 // state name to go to
                 'page',
                 // query params
-                { page: $state.params.page, edit: true },
+                { page: $state.params.page, edit: $state.params.page },
                 // options
-                {});
+                { reload: true });
     }
 
     // *****************************************************************************
@@ -226,7 +249,7 @@ function Service($rootScope, $state, $q, $location) {
                 // state name to go to
                 'page',
                 // query params
-                { page: $state.params.page, edit: true, first: null }, 
+                { page: $state.params.page, edit: true }, 
                 // options
                 {});
     }

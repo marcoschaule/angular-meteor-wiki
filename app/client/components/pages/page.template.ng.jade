@@ -7,7 +7,7 @@ div(data-ng-if="!vm.flags.isEditActive")
 div(data-ng-if="vm.flags.isEditActive")
     h6 {{ vm.objPageEdit.title }}
     h2 {{ 'pages.EditPage' | translate }}
-    form(name="formPageEdit")
+    form(name="vm.formPageEdit")
         fieldset
             label(for="page-edit-title")
                 |{{ 'pages.Title' | translate }}
@@ -26,24 +26,27 @@ div(data-ng-if="vm.flags.isEditActive")
                     data-ui-codemirror,
                     data-ui-codemirror-opts="vm.editorOptions")
         fieldset
-            span
-                button.btn.btn-success(
-                        data-ng-click="vm.pageUpdate()")
-                    i.fa.fa-lg.fa-floppy-o
-                    |&nbsp;
-                    |{{ 'common.Save' | translate }}
-                button.btn.btn-success(
-                        data-ng-click="vm.pageUpdate(true)")
-                    i.fa.fa-lg.fa-floppy-o
-                    |&nbsp;
-                    |{{ 'common.SaveAndReturn' | translate }}
-            span(data-ng-if="!vm.flags.isFirstEdit")
-                button.btn.btn-danger
-                    i.fa.fa-lg.fa-undo
-                    |&nbsp;
-                    |{{ 'common.Reset' | translate }}
-                button.btn.btn-warning(
-                        data-ng-click="vm.pageEditClose()")
-                    i.fa.fa-lg.fa-ban
-                    |&nbsp;
-                    |{{ 'common.Cancel' | translate }}
+            button.btn.btn-success(
+                    data-ng-disabled="vm.formPageEdit.$pristine",
+                    data-ng-click="vm.pageUpdate()")
+                i.fa.fa-lg.fa-floppy-o
+                |&nbsp;
+                |{{ 'common.Save' | translate }}
+            button.btn.btn-success(
+                    data-ng-disabled="vm.formPageEdit.$pristine",
+                    data-ng-click="vm.pageUpdate(true)")
+                i.fa.fa-lg.fa-floppy-o
+                |&nbsp;
+                |{{ 'common.SaveAndReturn' | translate }}
+            button.btn.btn-danger(
+                    data-ng-disabled="vm.formPageEdit.$pristine",
+                    data-ng-click="vm.pageReset()")
+                i.fa.fa-lg.fa-undo
+                |&nbsp;
+                |{{ 'common.Reset' | translate }}
+            button.btn.btn-warning(
+                    data-ng-disabled="vm.flags.isEditFirst",
+                    data-ng-click="vm.pageEditClose()")
+                i.fa.fa-lg.fa-ban
+                |&nbsp;
+                |{{ 'common.Cancel' | translate }}

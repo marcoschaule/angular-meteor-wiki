@@ -41,6 +41,7 @@ function Controller($scope, $state, $sce, PageService) {
     // *****************************************************************************
 
     vm.pageUpdate    = pageUpdate;
+    vm.pageReset     = pageReset;
     vm.pageEditClose = pageEditClose;
 
     // *****************************************************************************
@@ -54,6 +55,17 @@ function Controller($scope, $state, $sce, PageService) {
      */
     function pageUpdate(isEditDisabled) {
         return PageService.pageUpdate(vm.objPageEdit, isEditDisabled);
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller function to reset the dirty form.
+     */
+    function pageReset() {
+        if (vm.formPageEdit.$dirty) {
+            PageService.pageReset();
+        }
     }
 
     // *****************************************************************************
