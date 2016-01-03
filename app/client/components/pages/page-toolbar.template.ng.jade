@@ -4,20 +4,15 @@ span(data-ng-if="!vm.flags.isEditActive && vm.flags.isUserSignedIn")
         i.fa.fa-lg.fa-pencil
         |&nbsp;
         |{{ 'common.Edit' | translate }}
+span(data-ng-if="vm.flags.isUserSignedIn")
     button.btn.btn-link(
             data-ng-click="vm.pageCopy()")
         i.fa.fa-lg.fa-copy
         |&nbsp;
         |{{ 'common.Copy' | translate }}
-span(data-ng-if="vm.flags.isUserSignedIn")
     button.btn.btn-link(
             data-ng-disabled="vm.isIndexPage || vm.flags.isEditFirst",
             data-ng-click="vm.pageDelete()")
         i.fa.fa-lg.fa-eraser
         |&nbsp;
         |{{ 'common.Delete' | translate }}
-
-//- div(data-ng-if="vm.isEditable")
-//-     button.btn.btn-primary(
-//-             data-ng-click="vm.updatePage()")
-//-         i.fa.fa-lg.fa-floppy-o
