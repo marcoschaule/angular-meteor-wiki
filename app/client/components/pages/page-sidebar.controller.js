@@ -20,50 +20,35 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $sce) {
+function Controller($state, $sce, PageService) {
     var vm = this;
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
+    vm.objPageSidebar = null;
     vm.strPageName    = $state.params.page || 'index';
-    vm.objPageSidebar = {};
     vm.isIndexPage    = !$state.params.page || 'index' === $state.params.page;
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.init = init;
-
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
-
-    /**
-     * Service method to initialize controller. Is called immediately or can
-     * be called from within controller.
-     */
-    function init() {
-        
-
-        Meteor.subscribe('pages', function() {
-            var objPageSidebar = Pages.findOne({ name: 'sidebar' });
-
-            if (objPageSidebar) {
-                vm.objPageSidebar = {
-                    title  : objPageSidebar.versions[0].title,
-                    content: _setCurrentLinkActive(marked(objPageSidebar.versions[0].content)),
-                };
-            }
-        });
-    } init();
 
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
 
+    /**
+     * Helper function to set active the current
+     * link in the sidebar page content.
+     * 
+     * @param {String} strContent  string of content including active link
+     */
     function _setCurrentLinkActive(strContent) {
         var strPageUrl     = vm.isIndexPage ? '/' : vm.strPageName;
         var objContent     = $('<div>' + strContent + '</div>');
@@ -86,6 +71,23 @@ function Controller($state, $sce) {
 
         return objContent.html();
     }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to initialize controller. Is called immediately or can
+     * be called from within controller.
+     */
+    function _init() {
+        return PageService.pageRead('sidebar', function callback(objErr, objResult) {
+            if (objResult && objResult.objPageView) {
+                vm.objPageSidebar = {
+                    title  : objResult.objPageView.title,
+                    content: _setCurrentLinkActive(marked(objResult.objPageView.content)),
+                };
+            }
+        });
+    } _init();
 
     // *****************************************************************************
 }

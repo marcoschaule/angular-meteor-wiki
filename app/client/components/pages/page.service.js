@@ -1,7 +1,7 @@
 /**
  * @name        PageService
  * @author      Marco Schaule <marco.schaule@net-designer.net>
- * @file        This file is an AngularJS service.
+ * @file        This file is an AngularJS 
  * 
  * @copyright   (c) 2015  net-designer.net, Marco Schaule <marco.schaule@net-designer.net>
  * @license     https://github.com/OnceMac/net-designer.net/blob/master/LICENSE
@@ -24,20 +24,20 @@ angular
 // Service object
 // *****************************************************************************
 
-function Service($rootScope, $state, $timeout) {
+function Service($rootScope, $state, $q, $location, $timeout) {
     var service = {};
 
     // *****************************************************************************
-    // Public variables
+    // Private variables
     // *****************************************************************************
 
-    service.strPageName  = $state.params.page || 'index';
-    service.objPage      = null;
-    service.objPageView  = null;
-    service.objPageEdit  = null;
-    service.isEditActive = !!$state.params.edit;
-    service.isEditFirst  = false;
-    service.isInit       = false;
+    var _deferred = null;
+
+    // *****************************************************************************
+    // Service variables
+    // *****************************************************************************
+
+    service.isInit = false;
 
     // *****************************************************************************
     // Service function linking
@@ -56,24 +56,32 @@ function Service($rootScope, $state, $timeout) {
     /**
      * Service function to read a page depending on whether it is a new page,
      * a copied page, an edited page or just a viewed page.
+     *
+     *
+     * @param  {String}   [strPageName]  (optional) string of the current page name
+     * @param  {Boolean}  [strPageName]  (optional) true if page is used in edit mode
+     * @param  {Function} [callback]     (optional) function for callback
+     * @return {Object}                  object of result
      */
-    function pageRead(argStrPageName, callback) {
-        var strPageName = argStrPageName || $state.params.copyOf || service.strPageName;
-        var strTitle, strContent;
+    function pageRead() {
+        var callback     = arguments[arguments.length - 1] || null;
+        var strPageName  = arguments[arguments.length - 2] || $state.params.copyOf || $state.params.page || 'index';
+        var isEditActive = !!$state.params.edit || false;
+        var strTitle, strContent, objPage, objPageEdit, objPageView, objResult;
+
+        if ('sidebar' === arguments[arguments.length - 2]) {
+            isEditActive = false;
+            isEditFirst  = false;
+        }
 
         // load the page even if it doesn't exist
-        service.objPage = Pages.findOne({ name: strPageName });
+        objPage = Pages.findOne({ name: strPageName });
 
         // flags to determine what happens next
-        var isEditActive   = !!service.isEditActive;
-        var isPageExisting = !!service.objPage;
-        var isUserSignedIn = !!Meteor.userId();
         var isPageCopy     = !!$state.params.copyOf;
-
-        // console.log(">>> Debug ====================; isEditActive:", isEditActive);
-        // console.log(">>> Debug ====================; isPageExisting:", isPageExisting);
-        // console.log(">>> Debug ====================; isUserSignedIn:", isUserSignedIn);
-        // console.log(">>> Debug ====================; isPageCopy:", isPageCopy);
+        var isUserSignedIn = !!Meteor.userId();
+        var isPageExisting = !!objPage;
+        var isEditFirst    = false;
 
         // If user is singed in and page is copied,
         // use the page to be copied and as a new page.
@@ -84,55 +92,70 @@ function Service($rootScope, $state, $timeout) {
                 (isUserSignedIn && isEditActive)) {
 
             strTitle = !isPageCopy && 
-                    service.objPage &&
-                    service.objPage.versions &&
-                    service.objPage.versions[0].title || 
+                    objPage &&
+                    objPage.versions &&
+                    objPage.versions[0].title || 
                     _.parseTitle($state.params.page);
-            strContent = service.objPage &&
-                    service.objPage.versions &&
-                    service.objPage.versions[0].content ||
+            strContent = objPage &&
+                    objPage.versions &&
+                    objPage.versions[0].content ||
                     '';
 
-            service.objPageEdit = {
+            objPageEdit = {
                 title  : strTitle,
                 content: strContent,
                 name   : strPageName,
             };
 
-            service.strPageName  = strPageName;
-            service.isEditFirst  = isPageCopy;
-            service.isEditActive = true;
+            strPageName  = strPageName;
+            isEditFirst  = isPageCopy;
+            isEditActive = true;
         }
 
         // If user is singed in and requested page (copy or edit)
         // does not exist, create a new page to be created.
         else if (isUserSignedIn && !isPageExisting) {
-            $state.go('page', { page: strPageName, edit: true }, { notify: false });
-            service.objPageEdit  = {
+
+            // set "edit" query param since it is edit mode
+            // $location.path('/' + strPageName).search({ edit: 'true' });
+
+            objPageEdit = {
                 name   : strPageName,
                 title  : _.parseTitle(strPageName),
                 content: '',
             };
-            service.isEditFirst  = true;
-            service.isEditActive = true;
+            isEditFirst  = true;
+            isEditActive = true;
         }
 
         // Otherwise just load the page.
         else {
-            $state.go('page', { page: strPageName }, { notify: false });
-            service.objPageView  = {
-                name   : service.objPage.name,
-                title  : service.objPage &&
-                    service.objPage.versions &&
-                    service.objPage.versions[0].title,
-                content: service.objPage &&
-                    service.objPage.versions &&
-                    service.objPage.versions[0].content,
+
+            // replace every query param since it is only view mode
+            // $location.path('/' + strPageName).search({});
+
+            objPageView = {
+                name   : objPage.name,
+                title  : objPage &&
+                    objPage.versions &&
+                    objPage.versions[0].title,
+                content: objPage &&
+                    objPage.versions &&
+                    objPage.versions[0].content,
             };
-            service.isEditActive = false;
+            isEditActive = false;
         }
 
-        return ('function' === typeof callback && callback());
+        objResult = {
+            objPageView : objPageView,
+            objPageEdit : objPageEdit,
+            isEditActive: isEditActive,
+            isEditFirst : isEditFirst,
+        };
+
+        return $timeout(function() {
+            return ('function' === typeof callback && callback(null, objResult));
+        });
     }
 
     // *****************************************************************************
@@ -147,6 +170,30 @@ function Service($rootScope, $state, $timeout) {
     // *****************************************************************************
 
     /**
+     * Helper function to subscribe to the "pages" collection.
+     * It returns a promise that can have three states:
+     * 
+     * 1. new promise just created
+     * 2. old promise created at previous call
+     * 3. resolved promise with also ends in "isInit" to be true
+     * 
+     * @return {Promise}  promise to be resolved after subscription
+     */
+    function _subscribe() {
+        if (_deferred && _deferred.promise) {
+            return _deferred.promise;
+        }
+        _deferred = $q.defer();
+
+        Meteor.subscribe('pages', function() {
+            service.isInit = true;
+            return _deferred.resolve();
+        });
+
+        return _deferred.promise;
+    }
+
+    /**
      * Helper function to wrap any function accessing the "pages" collection
      * with the subscription to that collection, which will be done only the
      * first time. Every second time any function is called, the service is
@@ -158,12 +205,20 @@ function Service($rootScope, $state, $timeout) {
      */
     function _wrapInit(fun) {
         return function() {
+            var _arguments = arguments;
+
+            // If service is already initialized,
+            // call given function immediately.
             if (service.isInit) {
-                return fun.apply(fun, arguments);
+                return fun.apply(fun, _arguments);
             }
-            return Meteor.subscribe('pages', function() {
-                service.isInit = true;
-                return fun.apply(fun, arguments);
+
+            // If service has not been initialized,
+            // yet, or if the initialization
+            // process is still in progress, call
+            // given function after resolving.
+            return _subscribe().then(function() {
+                return fun.apply(fun, _arguments);
             });
         };
     }
