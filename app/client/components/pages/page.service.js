@@ -301,7 +301,10 @@ function Service($rootScope, $state, $q, $location) {
      * Helper function to wrap any function accessing the "pages" collection
      * with the subscription to that collection, which will be done only the
      * first time. Every second time any function is called, the service is
-     * already initialized and doesn't need a subscription any more.
+     * already initialized and doesn't need a subscription any more. If the
+     * same function is called at the same time, so that the subscription
+     * could be started multiple times, each function receives the same promise
+     * and is finally invoked when the promise is resolved.
      * 
      * @param  {Function} fun  function to actually be called
      * @return {Function}      function that replaces the function actually be called;
