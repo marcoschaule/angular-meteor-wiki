@@ -24,7 +24,7 @@ angular
 // Service object
 // *****************************************************************************
 
-function Service($rootScope, $state, $q, $location, $timeout) {
+function Service($rootScope, $state, $q, $location) {
     var service = {};
 
     // *****************************************************************************
@@ -153,9 +153,7 @@ function Service($rootScope, $state, $q, $location, $timeout) {
             isEditFirst : isEditFirst,
         };
 
-        return $timeout(function() {
-            return ('function' === typeof callback && callback(null, objResult));
-        });
+        return ('function' === typeof callback && callback(null, objResult));
     }
 
     // *****************************************************************************

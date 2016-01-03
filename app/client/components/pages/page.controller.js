@@ -20,7 +20,7 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($scope, $state, $timeout, $sce, $window, PageService) {
+function Controller($scope, $state, $sce, PageService) {
     var vm = this;
 
     // *****************************************************************************
