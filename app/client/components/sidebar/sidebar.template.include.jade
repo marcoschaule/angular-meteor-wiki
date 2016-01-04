@@ -16,14 +16,11 @@
     
     div(data-ng-if="vm.isSignedIn()")
         h6 &nbsp;
-        span.badge
-            i.fa.fa-lg.fa-user
+        span.badge: i.fa.fa-user
         .btn-group
             button.btn.btn-link.dropdown-toggle(
                     type='button',
                     data-toggle='dropdown',
-                    aria-haspopup='true',
-                    aria-expanded='false',
                     data-popover-placement="bottom",
                     data-uib-popover="On the Bottom!")
                 span.username oncemac
