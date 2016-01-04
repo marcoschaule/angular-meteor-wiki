@@ -1,4 +1,5 @@
 .row
+    
     .col-xs-4
         form(id="formSearch", name="formSearch" class="aor")
             h6 {{ 'header.title.Search' | translate }}
@@ -8,6 +9,7 @@
                         name="search")
                 button.btn.btn-link
                     i.fa.fa-lg.fa-search
+    
     .col-xs-8.right
         h6 &nbsp;
         span(data-ng-if="!vm.flags.isEditActive && vm.flags.isUserSignedIn")
@@ -18,6 +20,7 @@
                 |{{ 'common.Edit' | translate }}
         span(data-ng-if="vm.flags.isUserSignedIn")
             button.btn.btn-link(
+                    data-ng-disabled="vm.flags.isEditFirst",
                     data-ng-click="vm.pageCopy()")
                 i.fa.fa-lg.fa-copy
                 |&nbsp;

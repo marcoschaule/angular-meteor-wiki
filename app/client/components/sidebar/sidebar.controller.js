@@ -20,14 +20,15 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $sce, AuthService, PageService) {
+function Controller($rootScope, $state, $sce, AuthService, PageService) {
     var vm = this;
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.objPageSidebar = null;
+    vm.objPageView   = null;
+    vm.objPageSource = null;
 
     // *****************************************************************************
     // Controller function linking
@@ -69,6 +70,10 @@ function Controller($state, $sce, AuthService, PageService) {
      * @param {String} strContent  string of content including active link
      */
     function _setCurrentLinkActive(strContent) {
+        if ('page' !== $state.current.name) {
+            return strContent;
+        }
+
         var strPageName    = $state.params.page || 'index';
         var isIndexPage    = !$state.params.page || 'index' === $state.params.page;
         var strPageUrl     = isIndexPage ? '/' : strPageName;
@@ -96,19 +101,55 @@ function Controller($state, $sce, AuthService, PageService) {
     // *****************************************************************************
 
     /**
-     * Helper function to initialize controller. Is called immediately or can
-     * be called from within controller.
+     * Helper function to change the state in the sidebar by highlighting
+     * the current link by setting it to active.
      */
-    function _init() {
+    function _changeState() {
+        if (vm.objPageSource && vm.objPageSource.title && vm.objPageSource.content) {
+            vm.objPageView = {
+                title  : vm.objPageSource.title,
+                content: _setCurrentLinkActive(marked(vm.objPageSource.content)),
+            };
+        }
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to load sidebar from database.
+     */
+    function _loadSidebar() {
         return PageService.pageRead('sidebar', function callback(objErr, objResult) {
             if (objResult && objResult.objPageView) {
-                vm.objPageSidebar = {
-                    title  : objResult.objPageView.title,
-                    content: _setCurrentLinkActive(marked(objResult.objPageView.content)),
-                };
+                vm.objPageSource = objResult.objPageView;
+                _changeState();
             }
         });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to initialize the controller.
+     * This method is immediately invoked.
+     */
+    function _init() {
+        _loadSidebar();
     } _init();
+
+    // *****************************************************************************
+
+    // Event to change state in sidebar if event changes successfully
+    $rootScope.$on('$stateChangeSuccess', function(
+            objEvent, objToState, objToParams, objFromState, objFromParams) {
+        _changeState();
+    });
+
+    // Event to change state in sidebar was updated
+    $rootScope.$on('amwBroadcastSidebarChanged', function(
+            objTo, objFrom) {
+        _loadSidebar();
+    });
 
     // *****************************************************************************
 }

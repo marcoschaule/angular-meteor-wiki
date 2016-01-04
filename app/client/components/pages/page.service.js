@@ -183,6 +183,11 @@ function Service($rootScope, $state, $q, $location) {
         // change flags
         service.flags.isEditActive = !isEditDisabled;
         service.flags.isEditFirst  = false;
+
+        // broadcast if "sidebar" was updated
+        if ('sidebar' === $state.params.page) {
+            $rootScope.$emit('amwBroadcastSidebarChanged');
+        }
         
         // If "edit" state needs to be canceled, cancel page editing. 
         if (isEditDisabled) {
