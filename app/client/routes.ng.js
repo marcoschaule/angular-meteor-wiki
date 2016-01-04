@@ -20,7 +20,7 @@ angular
             .state('resetPassword',         getStateObjectResetPassword('reset'))
             .state('resetPasswordComplete', getStateObjectResetPassword('complete'))
             .state('page',                  getStateObjectPage())
-            .state('pageList',              getStateObjectPage())
+            .state('pageList',              getStateObjectWikiPageList())
             ;
 
         $urlRouterProvider.otherwise('/');
@@ -123,8 +123,6 @@ function getStateObjectWikiPageList() {
     return objState;
 }
 
-// *****************************************************************************
-// Routing object definitions - Authentication
 // *****************************************************************************
 
 /**

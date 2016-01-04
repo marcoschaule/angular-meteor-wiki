@@ -46,6 +46,7 @@ function Service($rootScope, $state, $q, $location) {
     // Service function linking
     // *****************************************************************************
 
+    service.pageReadAll   = _wrapInit(pageReadAll);
     service.pageRead      = _wrapInit(pageRead);
     service.pageUpdate    = _wrapInit(pageUpdate);
     service.pageDelete    = _wrapInit(pageDelete);
@@ -56,6 +57,24 @@ function Service($rootScope, $state, $q, $location) {
 
     // *****************************************************************************
     // Service function definition
+    // *****************************************************************************
+
+    /**
+     * Service function to read all pages at once.
+     *
+     * @param  {Function} [callback]  (optional) function for callback
+     * @return {Array}                array of all pages
+     */
+    function pageReadAll(callback) {
+        arrPages = Pages.find();
+
+        if (_.isFunction(callback)) {
+            return callback(arrPages);
+        }
+
+        return arrPages;        
+    }
+
     // *****************************************************************************
 
     /**
