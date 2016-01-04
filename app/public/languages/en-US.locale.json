@@ -59,6 +59,7 @@
   "authentication.error.general.userOrPasswordIncorrect"       : "User name or password incorrect.",
 
   "pages.EditPage"                                             : "Edit page",
+  "pages.Name"                                                 : "Page name",
   "pages.Title"                                                : "Page title",
   "pages.Content"                                              : "Page content",
   "pages.form.edit.Name"                                       : "Page name",

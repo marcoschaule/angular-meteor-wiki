@@ -89,6 +89,7 @@ function Controller($scope, $state, $sce, PageService) {
         return PageService.pageRead(function callback(objErr, objResult) {
             if (objResult.objPageView) {
                 vm.objPageView = {
+                    name   : objResult.objPageView.name,
                     title  : objResult.objPageView.title,
                     content: marked(objResult.objPageView.content),
                 };

@@ -34,6 +34,7 @@ pagesCreateOrUpdateOne: function(objFind, objUpdate) {
     };
     var objUpdateFull = {
         $set: {
+            name       : objUpdate.name,
             isPrivate  : !!objUpdate.isPrivate,
             isPublished: !!objUpdate.isPublished,
         },

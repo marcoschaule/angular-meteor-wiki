@@ -176,9 +176,14 @@ function Service($rootScope, $state, $q, $location) {
      * @param {Boolean} isEditDisabled  true if after updating the "edit" mode is deactivated
      */
     function pageUpdate(objUpdate, isEditDisabled) {
+        var strPageName = objUpdate.name || $state.params.page;
+        
+        if (!objUpdate.name) {
+            objUpdate.name = $state.params.page;
+        }
 
         // call defined create or update function
-        Meteor.call('pagesCreateOrUpdateOne', { name: $state.params.page }, objUpdate);
+        Meteor.call('pagesCreateOrUpdateOne', { name: strPageName }, objUpdate);
 
         // change flags
         service.flags.isEditActive = !isEditDisabled;
@@ -188,10 +193,15 @@ function Service($rootScope, $state, $q, $location) {
         if ('sidebar' === $state.params.page) {
             $rootScope.$emit('amwBroadcastSidebarChanged');
         }
+
+        // if it is another page now, redirect
+        if (strPageName !== $state.params.page) {
+            $state.go('page', { page: strPageName, edit: !isEditDisabled });
+        }
         
         // If "edit" state needs to be canceled, cancel page editing. 
         if (isEditDisabled) {
-            return pageEditClose();
+            return pageEditClose(strPageName);
         }
     }
 
@@ -263,13 +273,15 @@ function Service($rootScope, $state, $q, $location) {
     
     /**
      * Service function to cancel or close page editing. Forces page to reload.
+     *
+     * @param {String} [strPageName]  (optional) string of page to go to after closing
      */
-    function pageEditClose() {
+    function pageEditClose(strPageName) {
         $state.go(
                 // state name to go to
                 'page',
                 // query params
-                { page: $state.params.page, edit: null, first: null },
+                { page: strPageName || $state.params.page, edit: null, first: null },
                 // options
                 { reload: true });
     }

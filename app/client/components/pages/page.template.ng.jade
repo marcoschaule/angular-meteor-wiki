@@ -1,16 +1,25 @@
 
 div(data-ng-if="!vm.flags.isEditActive")
-    h6 {{ vm.objPageView.title }}
-    //- h2(data-ng-bind="vm.objPageView.title")
+    h6 {{ vm.objPageView.title }} 
+        span.lower &frasl;&frasl; {{ vm.objPageView.name }}
     div(data-ng-bind-html="vm.objPageView.content")
 
 div(data-ng-if="vm.flags.isEditActive")
-    h6 {{ vm.objPageEdit.title }}
+    h6 {{ vm.objPageEdit.title }} 
+        span.lower &frasl;&frasl; {{ vm.objPageEdit.name }}
     h2 {{ 'pages.EditPage' | translate }}
     form(name="vm.formPageEdit")
         fieldset
+            label(for="page-edit-name")
+                |{{ 'pages.Name' | translate }}:
+            input.form-control(
+                    type="text",
+                    id="page-edit-name",
+                    name="formPageEditName",
+                    data-ng-model="vm.objPageEdit.name")
+        fieldset
             label(for="page-edit-title")
-                |{{ 'pages.Title' | translate }}
+                |{{ 'pages.Title' | translate }}:
             input.form-control(
                     type="text",
                     id="page-edit-title",
@@ -18,7 +27,7 @@ div(data-ng-if="vm.flags.isEditActive")
                     data-ng-model="vm.objPageEdit.title")
         fieldset
             label(for="page-edit-content")
-                |{{ 'pages.Content' | translate }}
+                |{{ 'pages.Content' | translate }}:
             textarea.form-control(
                     id="page-edit-content",
                     name="formPageEditTitle",
