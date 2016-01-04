@@ -25,6 +25,10 @@ pagesReadOne: function(objFind) {
  * @return {Object}            object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
  */
 pagesCreateOrUpdateOne: function(objFind, objUpdate) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+
     var objUpdateElement = {
         changedBy    : Meteor.userId(),
         changedAt    : new Date(),
@@ -57,6 +61,10 @@ pagesCreateOrUpdateOne: function(objFind, objUpdate) {
  * @return {Object}            object of write result like "{ "nInserted" : 1 }"
  */
 pagesCreateOne: function(objCreate) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+    
     if (objCreate._id) {
         delete objCreate._id;
     }
@@ -88,6 +96,10 @@ pagesCreateOne: function(objCreate) {
  * @return {Object}            object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
  */
 pagesUpdateOne: function(objFind, objUpdate) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+    
     var objUpdateElement = {
         changedBy    : Meteor.userId(),
         changedAt    : new Date(),
@@ -120,6 +132,10 @@ pagesUpdateOne: function(objFind, objUpdate) {
  * @return {Object}          object of write result like "{ nRemoved: 4 }"
  */
 pagesDeleteOne: function(objFind, callback) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+
     return Pages.remove(objFind, callback);
 },
 
@@ -136,6 +152,10 @@ pagesDeleteOne: function(objFind, callback) {
  * @return {Object}             object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
  */
 pagesTogglePrivateOne: function(objFind, isPrivate) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+
     return Pages.update(objFind, { $set: { isPrivate: !!isPrivate } });
 },
 
@@ -149,6 +169,10 @@ pagesTogglePrivateOne: function(objFind, isPrivate) {
  * @return {Object}           object of write result like "{ nRemoved: 4 }"
  */
 pagesResetOneVersion: function(objFind, numIndex) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+
     var objPage         = Pages.findOne(objFind);
     var objVersionReset = objPage.arrVersions[numIndex];
 
@@ -168,6 +192,10 @@ pagesResetOneVersion: function(objFind, numIndex) {
  * @return {Object}           object of write result like "{ nRemoved: 4 }"
  */
 pagesDeleteOneVersion: function(objFind, numIndex) {
+    if (!Meteor.userId()) {
+        return _.isFunction(callback) && callback('User not singed in!');
+    }
+
     var objPage        = Pages.findOne(objFind);
     var arrVersionsNew = objPage.arrVersions;
     arrVersionsNew.splice(numIndex, 1);
