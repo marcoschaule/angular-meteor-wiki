@@ -1,7 +1,25 @@
-table.table
+table.table.table-striped.table-hover.pointer
     thead
         tr
-            th created at
-            th page name
-            th actions
+            th.left  page title
+            th.left  page name
+            th.left  created at
+            th.left  created by
+            th.right actions
     tbody
+        tr(data-ng-repeat="objPage in vm.arrPages track by $index",
+                data-ng-click="vm.pageOpen($event, objPage.name)")
+            td.left  {{ objPage.versions[0].title }}
+            td.left  {{ objPage.name }}
+            td.left  {{ objPage.createdAt | date }}
+            td.left  {{ objPage.createdBy.username }}
+            td.right: .btn-group
+                a.btn.btn-sm.btn-primary(
+                        data-ng-click="vm.pageEdit($event, objPage.name)")
+                    i.fa.fa-pencil
+                a.btn.btn-sm.btn-primary(
+                        data-ng-click="vm.pageCopy($event, objPage.name)")
+                    i.fa.fa-copy
+                a.btn.btn-sm.btn-danger(
+                        data-ng-click="vm.pageDelete($event, objPage.name)")
+                    i.fa.fa-eraser

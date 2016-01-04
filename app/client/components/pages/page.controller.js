@@ -88,11 +88,8 @@ function Controller($scope, $state, $sce, PageService) {
     function _init() {
         return PageService.pageRead(function callback(objErr, objResult) {
             if (objResult.objPageView) {
-                vm.objPageView = {
-                    name   : objResult.objPageView.name,
-                    title  : objResult.objPageView.title,
-                    content: marked(objResult.objPageView.content),
-                };
+                vm.objPageView         = objResult.objPageView;
+                vm.objPageView.content = marked(vm.objPageView.content);
             }
             if (objResult.objPageEdit) {
                 vm.objPageEdit = objResult.objPageEdit;

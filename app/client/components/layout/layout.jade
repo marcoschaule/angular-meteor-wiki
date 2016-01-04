@@ -6,25 +6,39 @@ head
     
 body
     #container.container-fluid(data-ng-app='amw')
-        main#main.row
+        #container-inner.row
 
             //- sidebar
-            nav#sidebar.col-md-3(
+            #sidebar.col-md-3(
                     tabindex='-1',
                     role='navigation',
                     data-ng-controller="AmwSidebarCtrl as vm")
-                include client/components/sidebar/sidebar.template.include.jade
+
+                #sidebar-header.header(
+                        tabindex="-1",
+                        role='navigation-header')
+                    include client/components/sidebar/sidebar-header.template.include.jade
+
+                #sidebar-content(
+                        tabindex="-1",
+                        role='navigation-content')
+                    include client/components/sidebar/sidebar-content.template.include.jade
 
             //- header and content
-            article#article.col-md-9(role='article', tabindex='-1')
-                header#article-header.header(
+            #main.col-md-9(
+                    tabindex='-1'
+                    role='main')
+
+                #main-header.header(
                         tabindex="-1",
                         role='header',
                         data-ng-controller="AmwHeaderCtrl as vm")
                     include client/components/header/header.template.include.jade
-                #article-content(
+                
+                #main-content(
                         tabindex="-1",
-                        role='content')
+                        role='article')
+
                     div(data-ui-view='content')
 
         footer#footer(role='footer')

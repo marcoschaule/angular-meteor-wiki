@@ -1,36 +1,8 @@
-h6(data-ng-bind="'navigation.title.Common' | translate")
-    .hpadding-2rem
-        a(href="/wiki/page-list") All pages
-
-    .vmargin-1rem
-
-    h6(data-ng-bind="'navigation.title.Wiki' | translate")
-    .hpadding-2rem
-        div(data-ng-bind-html="vm.objPageSidebar.content")
-
-h6 {{ 'navigation.title' | translate }}
-div(data-ng-if="!vm.isSignedIn()")
-    a.btn.btn-primary(
-            tabindex="-1",
-            title="{{ 'navigation.title.Home' | translate }}",
-            data-ui-sref="home",
-            data-ui-sref-active="active")
-        |{{ 'navigation.title.Home' | translate }}
-    a.btn.btn-primary(
-            tabindex="-1",
-            title="{{ 'navigation.title.SignIn' | translate }}",
-            data-ui-sref="signIn",
-            data-ui-sref-active="active")
-        |{{ 'navigation.title.SignIn' | translate }}
-    a.btn.btn-primary(
-            tabindex="-1",
-            title="{{ 'navigation.title.SignUp' | translate }}",
-            data-ui-sref="signUp",
-            data-ui-sref-active="active")
-        |{{ 'navigation.title.SignUp' | translate }}
-    a.btn.btn-primary(
-            tabindex="-1",
-            title="{{ 'navigation.title.ForgotPassword' | translate }}",
-            data-ui-sref="forgotPassword",
-            data-ui-sref-active="active")
-        |{{ 'navigation.title.ForgotPassword' | translate }}
+h6 {{ 'navigation.title.Wiki' | translate }}
+.nav.hpadding-2rem
+    div(data-ng-bind-html="vm.objPageView.content")
+    hr
+    a(tabindex="-1",
+            title="All pages",
+            data-ui-sref="pageList",
+            data-ui-sref-active="active") All pages

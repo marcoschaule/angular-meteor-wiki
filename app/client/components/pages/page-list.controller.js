@@ -33,9 +33,41 @@ function Controller($scope, $state, $sce, PageService) {
     // Controller function linking
     // *****************************************************************************
 
+    vm.pageOpen   = pageOpen;
+    vm.pageEdit   = pageEdit;
+    vm.pageCopy   = pageCopy;
+    vm.pageDelete = pageDelete;
+
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
+
+    function pageOpen(objEvent, strPageName) {
+        return PageService.pageOpen(strPageName);
+    }
+
+    // *****************************************************************************
+
+    function pageEdit(objEvent, strPageName) {
+        _.preventDefaultAndStopPropagation(objEvent);
+        return PageService.pageEditOpen(strPageName);
+    }
+
+    // *****************************************************************************
+
+    function pageCopy(objEvent, strPageName) {
+        _.preventDefaultAndStopPropagation(objEvent);
+        return PageService.pageCopy(strPageName);
+    }
+
+    // *****************************************************************************
+
+    function pageDelete(objEvent, strPageName) {
+        _.preventDefaultAndStopPropagation(objEvent);
+        return PageService.pageDelete(strPageName, true, function() {
+            _readPages();
+        });
+    }
 
     // *****************************************************************************
     // Controller helper definitions
@@ -45,7 +77,12 @@ function Controller($scope, $state, $sce, PageService) {
      * Helper function to read all pages.
      */
     function _readPages() {
-        vm.arrPages = PageService.pageReadAll();
+        var arrUserIds = [];
+        var i, objPage, arrUsernamesAndIds, objUsernamesAndIds;
+
+        PageService.pageReadAll(function(objErr, arrPages) {
+            vm.arrPages = arrPages;
+        });
     }
 
     // *****************************************************************************

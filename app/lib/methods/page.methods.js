@@ -25,18 +25,25 @@ pagesReadOne: function(objFind) {
  * @return {Object}            object of write result like "{ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 }"
  */
 pagesCreateOrUpdateOne: function(objFind, objUpdate) {
+    var currentDate = new Date();
+    var currentUser = { _id: Meteor.userId(), username: Meteor.user().username };
+
     if (!Meteor.userId()) {
         return _.isFunction(callback) && callback('User not singed in!');
     }
 
     var objUpdateElement = {
-        changedBy    : Meteor.userId(),
-        changedAt    : new Date(),
+        updatedBy    : currentUser,
+        updatedAt    : currentDate,
         title        : objUpdate.title,
         content      : objUpdate.content,
         parser       : objUpdate.parser || 'markdown',
     };
     var objUpdateFull = {
+        $setOnInsert: {
+            createdBy  : currentUser,
+            createdAt  : currentDate,
+        },
         $set: {
             name       : objUpdate.name,
             isPrivate  : !!objUpdate.isPrivate,

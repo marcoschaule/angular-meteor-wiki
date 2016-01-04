@@ -20,7 +20,7 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $modal, PageService) {
+function Controller($state, $modal, $timeout, PageService) {
     var vm = this;
 
     // *****************************************************************************
@@ -39,6 +39,7 @@ function Controller($state, $modal, PageService) {
     vm.pageEditOpen = pageEditOpen;
     vm.pageCopy     = pageCopy;
     vm.pageDelete   = pageDelete;
+    vm.isPageState  = isPageState;
 
     // *****************************************************************************
     // Controller function definition
@@ -86,26 +87,23 @@ function Controller($state, $modal, PageService) {
      * Controller method to delete a page (including all versions).
      */
     function pageDelete() {
-        _confirmDeletePage(PageService.pageDelete);
+        PageService.pageDelete();
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller function to test whether state is "page".
+     * 
+     * @return {Boolean}  true if is "page" state
+     */
+    function isPageState() {
+        return ('page' === $state.current.name);
     }
 
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
-
-    function _confirmDeletePage(callback) {
-        var objModalInst = $modal.open({
-            animation  : true,
-            templateUrl: 'page-modal-delete.template.html',
-            controller : 'AmwPageModalDeleteCtrl as vm',
-        });
-
-        return objModalInst.result.then(function() {
-            return callback();
-        }, function() {
-            return;
-        });
-    }
 
     // *****************************************************************************
 }

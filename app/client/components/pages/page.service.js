@@ -24,7 +24,7 @@ angular
 // Service object
 // *****************************************************************************
 
-function Service($rootScope, $state, $q, $location) {
+function Service($rootScope, $state, $modal, $q, $location) {
     var service = {};
 
     // *****************************************************************************
@@ -46,6 +46,7 @@ function Service($rootScope, $state, $q, $location) {
     // Service function linking
     // *****************************************************************************
 
+    service.pageOpen      = pageOpen;
     service.pageReadAll   = _wrapInit(pageReadAll);
     service.pageRead      = _wrapInit(pageRead);
     service.pageUpdate    = _wrapInit(pageUpdate);
@@ -60,19 +61,25 @@ function Service($rootScope, $state, $q, $location) {
     // *****************************************************************************
 
     /**
+     * Function to open a specific page.
+     * 
+     * @param {String} strPageName  string of the page name to be opened
+     */
+    function pageOpen(strPageName) {
+        $state.go('page', { page: strPageName });
+    }
+
+    // *****************************************************************************
+
+    /**
      * Service function to read all pages at once.
      *
      * @param  {Function} [callback]  (optional) function for callback
      * @return {Array}                array of all pages
      */
     function pageReadAll(callback) {
-        arrPages = Pages.find();
-
-        if (_.isFunction(callback)) {
-            return callback(arrPages);
-        }
-
-        return arrPages;        
+        var arrPages = Pages.find().fetch();
+        return (_.isFunction(callback) && callback(null, arrPages));
     }
 
     // *****************************************************************************
@@ -135,6 +142,14 @@ function Service($rootScope, $state, $q, $location) {
                     '';
 
             objPageEdit = {
+                createdAt : objPage.createdAt,
+                createdBy : objPage.createdBy,
+                updatedAt : objPage&&
+                    objPage.versions &&
+                    objPage.versions[0].updatedAt,
+                updatedBy : objPage&&
+                    objPage.versions &&
+                    objPage.versions[0].updatedBy,
                 title  : strTitle,
                 content: strContent,
                 name   : strPageName,
@@ -162,11 +177,19 @@ function Service($rootScope, $state, $q, $location) {
         else {
             
             objPageView = {
-                name   : objPage.name,
-                title  : objPage &&
+                createdAt : objPage.createdAt,
+                createdBy : objPage.createdBy,
+                updatedAt : objPage&&
+                    objPage.versions &&
+                    objPage.versions[0].updatedAt,
+                updatedBy : objPage&&
+                    objPage.versions &&
+                    objPage.versions[0].updatedBy,
+                name      : objPage.name,
+                title     : objPage &&
                     objPage.versions &&
                     objPage.versions[0].title,
-                content: objPage &&
+                content   : objPage &&
                     objPage.versions &&
                     objPage.versions[0].content,
             };
@@ -228,18 +251,29 @@ function Service($rootScope, $state, $q, $location) {
 
     /**
      * Service function to delete a page (including all versions).
+     * 
+     * @param {String}   [strPageName]  (optional) string of the name of the page to be deleted
+     * @param {Boolean}  [isStateKept]  (optional) true if state is not changed
+     * @param {Function} [callback]     (optional) function for callback
      */
-    function pageDelete() {
+    function pageDelete(strPageName, isStateKept, callback) {
+        var strPageNameFinal = strPageName || $state.params.page;
 
-        // call defined delete method
-        Meteor.call('pagesDeleteOne', { name: $state.params.page }, function() {
-            $state.go(
-                    // state name to go to
-                    'page',
-                    // query params
-                    { page: $state.params.page, edit: true },
-                    // options
-                    { reload: true });
+        // confirm and call defined delete method
+        _confirmDeletePage(function() {
+            Meteor.call('pagesDeleteOne', { name: strPageNameFinal }, function() {
+                if (!isStateKept) {
+                    $state.go(
+                            // state name to go to
+                            'page',
+                            // query params
+                            { page: strPageNameFinal, edit: true },
+                            // options
+                            { reload: true });
+                }
+
+                return (_.isFunction(callback) && callback(null));
+            });
         });
     }
 
@@ -247,8 +281,12 @@ function Service($rootScope, $state, $q, $location) {
 
     /**
      * Service function to reset a changed page.
+     * 
+     * @param {String} strPageName  string of the name of the page to be reset
      */
-    function pageReset() {
+    function pageReset(strPageName) {
+        var strPageNameFinal = strPageName || $state.params.page;
+        
         $state.go(
                 // state name to go to
                 'page',
@@ -262,13 +300,18 @@ function Service($rootScope, $state, $q, $location) {
 
     /**
      * Service function to copy a page to a new page.
+     *
+     * @param {String} strPageName  string of the name of the page to be copied
      */
-    function pageCopy() {
+    function pageCopy(strPageName) {
+        var strPageNameFinal = strPageName || $state.params.page;
+        var strPageNameCopy  = strPageNameFinal + 'copy';
+
         $state.go(
                 // state name to go to
                 'page',
                 // query params
-                { page: $state.params.page + '-copy', copyOf: $state.params.page, edit: true },
+                { page: strPageNameCopy, copyOf: strPageNameFinal, edit: true },
                 // options
                 {});
     }
@@ -277,13 +320,17 @@ function Service($rootScope, $state, $q, $location) {
     
     /**
      * Service function to open the page edit mode.
+     * 
+     * @param {String} strPageName  string of the name of the page to be edited
      */
-    function pageEditOpen() {
+    function pageEditOpen(strPageName) {
+        var strPageNameFinal = strPageName || $state.params.page;
+
         $state.go(
                 // state name to go to
                 'page',
                 // query params
-                { page: $state.params.page, edit: true }, 
+                { page: strPageNameFinal, edit: true }, 
                 // options
                 {});
     }
@@ -307,6 +354,27 @@ function Service($rootScope, $state, $q, $location) {
 
     // *****************************************************************************
     // Service helper definitions
+    // *****************************************************************************
+
+    /**
+     * Helper function to confirm deletion by modal.
+     * 
+     * @param {Function} callback  function for callback
+     */
+    function _confirmDeletePage(callback) {
+        var objModalInst = $modal.open({
+            animation  : true,
+            templateUrl: 'page-modal-delete.template.html',
+            controller : 'AmwPageModalDeleteCtrl as vm',
+        });
+
+        return objModalInst.result.then(function() {
+            return callback();
+        }, function() {
+            return;
+        });
+    }
+
     // *****************************************************************************
 
     /**

@@ -92,6 +92,14 @@
   "common.Cancel"                                              : "Cancel",
   "common.CancelAndReturn"                                     : "Cancel and return",
   "common.Back"                                                : "Back",
+  "common.at"                                                  : "at",
+  "common.by"                                                  : "by",
+  "common.createdAt"                                           : "created at",
+  "common.createdBy"                                           : "created by",
+  "common.updatedAt"                                           : "updated at",
+  "common.updatedBy"                                           : "updated by",
+  "common.lastUpdatedAt"                                       : "last edited at",
+  "common.lastUpdatedBy"                                       : "last edited by",
 
   "email.resetPassword.template.subject"                       : "Link to reset your password",
 

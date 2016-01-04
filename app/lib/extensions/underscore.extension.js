@@ -5,10 +5,11 @@
 // *****************************************************************************
 
 _.mixin({
-    capitalize   : capitalize,
-    capitalizeAll: capitalizeAll,
-    parseTitle   : parseTitle,
-    parseQuery   : parseQuery,
+    capitalize                       : capitalize,
+    capitalizeAll                    : capitalizeAll,
+    parseTitle                       : parseTitle,
+    parseQuery                       : parseQuery,
+    preventDefaultAndStopPropagation : preventDefaultAndStopPropagation,
 });
 
 // *****************************************************************************
@@ -63,6 +64,23 @@ function parseTitle(str) {
  */
 function parseQuery(str) {
     return str.toLowerCase().replace(/\s+/g, '-');
+}
+
+// *****************************************************************************
+
+/**
+ * Function to prevent default behavior of an event and to stop propagation
+ * of it to parent elements.
+ * 
+ * @param  {Object} objEvent  object of event
+ */
+function preventDefaultAndStopPropagation(objEvent) {
+    if (objEvent && 'function' === typeof objEvent.preventDefault) {
+        event.preventDefault();
+    }
+    if (objEvent && 'function' === typeof objEvent.stopPropagation) {
+        event.stopPropagation();
+    }
 }
 
 // *****************************************************************************

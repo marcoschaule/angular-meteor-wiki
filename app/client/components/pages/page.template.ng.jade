@@ -3,6 +3,17 @@ div(data-ng-if="!vm.flags.isEditActive")
     h6 {{ vm.objPageView.title }} 
         span.lower ({{ vm.objPageView.name }})
     div(data-ng-bind-html="vm.objPageView.content")
+    hr
+    .right
+        |{{ 'createdBy' | translate }} 
+        strong {{ vm.objPageView.createdBy.username }} 
+        |{{ 'at' | translate }} 
+        strong {{ vm.objPageView.createdAt | date }}
+        |&nbsp;&nbsp;&#9679;&nbsp;
+        |{{ 'lastUpdatedBy' | translate }} 
+        strong {{ vm.objPageView.updatedBy.username }} 
+        |{{ 'at' | translate }} 
+        strong {{ vm.objPageView.updatedAt | date }}
 
 div(data-ng-if="vm.flags.isEditActive")
     h6 {{ vm.objPageEdit.title }} 
