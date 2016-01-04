@@ -1,33 +1,30 @@
 .row
     
     .col-xs-4
-        form(id="formSearch", name="formSearch" class="aor")
+        form(id="formSearch", name="formSearch")
             h6 {{ 'header.title.Search' | translate }}
-            .btn-group-alt
-                input.form-control-alt(type="text",
-                        id="search"
-                        name="search")
-                button.btn.btn-link
-                    i.fa.fa-lg.fa-search
+            .input-group
+                input.form-control(type="text", id="search" name="search")
+                .input-group-addon.btn.btn-default: i.fa.fa-search
     
     .col-xs-8.right
         h6 &nbsp;
         span(data-ng-if="!vm.flags.isEditActive && vm.flags.isUserSignedIn")
             button.btn.btn-link(
                     data-ng-click="vm.pageEditOpen()")
-                i.fa.fa-lg.fa-pencil
+                i.fa.fa-pencil
                 |&nbsp;
                 |{{ 'common.Edit' | translate }}
         span(data-ng-if="vm.flags.isUserSignedIn")
             button.btn.btn-link(
                     data-ng-disabled="vm.flags.isEditFirst",
                     data-ng-click="vm.pageCopy()")
-                i.fa.fa-lg.fa-copy
+                i.fa.fa-copy
                 |&nbsp;
                 |{{ 'common.Copy' | translate }}
             button.btn.btn-link(
                     data-ng-disabled="vm.isIndexPage || vm.flags.isEditFirst",
                     data-ng-click="vm.pageDelete()")
-                i.fa.fa-lg.fa-eraser
+                i.fa.fa-eraser
                 |&nbsp;
                 |{{ 'common.Delete' | translate }}

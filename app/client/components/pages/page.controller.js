@@ -33,7 +33,7 @@ function Controller($scope, $state, $sce, PageService) {
     vm.editorOptions = {
         lineNumbers : true,
         mode        : 'markdown',
-        theme       : 'monokai',
+        theme       : 'ttcn',
     };
 
     // *****************************************************************************

@@ -1,15 +1,15 @@
 
 div(data-ng-if="!vm.flags.isEditActive")
     h6 {{ vm.objPageView.title }} 
-        span.lower &frasl;&frasl; {{ vm.objPageView.name }}
+        span.lower ({{ vm.objPageView.name }})
     div(data-ng-bind-html="vm.objPageView.content")
 
 div(data-ng-if="vm.flags.isEditActive")
     h6 {{ vm.objPageEdit.title }} 
-        span.lower &frasl;&frasl; {{ vm.objPageEdit.name }}
+        span.lower ({{ vm.objPageEdit.name }})
     h2 {{ 'pages.EditPage' | translate }}
     form(name="vm.formPageEdit")
-        fieldset
+        fieldset.form-group
             label(for="page-edit-name")
                 |{{ 'pages.Name' | translate }}:
             input.form-control(
@@ -17,7 +17,7 @@ div(data-ng-if="vm.flags.isEditActive")
                     id="page-edit-name",
                     name="formPageEditName",
                     data-ng-model="vm.objPageEdit.name")
-        fieldset
+        fieldset.form-group
             label(for="page-edit-title")
                 |{{ 'pages.Title' | translate }}:
             input.form-control(
@@ -25,7 +25,7 @@ div(data-ng-if="vm.flags.isEditActive")
                     id="page-edit-title",
                     name="formPageEditTitle",
                     data-ng-model="vm.objPageEdit.title")
-        fieldset
+        fieldset.form-group
             label(for="page-edit-content")
                 |{{ 'pages.Content' | translate }}:
             textarea.form-control(
@@ -34,7 +34,7 @@ div(data-ng-if="vm.flags.isEditActive")
                     data-ng-model="vm.objPageEdit.content",
                     data-ui-codemirror,
                     data-ui-codemirror-opts="vm.editorOptions")
-        fieldset
+        fieldset.form-group
             button.btn.btn-success(
                     data-ng-disabled="vm.formPageEdit.$pristine",
                     data-ng-click="vm.pageUpdate()")

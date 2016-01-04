@@ -16,28 +16,17 @@ html, body
     margin 0
     height 100%
     padding 0
-    font-family "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-    background-color $colorBackground
-    color $colorFontDefault
 
-h1, h2, h3, h4, h5
-    color $colorFontHeading
-    margin-top 0
 h6
-    color #51586a
-    margin 0 0 .2rem 0
-    padding 0
-    text-transform uppercase
-
-hr
-    border-color $colorBrighten2
+    margin-bottom 1rem !important
+h6 + div > h1, h6 + div > h2, h6 + div > h3, h6 + div > h4, h6 + div > h5
+    margin-top 0
+    padding-top 0
 
 fieldset
     margin 2rem 0 .5rem 0
 label
     font-weight normal
-input, button, button *
-    color $colorWhite !important
 input[type="radio"], input[type="checkbox"]
     display inline
     height auto
@@ -45,8 +34,6 @@ input[type="radio"], input[type="checkbox"]
     width auto
 input[type="radio"] + label, input[type="checkbox"] + label
     margin-right 3rem
-// textarea
-//     min-height 12em
 
 // *****************************************************************************
 // General classes
@@ -151,7 +138,6 @@ input[type="radio"] + label, input[type="checkbox"] + label
     
 // error messages
 .errorField, .errorFieldEmpty
-    color $colorErrorFg
     font-weight normal
     height 3rem
     width 100%
@@ -160,68 +146,12 @@ input[type="radio"] + label, input[type="checkbox"] + label
 // Bootstrap overrides
 // *****************************************************************************
 
-// alerts
-.alert
-    border-radius $radiusDefault
-    background-color $colorErrorFg
-    border-color $colorErrorBg
-    color $colorWhite
-
-// buttons
-.btn
-    border-radius $radiusDefault
-    text-transform none
-.btn.btn-flat:not(.btn-link), .btn-default.btn-flat:not(.btn-link)
-    color $colorFontDefault
-    padding .4rem
-.btn-primary:not(.btn-link):not(.btn-flat)
-    background-color $colorPrimaryNormalBg
-    color $colorPrimaryNormalFg
-.btn-primary:not(.btn-link):not(.btn-flat):hover
-    background-color $colorPrimaryHoverBg
-    color $colorPrimaryHoverFg
-.btn-primary:not(.btn-link):not(.btn-flat).active
-    color $colorPrimaryNormalFg
-
-// forms
-.form-control
-    background-color $colorBrighten1 !important
-    border none !important
-.form-control:focus
-    background-color $colorBackground3 !important
-    background-image none !important
-    box-shadow none !important
-    transition background-color .5s
-.form-control:-webkit-autofill,
-.form-control:hover:-webkit-autofill,
-.form-control:focus:-webkit-autofill
-    background-image none !important
-    background-color $colorBackground3 !important
-    box-shadow 0 0 0px 1000px $colorBackground3 inset
-    border none !important
-    text-fill-color white !important
-    -webkit-background-image none !important
-    -webkit-background-color $colorBackground3 !important
-    -webkit-box-shadow 0 0 0px 1000px $colorBackground3 inset
-    -webkit-border none !important
-    -webkit-text-fill-color white !important
-    
-    
-// wells
-.well
-    border none
-    background-color $colorBrighten1 !important
-    border-radius $radiusDefault !important
-    color $colorFontDefault !important
-    box-shadow none !important
-
 // *****************************************************************************
 // Bootstrap extensions
 // *****************************************************************************
 
 // buttons
 .btn-simple
-    color $colorFontDefault !important
     margin 0
     padding 0
 .btn-simple:hover, .btn-simple.active
@@ -229,13 +159,11 @@ input[type="radio"] + label, input[type="checkbox"] + label
 
 // forms
 label.form-control-alt
-    color #51586a
     margin 0
     padding 0
     text-transform uppercase
 input.form-control-alt
     display block
-    background-color $colorBackground2
     border none
     border-radius $radiusDefault
     padding .6rem 1.2rem
@@ -269,44 +197,37 @@ input.form-control-alt
     padding-bottom 120px
 #footer
     bottom 0
-    border-top 1px solid #434857
+    border-top 1px solid #dddddd
     height 120px
     margin-top 2*$paddingDefault
     padding-top $paddingDefault
     position absolute
     width 100%
 
+.header
+    box-sizing border-box
+    border-bottom 1px solid #dddddd
+    margin-bottom 2*$paddingDefault
+    padding-bottom $paddingDefault
+
+// *****************************************************************************
+// Sidebar
+// *****************************************************************************
+
+#sidebar .nav a
+    display inline
+    text-align left
+#sidebar .nav a.active
+    color #333333
+
+#sidebar-header .badge
+    border-radius 100px
+    padding .8rem 1rem
+
 // *****************************************************************************
 // CodeMirror extension
 // *****************************************************************************
 
 .CodeMirror
-    background-color $colorBrighten1 !important
-    color $colorWhite
     border-radius $radiusDefault
-.CodeMirror-gutters
-    background-color $colorBrighten2 !important
-    border none
-.CodeMirror-cursor
-    border-color $colorWhite !important
-
-// .form-control-editor .CodeMirror
-//     height auto
-//     border 1px solid #ccc
-//     border-radius 4px
-//     font-family 'Bitstream Vera Sans Mono', Consolas, Courier, monospace
-// .form-control-editor .CodeMirror-lines
-//     padding 1rem 0
-// .form-control-editor .CodeMirror-code > div > pre
-//     padding .25rem 1rem
-// .form-control-editor .CodeMirror-code > div:nth-child(2n+1) > pre
-//     background-color #f8f8f8
-
-// *****************************************************************************
-// Modal
-// *****************************************************************************
-
-.modal-content
-    background-color $colorBackground // rgb(28, 30, 36)
-.modal-header, .modal-footer
-    border-color $colorBrighten1
+    border 1px solid #dddddd
