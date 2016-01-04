@@ -2,7 +2,7 @@
         tabindex="-1",
         role='navigation-header')
 
-    div(data-ng-if="!vm.isSignedIn()")
+    .nav(data-ng-if="!vm.isSignedIn()")
         h6 {{ 'navigation.title.Authentication' | translate }}
         a(tabindex="-1",
                 data-ui-sref="signIn",
@@ -54,7 +54,7 @@
         role='navigation-content')
 
     h6 {{ 'navigation.title.Wiki' | translate }}
-    .hpadding-2rem
+    .nav.hpadding-2rem
         div(data-ng-bind-html="vm.objPageView.content")
         hr
         a(href="/wiki/page-list") All pages
