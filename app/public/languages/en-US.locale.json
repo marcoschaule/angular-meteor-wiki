@@ -62,13 +62,15 @@
   "pages.Name"                                                 : "Page name",
   "pages.Title"                                                : "Page title",
   "pages.Content"                                              : "Page content",
+  "pages.CreatedAt"                                            : "Created at",
+  "pages.CreatedBy"                                            : "Created by",
   "pages.form.edit.Name"                                       : "Page name",
   "pages.form.edit.Title"                                      : "Page title",
   "pages.form.edit.Content"                                    : "Page content",
   "pages.VersionsOf"                                           : "Versions of",
   "pages.versions.createdBy"                                   : "created by",
   "pages.versions.changedBy"                                   : "changed by",
-  
+
   "help.Title"                                                 : "Help",
 
   "profile.Title"                                              : "Profile",

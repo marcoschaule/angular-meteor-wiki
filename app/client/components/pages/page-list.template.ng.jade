@@ -1,11 +1,11 @@
 table.table.table-striped.table-hover.pointer
     thead
         tr
-            th.left  page title
-            th.left  page name
-            th.left  created at
-            th.left  created by
-            th.right actions
+            th.left  {{ 'pages.Title' | translate }}
+            th.left  {{ 'pages.Name' | translate }}
+            th.left  {{ 'pages.CreatedAt' | translate }}
+            th.left  {{ 'pages.CreatedBy' | translate }}
+            th.right &nbsp;
     tbody
         tr(data-ng-repeat="objPage in vm.arrPages track by $index",
                 data-ng-click="vm.pageOpen($event, objPage.name)")
