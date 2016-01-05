@@ -126,10 +126,7 @@ function Controller($rootScope, $scope, $state, $sce, $timeout, $reactive, PageS
             vm.flags.isEditFirst  = false;
         }
 
-        $timeout.cancel(vm.promiseTimeoutInit);
-        vm.promiseTimeoutInit = $timeout(function() {
-            $rootScope.flags.isProcessing = false;
-        }, C_CONFIG_COMMON.system.tansitionTime);
+        _resetTimeout();
 
         return _extendPage(objPage);
     }
@@ -178,6 +175,20 @@ function Controller($rootScope, $scope, $state, $sce, $timeout, $reactive, PageS
         }
         
         return objPage;
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to reset the timeout, which is used to wait until
+     * Meteor's reactive helper is finished. While Meteor's helper is running,
+     * a spinner is shown.
+     */
+    function _resetTimeout() {
+        $timeout.cancel(vm.promiseTimeoutInit);
+        vm.promiseTimeoutInit = $timeout(function() {
+            $rootScope.flags.isProcessing = false;
+        }, C_CONFIG_COMMON.system.tansitionTime);
     }
 
     // *****************************************************************************

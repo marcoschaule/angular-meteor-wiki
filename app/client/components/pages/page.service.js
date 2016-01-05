@@ -99,11 +99,6 @@ function Service($rootScope, $state, $timeout, $modal, $q, $location) {
         // after update the page does exist and is not edited for the first time anymore
         service.flags.isEditFirst = false;
 
-        // broadcast if "sidebar" was updated
-        if ('sidebar' === $state.params.page) {
-            $rootScope.$emit('amwBroadcastSidebarChanged');
-        }
-
         // if it is another page now, redirect
         if (strPageName !== $state.params.page || !!$state.params.copyOf) {
             $state.go('page', { page: strPageName, edit: !isEditDisabled, copyOf: null }, { reload: true });
