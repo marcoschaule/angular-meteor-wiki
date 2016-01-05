@@ -81,10 +81,6 @@ function Controller($rootScope, $scope, $state, $sce, $reactive, AuthService, Pa
      * @param {String} strContent  string of content including active link
      */
     function _setCurrentLinkActive(strContent) {
-        if ('page' !== $state.current.name) {
-            return strContent;
-        }
-
         var strPageName   = $state.params.page || 'index';
         var isIndexPage   = !$state.params.page || 'index' === $state.params.page;
         var strPageUrl    = isIndexPage ? '/' : strPageName;
@@ -95,6 +91,10 @@ function Controller($rootScope, $scope, $state, $sce, $reactive, AuthService, Pa
 
         // remove all actives
         $('a', objContent).removeClass('active');
+
+        if ('page' !== $state.current.name) {
+            return objContent.html();
+        }
         
         var arrLinkView = $('a', objContent).filter(function() { return regexLinkView.test(this.href); });
         var arrLinkEdit = $('a', objContent).filter(function() { return regexLinkEdit.test(this.href); });
@@ -156,6 +156,7 @@ function Controller($rootScope, $scope, $state, $sce, $reactive, AuthService, Pa
      * This method is immediately invoked.
      */
     function _init() {
+        _changeState();
     } _init();
 
     // *****************************************************************************
