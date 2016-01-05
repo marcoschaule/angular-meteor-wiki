@@ -27,10 +27,21 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
     $reactive(this).attach($scope);
 
     // *****************************************************************************
-    // Public variables
+    // Subscriptions
     // *****************************************************************************
 
-    vm.arrPages = [];
+    vm.subscribe('pages');
+
+    // *****************************************************************************
+    // Public variables and reactive helpers
+    // *****************************************************************************
+
+    vm.helpers({
+
+        // produces "vm.arrPages"
+        arrPages: _readPages,
+    });
+
 
     // *****************************************************************************
     // Controller function linking
@@ -40,12 +51,7 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
     vm.pageEdit   = pageEdit;
     vm.pageCopy   = pageCopy;
     vm.pageDelete = pageDelete;
-
-    vm.subscribe('users');
-    vm.helpers({
-        pages: function() { return Pages.find({}); }
-    });
-
+    
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
@@ -109,12 +115,11 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
      * Helper function to read all pages.
      */
     function _readPages() {
-        var arrUserIds = [];
-        var i, objPage, arrUsernamesAndIds, objUsernamesAndIds;
+        return Pages.find({});
 
-        PageService.pageReadAll(function(objErr, arrPages) {
-            vm.arrPages = arrPages;
-        });
+        // PageService.pageReadAll(function(objErr, arrPages) {
+        //     vm.arrPages = arrPages;
+        // });
     }
 
     // *****************************************************************************
@@ -124,7 +129,6 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
      * This function is invoked immediately.
      */
     function _init() {
-        _readPages();
     } _init();
 
     // *****************************************************************************
