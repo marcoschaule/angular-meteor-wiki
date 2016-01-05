@@ -47,10 +47,8 @@ function Service($rootScope, $state, $modal, $q, $location) {
     // *****************************************************************************
 
     service.pageOpen      = pageOpen;
-    service.pageReadAll   = _wrapInit(pageReadAll);
-    service.pageRead      = _wrapInit(pageRead);
-    service.pageUpdate    = _wrapInit(pageUpdate);
-    service.pageDelete    = _wrapInit(pageDelete);
+    service.pageUpdate    = pageUpdate;
+    service.pageDelete    = pageDelete;
     service.pageReset     = pageReset;
     service.pageCopy      = pageCopy;
     service.pageEditOpen  = pageEditOpen;
@@ -66,9 +64,11 @@ function Service($rootScope, $state, $modal, $q, $location) {
      * @param {String} strPageName  string of the page name to be opened
      */
     function pageOpen(strPageName) {
-        $state.go('page', { page: strPageName });
-    }
+        var strPageNameFinal = strPageName || $state.params.page || 'index';
 
+        $state.go('page', { page: strPageNameFinal }, { reload: true });
+    }
+    
     // *****************************************************************************
 
     /**
@@ -80,134 +80,6 @@ function Service($rootScope, $state, $modal, $q, $location) {
     function pageReadAll(callback) {
         var arrPages = Pages.find().fetch();
         return (_.isFunction(callback) && callback(null, arrPages));
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Service function to read a page depending on whether it is a new page,
-     * a copied page, an edited page or just a viewed page.
-     *
-     *
-     * @param  {String}   [strPageName]  (optional) string of the current page name
-     * @param  {Boolean}  [strPageName]  (optional) true if page is used in edit mode
-     * @param  {Function} [callback]     (optional) function for callback
-     * @return {Object}                  object of result
-     */
-    function pageRead() {
-        var callback     = arguments[arguments.length - 1] || null;
-        var strPageName  = arguments[arguments.length - 2] || $state.params.copyOf || $state.params.page || 'index';
-        var isEditActive = !!$state.params.edit || false;
-        var strTitle, strContent, objPage, objPageEdit, objPageView, objResult;
-
-        // load the page even if it doesn't exist
-        objPage = Pages.findOne({ name: strPageName });
-
-        // flags to determine what happens next
-        var isPageCopy     = !!$state.params.copyOf;
-        var isUserSignedIn = !!Meteor.userId();
-        var isPageExisting = !!objPage;
-        var isEditFirst    = false;
-
-        if ('sidebar' === arguments[arguments.length - 2]) {
-            isEditActive = false;
-            isEditFirst  = false;
-            isPageCopy   = false;
-        }
-
-        // if ('sidebar' !== strPageName) {
-        //     console.log(">>> Debug ====================; isEditActive:", isEditActive);
-        //     console.log(">>> Debug ====================; isPageCopy:", isPageCopy);
-        //     console.log(">>> Debug ====================; isUserSignedIn:", isUserSignedIn);
-        //     console.log(">>> Debug ====================; isPageExisting:", isPageExisting);
-        //     console.log(">>> Debug ====================; isEditFirst:", isEditFirst);
-        // }
-
-        // If user is singed in and page is copied,
-        // use the page to be copied and as a new page.
-        // Or:
-        // If user is singed in and page is edited,
-        // use the existing page for editing and updating.
-        if ((isUserSignedIn && isPageCopy) || 
-                (isUserSignedIn && isEditActive && isPageExisting)) {
-
-            strTitle = !isPageCopy && 
-                    objPage &&
-                    objPage.versions &&
-                    objPage.versions[0].title || 
-                    _.parseTitle($state.params.page);
-            strContent = objPage &&
-                    objPage.versions &&
-                    objPage.versions[0].content ||
-                    '';
-
-            objPageEdit = {
-                createdAt : objPage.createdAt,
-                createdBy : objPage.createdBy,
-                updatedAt : objPage&&
-                    objPage.versions &&
-                    objPage.versions[0].updatedAt,
-                updatedBy : objPage&&
-                    objPage.versions &&
-                    objPage.versions[0].updatedBy,
-                title  : strTitle,
-                content: strContent,
-                name   : strPageName,
-            };
-
-            strPageName  = strPageName;
-            isEditActive = true;
-            isEditFirst  = isPageCopy;
-        }
-
-        // If user is singed in and requested page (copy or edit)
-        // does not exist, create a new page to be created.
-        else if (isUserSignedIn && !isPageExisting) {
-            
-            objPageEdit = {
-                name   : strPageName,
-                title  : _.parseTitle(strPageName),
-                content: '',
-            };
-            isEditActive = true;
-            isEditFirst  = true;
-        }
-
-        // Otherwise just load the page.
-        else {
-            
-            objPageView = {
-                createdAt : objPage.createdAt,
-                createdBy : objPage.createdBy,
-                updatedAt : objPage&&
-                    objPage.versions &&
-                    objPage.versions[0].updatedAt,
-                updatedBy : objPage&&
-                    objPage.versions &&
-                    objPage.versions[0].updatedBy,
-                name      : objPage.name,
-                title     : objPage &&
-                    objPage.versions &&
-                    objPage.versions[0].title,
-                content   : objPage &&
-                    objPage.versions &&
-                    objPage.versions[0].content,
-            };
-            isEditActive = false;
-        }
-
-        service.flags.isEditActive = isEditActive;
-        service.flags.isEditFirst  = isEditFirst;
-
-        // result to be returned
-        objResult = {
-            objPageView : objPageView,
-            objPageEdit : objPageEdit,
-            isEditActive: isEditActive,
-            isEditFirst : isEditFirst,
-        };
-
-        return (_.isFunction(callback) && callback(null, objResult));
     }
 
     // *****************************************************************************
@@ -304,8 +176,20 @@ function Service($rootScope, $state, $modal, $q, $location) {
      * @param {String} strPageName  string of the name of the page to be copied
      */
     function pageCopy(strPageName) {
+        var strCopyPostfix   = '-copy';
         var strPageNameFinal = strPageName || $state.params.page;
-        var strPageNameCopy  = strPageNameFinal + 'copy';
+        var strPageNameCopy  = strPageNameFinal + strCopyPostfix;
+        var isEditCopy       = !!$state.params.copyOf;
+        var strRegex, regexCopyPostFix, arrMatches, numCopy;
+
+        if (isEditCopy && strPageNameFinal.indexOf(strCopyPostfix) >= 0) {
+            strRegex         = strCopyPostfix + '-([0-9]*)$';
+            regexCopyPostFix = new RegExp(strRegex, 'g');
+            arrMatches       = regexCopyPostFix.exec(strPageNameFinal);
+            numCopy          = arrMatches && parseInt(arrMatches[1]) || 1;
+            strPageNameCopy  = $state.params.copyOf + strCopyPostfix + '-' + (numCopy += 1);
+            strPageNameFinal = $state.params.copyOf;
+        }
 
         $state.go(
                 // state name to go to
@@ -313,7 +197,7 @@ function Service($rootScope, $state, $modal, $q, $location) {
                 // query params
                 { page: strPageNameCopy, copyOf: strPageNameFinal, edit: true },
                 // options
-                {});
+                { reload: true });
     }
 
     // *****************************************************************************
@@ -332,7 +216,7 @@ function Service($rootScope, $state, $modal, $q, $location) {
                 // query params
                 { page: strPageNameFinal, edit: true }, 
                 // options
-                {});
+                { reload: true });
     }
 
     // *****************************************************************************
@@ -373,65 +257,6 @@ function Service($rootScope, $state, $modal, $q, $location) {
         }, function() {
             return;
         });
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Helper function to subscribe to the "pages" collection.
-     * It returns a promise that can have three states:
-     * 
-     * 1. new promise just created
-     * 2. old promise created at previous call
-     * 3. resolved promise with also ends in "isInit" to be true
-     * 
-     * @return {Promise}  promise to be resolved after subscription
-     */
-    function _subscribe() {
-        if (_deferred && _deferred.promise) {
-            return _deferred.promise;
-        }
-        _deferred = $q.defer();
-
-        Meteor.subscribe('pages', function() {
-            service.flags.isInit = true;
-            return _deferred.resolve();
-        });
-
-        return _deferred.promise;
-    }
-
-    /**
-     * Helper function to wrap any function accessing the "pages" collection
-     * with the subscription to that collection, which will be done only the
-     * first time. Every second time any function is called, the service is
-     * already initialized and doesn't need a subscription any more. If the
-     * same function is called at the same time, so that the subscription
-     * could be started multiple times, each function receives the same promise
-     * and is finally invoked when the promise is resolved.
-     * 
-     * @param  {Function} fun  function to actually be called
-     * @return {Function}      function that replaces the function actually be called;
-     *                         has a callback as argument
-     */
-    function _wrapInit(fun) {
-        return function() {
-            var _arguments = arguments;
-
-            // If service is already initialized,
-            // call given function immediately.
-            if (service.flags.isInit) {
-                return fun.apply(fun, _arguments);
-            }
-
-            // If service has not been initialized,
-            // yet, or if the initialization
-            // process is still in progress, call
-            // given function after resolving.
-            return _subscribe().then(function() {
-                return fun.apply(fun, _arguments);
-            });
-        };
     }
 
     // *****************************************************************************

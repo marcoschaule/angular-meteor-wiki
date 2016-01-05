@@ -2,13 +2,13 @@
 
     .col-xs-8
         h6 &nbsp;
-        span(data-ng-if="vm.isPageState() && !vm.flags.isEditActive && vm.flags.isUserSignedIn")
+        span(data-ng-if="vm.isPageState() && !vm.flags.isEditActive && vm.isSignedIn()")
             button.btn.btn-link(
                     data-ng-click="vm.pageEditOpen()")
                 i.fa.fa-pencil
                 |&nbsp;
                 |{{ 'common.Edit' | translate }}
-        span(data-ng-if="vm.isPageState() && vm.flags.isUserSignedIn")
+        span(data-ng-if="vm.isPageState() && vm.isSignedIn()")
             button.btn.btn-link(
                     data-ng-disabled="vm.flags.isEditFirst",
                     data-ng-click="vm.pageCopy()")

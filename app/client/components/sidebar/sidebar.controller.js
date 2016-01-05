@@ -20,15 +20,26 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($rootScope, $state, $sce, AuthService, PageService) {
+function Controller($rootScope, $scope, $state, $sce, $reactive, AuthService, PageService) {
     var vm = this;
+
+    // make view model reactive
+    $reactive(this).attach($scope);
+
+    // *****************************************************************************
+    // Subscriptions
+    // *****************************************************************************
+
+    // subscribe to pages collection
+    vm.subscribe('pageSidebar');
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.objPageView   = null;
-    vm.objPageSource = null;
+    vm.helpers({
+        objPageSidebar: _readPageSidebar, // produces "vm.objPageSource"
+    });
 
     // *****************************************************************************
     // Controller function linking
@@ -74,16 +85,19 @@ function Controller($rootScope, $state, $sce, AuthService, PageService) {
             return strContent;
         }
 
-        var strPageName    = $state.params.page || 'index';
-        var isIndexPage    = !$state.params.page || 'index' === $state.params.page;
-        var strPageUrl     = isIndexPage ? '/' : strPageName;
-        var objContent     = $('<div>' + strContent + '</div>');
-        var regexLinkView  = new RegExp(strPageUrl + '$');
-        var regexLinkEdit  = new RegExp(strPageUrl + '\\?edit=true$');
-        var isEditable     = !!$state.params.edit;
+        var strPageName   = $state.params.page || 'index';
+        var isIndexPage   = !$state.params.page || 'index' === $state.params.page;
+        var strPageUrl    = isIndexPage ? '/' : strPageName;
+        var objContent    = $('<div>' + strContent + '</div>');
+        var regexLinkView = new RegExp(strPageUrl + '$');
+        var regexLinkEdit = new RegExp(strPageUrl + '\\?edit=true$');
+        var isEditable    = !!$state.params.edit;
+
+        // remove all actives
+        $('a', objContent).removeClass('active');
         
-        var arrLinkView    = $('a', objContent).filter(function() { return regexLinkView.test(this.href); });
-        var arrLinkEdit    = $('a', objContent).filter(function() { return regexLinkEdit.test(this.href); });
+        var arrLinkView = $('a', objContent).filter(function() { return regexLinkView.test(this.href); });
+        var arrLinkEdit = $('a', objContent).filter(function() { return regexLinkEdit.test(this.href); });
 
         if (vm.isIndexPage && arrLinkView.length) {
             arrLinkView.addClass('active');
@@ -105,26 +119,34 @@ function Controller($rootScope, $state, $sce, AuthService, PageService) {
      * the current link by setting it to active.
      */
     function _changeState() {
-        if (vm.objPageSource && vm.objPageSource.title && vm.objPageSource.content) {
-            vm.objPageView = {
-                title  : vm.objPageSource.title,
-                content: _setCurrentLinkActive(marked(vm.objPageSource.content)),
-            };
+        if (vm.objPageSidebar && vm.objPageSidebar.content) {
+            vm.objPageSidebar.content = _setCurrentLinkActive(marked(vm.objPageSidebar.content));
         }
     }
 
     // *****************************************************************************
 
     /**
-     * Helper function to load sidebar from database.
+     * Helper function to read a page "sidebar".
+     * 
+     * @return {Object}  object of the found page
      */
-    function _loadSidebar() {
-        return PageService.pageRead('sidebar', function callback(objErr, objResult) {
-            if (objResult && objResult.objPageView) {
-                vm.objPageSource = objResult.objPageView;
-                _changeState();
-            }
-        });
+    function _readPageSidebar() {
+        var objPage = Pages.findOne({ name: 'sidebar' });
+
+        if (!objPage) {
+            return;
+        }
+
+        objPage.title   = objPage &&
+                objPage.versions &&
+                objPage.versions[0].title;
+        objPage.content = objPage &&
+                objPage.versions &&
+                objPage.versions[0].content;
+        objPage.content = _setCurrentLinkActive(marked(objPage.content));
+
+        return objPage;
     }
 
     // *****************************************************************************
@@ -134,7 +156,6 @@ function Controller($rootScope, $state, $sce, AuthService, PageService) {
      * This method is immediately invoked.
      */
     function _init() {
-        _loadSidebar();
     } _init();
 
     // *****************************************************************************
@@ -143,12 +164,6 @@ function Controller($rootScope, $state, $sce, AuthService, PageService) {
     $rootScope.$on('$stateChangeSuccess', function(
             objEvent, objToState, objToParams, objFromState, objFromParams) {
         _changeState();
-    });
-
-    // Event to change state in sidebar was updated
-    $rootScope.$on('amwBroadcastSidebarChanged', function(
-            objTo, objFrom) {
-        _loadSidebar();
     });
 
     // *****************************************************************************

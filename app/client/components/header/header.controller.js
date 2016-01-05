@@ -27,8 +27,7 @@ function Controller($state, $modal, $timeout, PageService) {
     // Public variables
     // *****************************************************************************
 
-    vm.flags                = PageService.flags;
-    vm.flags.isUserSignedIn = !!Meteor.userId();
+    vm.flags = {};
 
     // *****************************************************************************
     // Controller function linking
@@ -40,6 +39,7 @@ function Controller($state, $modal, $timeout, PageService) {
     vm.pageCopy     = pageCopy;
     vm.pageDelete   = pageDelete;
     vm.isPageState  = isPageState;
+    vm.isEditCopy   = isEditCopy;
 
     // *****************************************************************************
     // Controller function definition
@@ -50,17 +50,6 @@ function Controller($state, $modal, $timeout, PageService) {
      */
     function signOut() {
         AuthService.signOut();
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Controller function to test whether user is singed in or not.
-     * 
-     * @return {Boolean}  true if user is signed in
-     */
-    function isSignedIn() {
-        return !!Meteor.userId();
     }
     
     // *****************************************************************************
@@ -93,6 +82,17 @@ function Controller($state, $modal, $timeout, PageService) {
     // *****************************************************************************
 
     /**
+     * Controller function to test whether user is singed in or not.
+     * 
+     * @return {Boolean}  true if user is signed in
+     */
+    function isSignedIn() {
+        return !!Meteor.userId();
+    }
+
+    // *****************************************************************************
+
+    /**
      * Controller function to test whether state is "page".
      * 
      * @return {Boolean}  true if is "page" state
@@ -102,8 +102,29 @@ function Controller($state, $modal, $timeout, PageService) {
     }
 
     // *****************************************************************************
+
+    /**
+     * Controller function to test whether the current page is a copy.
+     * 
+     * @return {Boolean}  true if current page is a copy
+     */
+    function isEditCopy() {
+        return !!state.params.copyOf;
+    }
+
+    // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
+
+    /**
+     * Helper function to initialize the controller.
+     * This method is immediately invoked.
+     */
+    function _init() {
+        $timeout(function() {
+            vm.flags.isEditCopy = !!$state.params.copyOf;
+        });
+    } _init();
 
     // *****************************************************************************
 }

@@ -30,6 +30,7 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
     // Subscriptions
     // *****************************************************************************
 
+    // subscribe to pages collection
     vm.subscribe('pages');
 
     // *****************************************************************************
@@ -37,11 +38,8 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
     // *****************************************************************************
 
     vm.helpers({
-
-        // produces "vm.arrPages"
-        arrPages: _readPages,
+        arrPages: _readPages, // produces "vm.arrPages"
     });
-
 
     // *****************************************************************************
     // Controller function linking
@@ -113,6 +111,8 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
 
     /**
      * Helper function to read all pages.
+     *
+     * @return {Array}  array of the found pages
      */
     function _readPages() {
         return Pages.find({});

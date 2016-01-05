@@ -20,21 +20,40 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($scope, $state, $sce, PageService) {
+function Controller($scope, $state, $sce, $reactive, PageService) {
     var vm = this;
 
+    // make view model reactive
+    $reactive(this).attach($scope);
+
     // *****************************************************************************
-    // Public variables
+    // Subscriptions
     // *****************************************************************************
 
-    vm.objPageView   = null;
-    vm.objPageEdit   = null;
-    vm.flags         = PageService.flags;
+    // subscribe to pages collection
+    vm.subscribe('pages');
+
+    // *****************************************************************************
+    // Public variables and reactive helpers
+    // *****************************************************************************
+
+    vm.objPageEdit = null;
+
+    vm.flags = {
+        isEditOpened : false,
+        isEditActive : !!$state.params.edit,
+        isEditCopy   : !!$state.params.copyOf,
+    };
+
     vm.editorOptions = {
         lineNumbers : true,
         mode        : 'markdown',
         theme       : 'ttcn',
     };
+
+    vm.helpers({
+        objPage: _readPage, // produces "vm.objPage"
+    });
 
     // *****************************************************************************
     // Controller function linking
@@ -82,19 +101,74 @@ function Controller($scope, $state, $sce, PageService) {
     // *****************************************************************************
 
     /**
+     * Helper function to read a page by page name.
+     * 
+     * @return {Object}  object of the found page
+     */
+    function _readPage() {
+        var strPageName = $state.params.copyOf || $state.params.page || 'index';
+        var objPage     = Pages.findOne({ name: strPageName });
+
+        if (!objPage) {
+            return;
+        }
+
+        return _extendPage(objPage);
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to extend the page.
+     * 
+     * @param  {Object} objPage  object of page to be extended
+     * @return {Object}          object of page extended
+     */
+    function _extendPage(objPage) {
+        if (!objPage) {
+            return;
+        }
+
+        objPage.createdAt = objPage &&
+                objPage.createdAt;
+        objPage.createdBy = objPage &&
+                objPage.createdBy;
+        objPage.updatedAt = objPage &&
+                objPage.versions &&
+                objPage.versions[0].updatedAt;
+        objPage.updatedBy = objPage &&
+                objPage.versions &&
+                objPage.versions[0].updatedBy;
+        objPage.title     = objPage &&
+                objPage.versions &&
+                objPage.versions[0].title;
+        objPage.content   = objPage &&
+                objPage.versions &&
+                objPage.versions[0].content;
+
+        if (vm.flags.isEditCopy) {
+            objPage.name  = $state.params.page;
+            objPage.title = _.parseTitle($state.params.page);
+        }
+        if (!vm.flags.isEditActive) {
+            objPage.content = marked(objPage.content);
+            vm.flags.isEditOpened = false;
+        }
+        if (vm.flags.isEditActive && !vm.flags.isEditOpened) {
+            vm.objPageEdit        = objPage;
+            vm.flags.isEditOpened = true;
+        }
+        
+        return objPage;
+    }
+
+    // *****************************************************************************
+
+    /**
      * Helper function to initialize controller. 
      * This function is invoked immediately.
      */
     function _init() {
-        return PageService.pageRead(function callback(objErr, objResult) {
-            if (objResult.objPageView) {
-                vm.objPageView         = objResult.objPageView;
-                vm.objPageView.content = marked(vm.objPageView.content);
-            }
-            if (objResult.objPageEdit) {
-                vm.objPageEdit = objResult.objPageEdit;
-            }
-        });
     } _init();
 
     // *****************************************************************************
