@@ -2,16 +2,18 @@ div(data-ng-if="!vm.flags.isEditActive")
     h6 {{ vm.objPage.title }} 
         span.lower ({{ vm.objPage.name }})
     div(data-ng-bind-html="vm.objPage.content")
+
+    .vmargin-2rem
     hr
     .right
-        |{{ 'createdBy' | translate }} 
+        |{{ 'common.createdBy' | translate }} 
         strong {{ vm.objPage.createdBy.username }} 
-        |{{ 'at' | translate }} 
+        |{{ 'common.at' | translate }} 
         strong {{ vm.objPage.createdAt | date }}
         |&nbsp;&nbsp;&#9679;&nbsp;
-        |{{ 'lastUpdatedBy' | translate }} 
+        |{{ 'common.lastUpdatedBy' | translate }} 
         strong {{ vm.objPage.updatedBy.username }} 
-        |{{ 'at' | translate }} 
+        |{{ 'common.at' | translate }} 
         strong {{ vm.objPage.updatedAt | date }}
 
 div(data-ng-if="vm.flags.isEditActive")
