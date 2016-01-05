@@ -20,7 +20,7 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($scope, $state, $sce, $reactive, PageService) {
+function Controller($scope, $state, $reactive, PageService) {
     var vm = this;
 
     // make view model reactive
@@ -116,10 +116,6 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
      */
     function _readPages() {
         return Pages.find({});
-
-        // PageService.pageReadAll(function(objErr, arrPages) {
-        //     vm.arrPages = arrPages;
-        // });
     }
 
     // *****************************************************************************
