@@ -20,33 +20,28 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($scope, $state, $sce, $reactive, PageService) {
+function Controller($rootScope, $scope, $state, $sce, $timeout, $reactive, PageService) {
     var vm = this;
 
     // make view model reactive
     $reactive(this).attach($scope);
 
     // *****************************************************************************
-    // Subscriptions
-    // *****************************************************************************
-
-    // subscribe to pages collection
-    vm.subscribe('pages');
-
-    // *****************************************************************************
     // Public variables and reactive helpers
     // *****************************************************************************
 
-    vm.objPageEdit = null;
+    $rootScope.flags.isProcessing = true;
 
-    vm.flags = {
-        isEditOpened : false,
-        isEditFirst  : false,
-        isEditActive : !!$state.params.edit,
-        isEditCopy   : !!$state.params.copyOf,
-    };
+    vm.objPageEdit        = null;
+    vm.promiseTimeoutInit = null;
 
-    vm.editorOptions = {
+    vm.flags              = PageService.flags;
+    vm.flags.isEditOpened = false;
+    vm.flags.isEditFirst  = false;
+    vm.flags.isEditActive = !!$state.params.edit;
+    vm.flags.isEditCopy   = !!$state.params.copyOf;
+
+    vm.editorOptions      = {
         lineNumbers : true,
         mode        : 'markdown',
         theme       : 'ttcn',
@@ -55,6 +50,13 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
     vm.helpers({
         objPage: _readPage, // produces "vm.objPage"
     });
+
+    // *****************************************************************************
+    // Subscriptions
+    // *****************************************************************************
+
+    // subscribe to pages collection
+    vm.subscribe('pages');
 
     // *****************************************************************************
     // Controller function linking
@@ -111,9 +113,23 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
         var strPageName = $state.params.copyOf || $state.params.page || 'index';
         var objPage     = Pages.findOne({ name: strPageName });
 
+        // set "first edit" flag
+        vm.flags.isEditFirst = 
+            !!(vm.flags.isEditActive && !objPage) ||
+            !!(vm.flags.isEditCopy && !Pages.findOne({ name: $state.params.page }));
+
         if (!objPage) {
-            return;
+            vm.flags.isEditActive = true;
+            vm.flags.isEditFirst  = true;
+        } else {
+            vm.flags.isEditActive = !!$state.params.edit;
+            vm.flags.isEditFirst  = false;
         }
+
+        $timeout.cancel(vm.promiseTimeoutInit);
+        vm.promiseTimeoutInit = $timeout(function() {
+            $rootScope.flags.isProcessing = false;
+        }, C_CONFIG_COMMON.system.tansitionTime);
 
         return _extendPage(objPage);
     }
@@ -128,7 +144,7 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
      */
     function _extendPage(objPage) {
         if (!objPage) {
-            return;
+            objPage = {};
         }
 
         objPage.createdAt = objPage &&
@@ -148,11 +164,11 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
                 objPage.versions &&
                 objPage.versions[0].content;
 
-        if (vm.flags.isEditCopy) {
+        if (vm.flags.isEditCopy || !objPage.name || !objPage.title) {
             objPage.name  = $state.params.page;
             objPage.title = _.parseTitle($state.params.page);
         }
-        if (!vm.flags.isEditActive) {
+        if (!vm.flags.isEditActive && objPage.content) {
             objPage.content = marked(objPage.content);
             vm.flags.isEditOpened = false;
         }

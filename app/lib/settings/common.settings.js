@@ -6,7 +6,17 @@
  * Common config object.
  * @type {Object}
  */
-C_CONFIG_COMMON = { server: {}, language: {}, pages: {} };
+C_CONFIG_COMMON = { server: {}, system: {}, language: {}, pages: {} };
+
+// ********************************************************************************
+// Language configuration
+// ********************************************************************************
+
+/**
+ * Transition time between states.
+ * @type {Number}
+ */
+C_CONFIG_COMMON.system.tansitionTime = 100;
 
 // ********************************************************************************
 // Language configuration

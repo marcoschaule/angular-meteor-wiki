@@ -24,21 +24,18 @@ angular
 // Service object
 // *****************************************************************************
 
-function Service($rootScope, $state, $modal, $q, $location) {
+function Service($rootScope, $state, $timeout, $modal, $q, $location) {
     var service = {};
-
-    // *****************************************************************************
-    // Private variables
-    // *****************************************************************************
-
-    var _deferred = null;
 
     // *****************************************************************************
     // Service variables
     // *****************************************************************************
 
     service.flags = {
-        isEditFirst: false,
+        isEditOpened : false,
+        isEditFirst  : false,
+        isEditActive : false,
+        isEditCopy   : false,
     };
 
     // *****************************************************************************
@@ -98,6 +95,9 @@ function Service($rootScope, $state, $modal, $q, $location) {
 
         // call defined create or update function
         Meteor.call('pagesCreateOrUpdateOne', { name: strPageName }, objUpdate);
+
+        // after update the page does exist and is not edited for the first time anymore
+        service.flags.isEditFirst = false;
 
         // broadcast if "sidebar" was updated
         if ('sidebar' === $state.params.page) {
@@ -204,7 +204,9 @@ function Service($rootScope, $state, $modal, $q, $location) {
      * @param {String} strPageName  string of the name of the page to be edited
      */
     function pageEditOpen(strPageName) {
-        var strPageNameFinal = strPageName || $state.params.page;
+        var strPageNameFinal       = strPageName || $state.params.page;
+        service.flags.isEditActive = true;
+        service.flags.isEditOpened = true;
 
         $state.go(
                 // state name to go to
@@ -255,6 +257,15 @@ function Service($rootScope, $state, $modal, $q, $location) {
             return;
         });
     }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to initialize this service.
+     * This function is immediately invoked.
+     */
+    function _init() {
+    } _init();
 
     // *****************************************************************************
 

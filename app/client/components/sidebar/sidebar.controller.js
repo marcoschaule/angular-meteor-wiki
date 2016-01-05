@@ -159,6 +159,8 @@ function Controller($rootScope, $scope, $state, $sce, $reactive, AuthService, Pa
     } _init();
 
     // *****************************************************************************
+    // Events
+    // *****************************************************************************
 
     // Event to change state in sidebar if event changes successfully
     $rootScope.$on('$stateChangeSuccess', function(

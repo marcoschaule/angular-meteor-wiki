@@ -5,7 +5,8 @@ head
     link(href="http://codemirror.net/theme/ttcn.css", rel="stylesheet", type="text/css")
     
 body
-    #container.container-fluid(data-ng-app='amw')
+    #container.container-fluid(data-ng-app='amw',
+            data-ng-controller="AmwLayoutCtrl as vm")
         #container-inner.row
 
             //- sidebar
@@ -43,5 +44,8 @@ body
 
         footer#footer(role='footer')
             .footer(data-ng-include="'footer-static.template.html'")
+                
+        .spinner-wrapper(data-ng-if="vm.flags.isProcessing")
+            .spinner.dotty-loader
 
     script(src="http://codemirror.net/mode/markdown/markdown.js")

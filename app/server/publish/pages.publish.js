@@ -5,9 +5,8 @@
 // ********************************************************************************
 
 // Publish function linking
-Meteor.publish('pages',          publishPages);
-Meteor.publish('pagesAvailable', publishPagesAvailable);
-Meteor.publish('pageSidebar',    publishPageSidebar);
+Meteor.publish('pages',       publishPages);
+Meteor.publish('pageSidebar', publishPageSidebar);
 
 // ********************************************************************************
 // Publish function definitions
@@ -32,18 +31,7 @@ function publishPages() {
  * @return {Object}  object in form of a cursor to be used with "fetch", "map" or "forEach"
  */
 function publishPageSidebar() {
-    return Pages.findOne({ name: 'sidebar' });
-}
-
-// ********************************************************************************
-
-/**
- * Publish function to publish all available pages to the user.
- * 
- * @return {Object}  object in form of a cursor to be used with "fetch", "map" or "forEach"
- */
-function publishPagesAvailable() {
-    return Pages.find({}, { _id: 1 });
+    return Pages.find({ name: 'sidebar' });
 }
 
 // ********************************************************************************
