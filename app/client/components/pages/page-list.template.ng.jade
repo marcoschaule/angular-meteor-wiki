@@ -1,10 +1,13 @@
+h6 {{ 'pages.list.All' | translate }}
+h2 {{ 'pages.list.Title' | translate }}
+
 table.table.table-striped.table-hover.pointer
     thead
         tr
-            th.left  {{ 'pages.Title' | translate }}
-            th.left  {{ 'pages.Name' | translate }}
-            th.left  {{ 'pages.CreatedAt' | translate }}
-            th.left  {{ 'pages.CreatedBy' | translate }}
+            th.left: strong {{ 'pages.Title' | translate }}
+            th.left: strong {{ 'pages.Name' | translate }}
+            th.left: strong {{ 'common.CreatedAt' | translate }}
+            th.left: strong {{ 'common.CreatedBy' | translate }}
             th.right &nbsp;
     tbody
         tr(data-ng-repeat="objPage in vm.arrPages track by $index",
