@@ -20,8 +20,11 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($scope, $state, $sce, PageService) {
+function Controller($scope, $state, $sce, $reactive, PageService) {
     var vm = this;
+
+    // make view model reactive
+    $reactive(this).attach($scope);
 
     // *****************************************************************************
     // Public variables
@@ -38,16 +41,33 @@ function Controller($scope, $state, $sce, PageService) {
     vm.pageCopy   = pageCopy;
     vm.pageDelete = pageDelete;
 
+    vm.subscribe('users');
+    vm.helpers({
+        pages: function() { return Pages.find({}); }
+    });
+
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
 
+    /**
+     * Controller function to open a page.
+     * 
+     * @param {Object} objEvent     object of the event
+     * @param {String} strPageName  string of the page name
+     */
     function pageOpen(objEvent, strPageName) {
         return PageService.pageOpen(strPageName);
     }
 
     // *****************************************************************************
 
+    /**
+     * Controller function to edit a page.
+     * 
+     * @param {Object} objEvent     object of the event
+     * @param {String} strPageName  string of the page name
+     */
     function pageEdit(objEvent, strPageName) {
         _.preventDefaultAndStopPropagation(objEvent);
         return PageService.pageEditOpen(strPageName);
@@ -55,6 +75,12 @@ function Controller($scope, $state, $sce, PageService) {
 
     // *****************************************************************************
 
+    /**
+     * Controller function to copy a page.
+     * 
+     * @param {Object} objEvent     object of the event
+     * @param {String} strPageName  string of the page name
+     */
     function pageCopy(objEvent, strPageName) {
         _.preventDefaultAndStopPropagation(objEvent);
         return PageService.pageCopy(strPageName);
@@ -62,6 +88,12 @@ function Controller($scope, $state, $sce, PageService) {
 
     // *****************************************************************************
 
+    /**
+     * Controller function to delete a page.
+     * 
+     * @param {Object} objEvent     object of the event
+     * @param {String} strPageName  string of the page name
+     */
     function pageDelete(objEvent, strPageName) {
         _.preventDefaultAndStopPropagation(objEvent);
         return PageService.pageDelete(strPageName, true, function() {
