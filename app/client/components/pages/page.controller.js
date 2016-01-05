@@ -41,6 +41,7 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
 
     vm.flags = {
         isEditOpened : false,
+        isEditFirst  : false,
         isEditActive : !!$state.params.edit,
         isEditCopy   : !!$state.params.copyOf,
     };
@@ -73,7 +74,8 @@ function Controller($scope, $state, $sce, $reactive, PageService) {
      * @param  {Boolean} isEditDisabled  true if after editing edit mode should be deactivated
      */
     function pageUpdate(isEditDisabled) {
-        return PageService.pageUpdate(vm.objPageEdit, isEditDisabled);
+        PageService.pageUpdate(vm.objPageEdit, isEditDisabled);
+        return vm.formPageEdit.$setPristine();
     }
 
     // *****************************************************************************

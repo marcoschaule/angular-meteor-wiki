@@ -37,10 +37,9 @@ function Service($rootScope, $state, $modal, $q, $location) {
     // Service variables
     // *****************************************************************************
 
-    service.flags              = {};
-    service.flags.isInit       = false;
-    service.flags.isEditActive = false;
-    service.flags.isEditFirst  = false;
+    service.flags = {
+        isEditFirst: false,
+    };
 
     // *****************************************************************************
     // Service function linking
@@ -87,6 +86,7 @@ function Service($rootScope, $state, $modal, $q, $location) {
     /**
      * Service function to update a page.
      * 
+     * @param {Object}  objUpdate       object of the page to be updated
      * @param {Boolean} isEditDisabled  true if after updating the "edit" mode is deactivated
      */
     function pageUpdate(objUpdate, isEditDisabled) {
@@ -99,20 +99,16 @@ function Service($rootScope, $state, $modal, $q, $location) {
         // call defined create or update function
         Meteor.call('pagesCreateOrUpdateOne', { name: strPageName }, objUpdate);
 
-        // change flags
-        service.flags.isEditActive = !isEditDisabled;
-        service.flags.isEditFirst  = false;
-
         // broadcast if "sidebar" was updated
         if ('sidebar' === $state.params.page) {
             $rootScope.$emit('amwBroadcastSidebarChanged');
         }
 
         // if it is another page now, redirect
-        if (strPageName !== $state.params.page) {
-            $state.go('page', { page: strPageName, edit: !isEditDisabled });
+        if (strPageName !== $state.params.page || !!$state.params.copyOf) {
+            $state.go('page', { page: strPageName, edit: !isEditDisabled, copyOf: null }, { reload: true });
         }
-        
+
         // If "edit" state needs to be canceled, cancel page editing. 
         if (isEditDisabled) {
             return pageEditClose(strPageName);
@@ -227,11 +223,12 @@ function Service($rootScope, $state, $modal, $q, $location) {
      * @param {String} [strPageName]  (optional) string of page to go to after closing
      */
     function pageEditClose(strPageName) {
+        var strPageNameFinal = strPageName || $state.params.copyOf || $state.params.page;
         $state.go(
                 // state name to go to
                 'page',
                 // query params
-                { page: strPageName || $state.params.page, edit: null, first: null },
+                { page: strPageNameFinal, edit: null, copyOf: null },
                 // options
                 { reload: true });
     }

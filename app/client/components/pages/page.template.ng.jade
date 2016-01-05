@@ -47,13 +47,13 @@ div(data-ng-if="vm.flags.isEditActive")
                     data-ui-codemirror-opts="vm.editorOptions")
         fieldset.form-group
             button.btn.btn-success(
-                    data-ng-disabled="vm.formPageEdit.$pristine",
+                    data-ng-disabled="vm.formPageEdit.$pristine && !vm.flags.isEditCopy",
                     data-ng-click="vm.pageUpdate()")
                 i.fa.fa-lg.fa-floppy-o
                 |&nbsp;
                 |{{ 'common.Save' | translate }}
             button.btn.btn-success(
-                    data-ng-disabled="vm.formPageEdit.$pristine",
+                    data-ng-disabled="vm.formPageEdit.$pristine && !vm.flags.isEditCopy",
                     data-ng-click="vm.pageUpdate(true)")
                 i.fa.fa-lg.fa-floppy-o
                 |&nbsp;

@@ -20,14 +20,27 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($state, $modal, $timeout, PageService) {
+function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService) {
     var vm = this;
+
+    // make view model reactive
+    $reactive(this).attach($scope);
+
+    // *****************************************************************************
+    // Subscriptions
+    // *****************************************************************************
+
+    // subscribe to pages collection
+    vm.subscribe('pages');
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
     vm.flags = {};
+    vm.helpers({
+        '__isEditFirst': _isEditFirst
+    });
 
     // *****************************************************************************
     // Controller function linking
@@ -117,6 +130,18 @@ function Controller($state, $modal, $timeout, PageService) {
     // *****************************************************************************
 
     /**
+     * Helper function to test whether the current page exists or not.
+     * 
+     * @return {Boolean}  true if page exists
+     */
+    function _isEditFirst() {
+        var objPage = Pages.findOne({ name: $state.params.page });
+        vm.flags.isEditFirst = !objPage;
+    }
+
+    // *****************************************************************************
+
+    /**
      * Helper function to initialize the controller.
      * This method is immediately invoked.
      */
@@ -125,6 +150,16 @@ function Controller($state, $modal, $timeout, PageService) {
             vm.flags.isEditCopy = !!$state.params.copyOf;
         });
     } _init();
+
+    // *****************************************************************************
+    // Events
+    // *****************************************************************************
+
+    // Event to change state in sidebar if event changes successfully
+    $rootScope.$on('$stateChangeSuccess', function(
+            objEvent, objToState, objToParams, objFromState, objFromParams) {
+        _isEditFirst();
+    });
 
     // *****************************************************************************
 }

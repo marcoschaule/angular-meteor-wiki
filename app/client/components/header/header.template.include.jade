@@ -16,7 +16,7 @@
                 |&nbsp;
                 |{{ 'common.Copy' | translate }}
             button.btn.btn-link(
-                    data-ng-disabled="vm.isIndexPage || vm.flags.isEditFirst",
+                    data-ng-disabled="vm.flags.isEditFirst",
                     data-ng-click="vm.pageDelete()")
                 i.fa.fa-eraser
                 |&nbsp;
@@ -28,3 +28,5 @@
             .input-group
                 input.form-control(type="text", id="search" name="search")
                 .input-group-addon.btn.btn-default: i.fa.fa-search
+
+.row: .col-xs-12 vm.flags.isEditFirst: {{ vm.flags.isEditFirst }}
