@@ -1,6 +1,6 @@
 {
-    "name"        : "angular-meteor-wiki",
+    "name"        : "Angular-Meteor-Wiki",
     "description" : "Wiki in Meteor and AngularJS",
-    "version"     : "0.0.1",
+    "version"     : "0.1.1",
     "git"         : "https://github.com/OnceMac/angular-meteor-wiki"
 }
