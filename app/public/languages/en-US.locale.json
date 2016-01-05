@@ -68,8 +68,9 @@
   "pages.form.edit.Title"                                      : "Page title",
   "pages.form.edit.Content"                                    : "Page content",
   "pages.VersionsOf"                                           : "Versions of",
-  "pages.versions.createdBy"                                   : "created by",
-  "pages.versions.changedBy"                                   : "changed by",
+  "pages.list.Title"                                           : "List of all pages",
+  "pages.list.All"                                             : "All pages",
+  "pages.history.Title"                                        : "Page history",
 
   "help.Title"                                                 : "Help",
 
@@ -94,14 +95,24 @@
   "common.Cancel"                                              : "Cancel",
   "common.CancelAndReturn"                                     : "Cancel and return",
   "common.Back"                                                : "Back",
+  "common.Preview"                                             : "Preview",
   "common.at"                                                  : "at",
   "common.by"                                                  : "by",
   "common.createdAt"                                           : "created at",
+  "common.CreatedAt"                                           : "Created at",
   "common.createdBy"                                           : "created by",
+  "common.CreatedBy"                                           : "Created by",
   "common.updatedAt"                                           : "updated at",
+  "common.UpdatedAt"                                           : "Updated at",
   "common.updatedBy"                                           : "updated by",
+  "common.UpdatedBy"                                           : "Updated by",
   "common.lastUpdatedAt"                                       : "last edited at",
   "common.lastUpdatedBy"                                       : "last edited by",
+  "common.changedAt"                                           : "changed at",
+  "common.ChangedAt"                                           : "Changed at",
+  "common.changedBy"                                           : "changed by",
+  "common.ChangedBy"                                           : "Changed by",
+
 
   "email.resetPassword.template.subject"                       : "Link to reset your password",
 

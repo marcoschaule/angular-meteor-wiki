@@ -1,5 +1,5 @@
 /**
- * @name        AmwPageToolbarCtrl
+ * @name        AmwPageHistoryCtrl
  * @author      Marco Schaule <marco.schaule@net-designer.net>
  * @file        This file is an AngularJS controller.
  * 
@@ -14,80 +14,88 @@
 
 angular
     .module('amw-controllers')
-    .controller('AmwHeaderCtrl', Controller);
+    .controller('AmwPageHistoryCtrl', Controller);
 
 // *****************************************************************************
 // Controller definition function
 // *****************************************************************************
 
-function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService) {
+function Controller($scope, $state, $sce, $reactive, PageService) {
     var vm = this;
 
+    // make view model reactive
+    $reactive(this).attach($scope);
+
     // *****************************************************************************
-    // Public variables
+    // Public variables and reactive helpers
     // *****************************************************************************
 
-    vm.flags = PageService.flags;
+    vm.helpers({
+        objPage: _readPage, // produces "vm.arrPages"
+    });
+
+    // subscribe to pages collection
+    vm.subscribe('pages');
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
-    vm.signOut         = signOut;
-    vm.pageEditOpen    = pageEditOpen;
-    vm.pageCopy        = pageCopy;
-    vm.pageDelete      = pageDelete;
-    vm.pageHistoryOpen = pageHistoryOpen;
-    vm.pageBack        = pageBack;
-    vm.isSignedIn      = isSignedIn;
-    vm.isState         = isState;
-    vm.isEditCopy      = isEditCopy;
+    vm.pageVersionReset  = pageVersionReset;
+    vm.pageVersionDelete = pageVersionDelete;
+    vm.pageExpandAll     = pageExpandAll;
+    vm.pageCollapseAll   = pageCollapseAll;
+    vm.pageBack          = pageBack;
+    vm.markdownContent   = markdownContent;
 
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
 
     /**
-     * Controller function to sign out.
+     * Controller function to reset page to a version.
+     * 
+     * @param  {Object} objEvent  object of DOM event
+     * @param  {Number} numIndex  number of index to be reset
      */
-    function signOut() {
-        AuthService.signOut();
+    function pageVersionReset(objEvent, numIndex) {
+        _.preventDefaultAndStopPropagation(objEvent);
+        return PageService.pageHistoryReset(numIndex);
     }
     
     // *****************************************************************************
 
     /**
-     * Controller function to open the page's edit mode.
+     * Controller function to delete a page version.
+     * 
+     * @param  {Object} objEvent  object of DOM event
+     * @param  {Number} numIndex  number of index to be deleted
      */
-    function pageEditOpen() {
-        PageService.pageEditOpen();
+    function pageVersionDelete(objEvent, numIndex) {
+        _.preventDefaultAndStopPropagation(objEvent);
+        return PageService.pageHistoryDelete(numIndex);
     }
 
     // *****************************************************************************
 
     /**
-     * Controller function to copy a page.
+     * Controller function to expand all page versions.
      */
-    function pageCopy() {
-        PageService.pageCopy();
+    function pageExpandAll() {
+        for (var i = 0; i < vm.objPage.versions.length; i += 1) {
+            vm.objPage.versions[i].open = true;
+        }
     }
 
     // *****************************************************************************
 
     /**
-     * Controller function to delete a page (including all versions).
+     * Controller function to collapse all page versions.
      */
-    function pageDelete() {
-        PageService.pageDelete();
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Controller function to open the current page's history.
-     */
-    function pageHistoryOpen() {
-        PageService.pageHistoryOpen();
+    function pageCollapseAll() {
+        for (var i = 0; i < vm.objPage.versions.length; i += 1) {
+            vm.objPage.versions[i].open = false;
+        }
     }
 
     // *****************************************************************************
@@ -102,35 +110,13 @@ function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService
     // *****************************************************************************
 
     /**
-     * Controller function to test whether user is singed in or not.
+     * Controller function to markdown the content.
      * 
-     * @return {Boolean}  true if user is signed in
+     * @param  {String} strContent  string to be marked
+     * @return {String}             string marked
      */
-    function isSignedIn() {
-        return !!Meteor.userId();
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Controller function to test whether state is "page".
-     *
-     * @param  {String}  strState  string of the state to be compared
-     * @return {Boolean}           true if is "page" state
-     */
-    function isState(strState) {
-        return (strState === $state.current.name);
-    }
-
-    // *****************************************************************************
-
-    /**
-     * Controller function to test whether the current page is a copy.
-     * 
-     * @return {Boolean}  true if current page is a copy
-     */
-    function isEditCopy() {
-        return !!state.params.copyOf;
+    function markdownContent(strContent) {
+        return marked(strContent);
     }
 
     // *****************************************************************************
@@ -138,13 +124,21 @@ function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService
     // *****************************************************************************
 
     /**
-     * Helper function to initialize the controller.
-     * This method is immediately invoked.
+     * Helper function to read all pages.
+     *
+     * @return {Array}  array of the found pages
+     */
+    function _readPage() {
+        return Pages.findOne({ name: $state.params.page });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Helper function to initialize controller. 
+     * This function is invoked immediately.
      */
     function _init() {
-        $timeout(function() {
-            vm.flags.isEditCopy = !!$state.params.copyOf;
-        });
     } _init();
 
     // *****************************************************************************

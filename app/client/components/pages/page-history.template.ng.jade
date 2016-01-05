@@ -1,0 +1,57 @@
+mixin expandAndCollapseButtons
+    .btn-group
+        a.btn.btn-sm.btn-default(
+                data-ng-click="vm.pageExpandAll()")
+            i.fa.fa-plus
+        a.btn.btn-sm.btn-default(
+                data-ng-click="vm.pageCollapseAll()")
+            i.fa.fa-minus
+
+//- *****************************************************************************
+
+h6 {{:: vm.objPage.versions[0].title }} 
+    span.lower ({{:: vm.objPage.name }})
+
+.row
+    .col-md-9
+        h2 {{ 'pages.history.Title' | translate }}
+    .col-md-3.right.padding-right-8px
+        h2: +expandAndCollapseButtons
+
+.table.table-striped.table-hover.pointer
+    .thead
+        .row
+            .col.col-xs-1.left: strong #
+            .col.col-xs-3.left: strong {{ 'pages.Title' | translate }}
+            .col.col-xs-3.left: strong {{ 'common.ChangedAt' | translate }}
+            .col.col-xs-3.left: strong {{ 'common.ChangedBy' | translate }}
+            .col.col-xs-2.right &nbsp;
+    .tbody
+        .row(data-ng-repeat="objHistory in vm.objPage.versions track by $index",
+                    data-ng-click="objHistory.open = !objHistory.open")
+            .col.col-xs-1.left  {{:: $index+1 }}.
+            .col.col-xs-3.left  {{:: objHistory.title }}
+            .col.col-xs-3.left  {{:: objHistory.updatedAt | date:'medium' }}
+            .col.col-xs-3.left  {{:: objHistory.updatedBy.username }}
+            .col.col-xs-2.right: .btn-group
+                a.btn.btn-sm.btn-primary(
+                        data-ng-click="vm.pageVersionReset($event, $index)")
+                    i.fa.fa-undo
+                a.btn.btn-sm.btn-danger(
+                        data-ng-click="vm.pageVersionDelete($event, $index)")
+                    i.fa.fa-eraser
+
+            .clearfix
+            .preview(data-ng-class="{ 'open': objHistory.open }")
+                .preview-heading {{:: 'common.Preview' | translate }}:
+                .preview-content(data-ng-bind-html="::vm.markdownContent(objHistory.content)")
+
+hr
+.row
+    .col-md-3.left
+        a.btn.btn-link(data-ng-click="vm.pageBack()")
+            i.fa.fa-chevron-left
+            |&nbsp;
+            |{{ 'common.Back' | translate }}
+    .col-md-9.right.padding-right-8px
+        +expandAndCollapseButtons

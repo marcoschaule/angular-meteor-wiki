@@ -2,25 +2,37 @@
 
     .col-xs-8
         h6 &nbsp;
-        span(data-ng-if="vm.isPageState() && !vm.flags.isEditActive && vm.isSignedIn()")
-            button.btn.btn-link(
+        span(data-ng-if="vm.isState('pageHistory') && vm.isSignedIn()")
+            a.btn.btn-link(
+                    data-ng-click="vm.pageBack()")
+                i.fa.fa-chevron-left
+                |&nbsp;
+                |{{ 'common.Back' | translate }}
+        span(data-ng-if="vm.isState('page') && !vm.flags.isEditActive && vm.isSignedIn()")
+            a.btn.btn-link(
                     data-ng-click="vm.pageEditOpen()")
                 i.fa.fa-pencil
                 |&nbsp;
                 |{{ 'common.Edit' | translate }}
-        span(data-ng-if="vm.isPageState() && vm.isSignedIn()")
-            button.btn.btn-link(
+        span(data-ng-if="vm.isState('page') && vm.isSignedIn()")
+            a.btn.btn-link(
                     data-ng-disabled="vm.flags.isEditFirst",
                     data-ng-click="vm.pageCopy()")
                 i.fa.fa-copy
                 |&nbsp;
                 |{{ 'common.Copy' | translate }}
-            button.btn.btn-link(
+            a.btn.btn-link(
                     data-ng-disabled="vm.flags.isEditFirst",
                     data-ng-click="vm.pageDelete()")
                 i.fa.fa-eraser
                 |&nbsp;
                 |{{ 'common.Delete' | translate }}
+        span(data-ng-if="vm.isState('page') && vm.isSignedIn()")
+            a.btn.btn-link(
+                    data-ng-click="vm.pageHistoryOpen()")
+                i.fa.fa-list
+                |&nbsp;
+                |{{ 'pages.history.Title' | translate }}
     
     .col-xs-4.right
         form(id="formSearch", name="formSearch")

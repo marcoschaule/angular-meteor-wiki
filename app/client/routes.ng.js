@@ -21,6 +21,7 @@ angular
             .state('resetPasswordComplete', getStateObjectResetPassword('complete'))
             .state('page',                  getStateObjectPage())
             .state('pageList',              getStateObjectWikiPageList())
+            .state('pageHistory',           getStateObjectWikiPageHistory())
             ;
 
         $urlRouterProvider.otherwise('/');
@@ -117,6 +118,26 @@ function getStateObjectWikiPageList() {
             content: {
                 templateUrl: 'page-list.template.html',
                 controller : 'AmwPageListCtrl as vm',
+            },
+        },
+    };
+    return objState;
+}
+
+// *****************************************************************************
+
+/**
+ * Function to get the route object for "home".
+ * 
+ * @return {Object}  object for route
+ */
+function getStateObjectWikiPageHistory() {
+    var objState = {
+        url  : '/wiki/page-history/:page',
+        views: {
+            content: {
+                templateUrl: 'page-history.template.html',
+                controller : 'AmwPageHistoryCtrl as vm',
             },
         },
     };

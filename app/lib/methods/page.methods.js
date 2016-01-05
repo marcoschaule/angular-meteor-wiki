@@ -175,18 +175,20 @@ pagesTogglePrivateOne: function(objFind, isPrivate) {
  * @param  {Object} numIndex  number of which version to reset
  * @return {Object}           object of write result like "{ nRemoved: 4 }"
  */
-pagesResetOneVersion: function(objFind, numIndex) {
+pagesResetOneVersion: function(objFind, numIndex, callback) {
     if (!Meteor.userId()) {
         return _.isFunction(callback) && callback('User not singed in!');
     }
 
     var objPage         = Pages.findOne(objFind);
-    var objVersionReset = objPage.arrVersions[numIndex];
+    var objVersionReset = objPage.versions[numIndex];
 
-    objVersionReset._idChangedBy  = Meteor.userId();
-    objVersionReset.dateChangedAt = new Date();
+    objVersionReset.updatedBy = { _id: Meteor.userId(), username: Meteor.user().username };
+    objVersionReset.updatedAt = new Date();
 
-    return Pages.update(objFind, { $push: { arrVersions: { $each: [ objVersionReset ], $position: 0 } } });
+    Pages.update(objFind, { $push: { versions: { $each: [ objVersionReset ], $position: 0 } } });
+
+    return (_.isFunction(callback) && callback(null));
 },
 
 // ********************************************************************************
@@ -198,16 +200,18 @@ pagesResetOneVersion: function(objFind, numIndex) {
  * @param  {Object} numIndex  number of which version to reset
  * @return {Object}           object of write result like "{ nRemoved: 4 }"
  */
-pagesDeleteOneVersion: function(objFind, numIndex) {
+pagesDeleteOneVersion: function(objFind, numIndex, callback) {
     if (!Meteor.userId()) {
         return _.isFunction(callback) && callback('User not singed in!');
     }
 
     var objPage        = Pages.findOne(objFind);
-    var arrVersionsNew = objPage.arrVersions;
+    var arrVersionsNew = objPage.versions;
     arrVersionsNew.splice(numIndex, 1);
 
-    return Pages.update(objFind, { $set: { arrVersions: arrVersionsNew } });
+    Pages.update(objFind, { $set: { versions: arrVersionsNew } });
+
+    return (_.isFunction(callback) && callback(null));
 }
 
 // ********************************************************************************

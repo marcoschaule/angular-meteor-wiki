@@ -42,13 +42,17 @@ function Service($rootScope, $state, $timeout, $modal, $q, $location) {
     // Service function linking
     // *****************************************************************************
 
-    service.pageOpen      = pageOpen;
-    service.pageUpdate    = pageUpdate;
-    service.pageDelete    = pageDelete;
-    service.pageReset     = pageReset;
-    service.pageCopy      = pageCopy;
-    service.pageEditOpen  = pageEditOpen;
-    service.pageEditClose = pageEditClose;
+    service.pageOpen          = pageOpen;
+    service.pageUpdate        = pageUpdate;
+    service.pageDelete        = pageDelete;
+    service.pageReset         = pageReset;
+    service.pageCopy          = pageCopy;
+    service.pageEditOpen      = pageEditOpen;
+    service.pageEditClose     = pageEditClose;
+    service.pageHistoryOpen   = pageHistoryOpen;
+    service.pageHistoryReset  = pageHistoryReset;
+    service.pageHistoryDelete = pageHistoryDelete;
+    service.pageBack          = pageBack;
 
     // *****************************************************************************
     // Service function definition
@@ -228,6 +232,84 @@ function Service($rootScope, $state, $timeout, $modal, $q, $location) {
                 { page: strPageNameFinal, edit: null, copyOf: null },
                 // options
                 { reload: true });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to open the history of a page.
+     * 
+     * @param {String} strPageName  string of the name of the page with the history
+     */
+    function pageHistoryOpen(strPageName) {
+        var strPageNameFinal = strPageName || $state.params.page;
+        $state.go(
+                // state name to go to
+                'pageHistory',
+                // query params
+                { page: strPageNameFinal },
+                // options
+                {});
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to reset a page to a version.
+     * 
+     * @param {Number} numIndex       number of index to be reset
+     * @param {String} [strPageName]  (optional) string of page name to be reset
+     */
+    function pageHistoryReset(numIndex, strPageName) {
+        var strPageNameFinal = strPageName || $state.params.page;
+        return Meteor.call('pagesResetOneVersion',
+                { name: strPageNameFinal },
+                numIndex, function() {
+
+            return $state.go(
+                // state name to go to
+                'page',
+                // query params
+                { page: strPageNameFinal },
+                // options
+                {});
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to delete a page version.
+     * 
+     * @param {Number} numIndex       number of index to be deleted
+     * @param {String} [strPageName]  (optional) string of page name to be reset
+     */
+    function pageHistoryDelete(numIndex, strPageName) {
+        _confirmDeletePage(function() {
+            var strPageNameFinal = strPageName || $state.params.page;
+            return Meteor.call('pagesDeleteOneVersion',
+                    { name: strPageNameFinal },
+                    numIndex, function() {
+            });
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to go back to a page.
+     * 
+     * @param {String} strPageName  string of the page name to go back to
+     */
+    function pageBack(strPageName) {
+        var strPageNameFinal = strPageName || $state.params.page;
+        return $state.go(
+                // state name to go to
+                'page',
+                // query params
+                { page: strPageNameFinal },
+                // options
+                {});
     }
 
     // *****************************************************************************
