@@ -22,6 +22,7 @@ angular
             .state('page',                  getStateObjectPage())
             .state('pageList',              getStateObjectWikiPageList())
             .state('pageHistory',           getStateObjectWikiPageHistory())
+            .state('pageSearch',            getStateObjectWikiPageSearch())
             ;
 
         $urlRouterProvider.otherwise('/');
@@ -85,6 +86,8 @@ function getStateObjectProfile() {
 }
 
 // *****************************************************************************
+// Routing object definitions - Pages
+// *****************************************************************************
 
 /**
  * Function to get the route object for "home".
@@ -143,7 +146,28 @@ function getStateObjectWikiPageHistory() {
     };
     return objState;
 }
+// *****************************************************************************
 
+/**
+ * Function to get the route object for "home".
+ * 
+ * @return {Object}  object for route
+ */
+function getStateObjectWikiPageSearch() {
+    var objState = {
+        url  : '/wiki/page-search/:query',
+        views: {
+            content: {
+                templateUrl: 'page-search.template.html',
+                controller : 'AmwPageSearchCtrl as vm',
+            },
+        },
+    };
+    return objState;
+}
+
+// *****************************************************************************
+// Routing object definitions - Authentication
 // *****************************************************************************
 
 /**

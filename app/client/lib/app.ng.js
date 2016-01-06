@@ -29,6 +29,7 @@ angular
             prefix: 'languages/',
             suffix: '.locale.json'
         });
+        $translateProvider.useSanitizeValueStrategy('sanitize');
         $translateProvider.preferredLanguage(C_CONFIG_COMMON.language.default);
     });
 

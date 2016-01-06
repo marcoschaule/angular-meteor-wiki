@@ -49,6 +49,10 @@ function capitalizeAll(str) {
  * @return {String}      string capitalized
  */
 function parseTitle(str) {
+    if (!str || !str.replace) {
+        return str;
+    }
+
     str = str.replace(/\-/g, ' ').replace(/\s{2}/g, ' ').trim();
     return _.capitalizeAll(str);
 }
@@ -63,6 +67,10 @@ function parseTitle(str) {
  * @return {String}      string capitalized
  */
 function parseQuery(str) {
+    if (!str || !str.toLowerCase) {
+        return str;
+    }
+
     return str.toLowerCase().replace(/\s+/g, '-');
 }
 

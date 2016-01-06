@@ -20,14 +20,15 @@ angular
 // Controller definition function
 // *****************************************************************************
 
-function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService) {
+function Controller($state, $timeout, PageService) {
     var vm = this;
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.flags = PageService.flags;
+    vm.flags    = PageService.flags;
+    vm.strQuery = '';
 
     // *****************************************************************************
     // Controller function linking
@@ -42,6 +43,7 @@ function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService
     vm.isSignedIn      = isSignedIn;
     vm.isState         = isState;
     vm.isEditCopy      = isEditCopy;
+    vm.search          = search;
 
     // *****************************************************************************
     // Controller function definition
@@ -134,6 +136,15 @@ function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService
     }
 
     // *****************************************************************************
+
+    /**
+     * Controller function to search pages for a query.
+     */
+    function search() {
+        $state.go('pageSearch', { query: vm.strQuery });
+    }
+
+    // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
 
@@ -144,6 +155,7 @@ function Controller($rootScope, $scope, $state, $timeout, $reactive, PageService
     function _init() {
         $timeout(function() {
             vm.flags.isEditCopy = !!$state.params.copyOf;
+            vm.strQuery         = $state.params.query;
         });
     } _init();
 

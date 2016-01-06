@@ -35,8 +35,16 @@
                 |{{ 'pages.history.Title' | translate }}
     
     .col-xs-4.right
-        form(id="formSearch", name="formSearch")
+        form(id="form-search",
+                name="formSearch",
+                data-ng-submit="vm.search()")
             h6 {{ 'header.title.Search' | translate }}
             .input-group
-                input.form-control(type="text", id="search" name="search")
-                .input-group-addon.btn.btn-default: i.fa.fa-search
+                input.form-control(type="text",
+                        id="form-search-input",
+                        name="formSearchInput",
+                        data-ng-model="vm.strQuery")
+                div.input-group-addon.btn.btn-default(
+                        data-ng-click="vm.search()")
+                    i.fa.fa-search
+

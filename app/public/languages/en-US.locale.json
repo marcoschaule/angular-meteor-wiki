@@ -71,6 +71,10 @@
   "pages.list.Title"                                           : "List of all pages",
   "pages.list.All"                                             : "All pages",
   "pages.history.Title"                                        : "Page history",
+  "pages.search.Title"                                         : "Page search",
+  "pages.search.SearchFor"                                     : "Search for «{{ strQuery }}»",
+  "pages.search.VersionUpdatedAt"                              : "Version last updated at",
+  "pages.search.VersionUpdatedBy"                              : "Version last updated by",
 
   "help.Title"                                                 : "Help",
 

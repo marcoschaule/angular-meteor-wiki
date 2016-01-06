@@ -1,0 +1,21 @@
+div(data-ng-repeat="objPage in vm.arrPages")
+
+h6 {{ 'pages.search.Title' | translate }} 
+h2 {{ 'pages.search.SearchFor' | translate:{ strQuery: vm.strQuery } }}
+
+.table.table-striped.table-hover.pointer
+    .thead
+        .row
+            .col.col-xs-4.left: strong {{ 'pages.Title' | translate }}
+            .col.col-xs-2.left: strong {{ 'common.CreatedAt' | translate }}
+            .col.col-xs-2.left: strong {{ 'common.CreatedBy' | translate }}
+            .col.col-xs-2.left: strong {{ 'pages.search.VersionUpdatedAt' | translate }}
+            .col.col-xs-2.left: strong {{ 'pages.search.VersionUpdatedBy' | translate }}
+    .tbody
+        .row(data-ng-repeat="objPage in vm.arrPages track by $index",
+                    data-ng-click="vm.pageOpen(null, objPage.name)")
+            .col.col-xs-4.left  {{:: objPage.versions[0].title }}
+            .col.col-xs-2.left  {{:: objPage.createdAt | date:'medium' }}
+            .col.col-xs-2.left  {{:: objPage.createdBy.username }}
+            .col.col-xs-2.left  {{:: objPage.versions[0].updatedAt | date:'medium' }}
+            .col.col-xs-2.left  {{:: objPage.versions[0].updatedBy.username }}
