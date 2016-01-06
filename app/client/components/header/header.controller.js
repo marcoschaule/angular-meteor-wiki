@@ -1,5 +1,5 @@
 /**
- * @name        AmwPageToolbarCtrl
+ * @name        AmwHeaderCtrl
  * @author      Marco Schaule <marco.schaule@net-designer.net>
  * @file        This file is an AngularJS controller.
  * 

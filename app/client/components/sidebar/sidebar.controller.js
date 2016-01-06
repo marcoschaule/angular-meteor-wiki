@@ -1,5 +1,5 @@
 /**
- * @name        AmwPageSidebarCtrl
+ * @name        AmwSidebarCtrl
  * @author      Marco Schaule <marco.schaule@net-designer.net>
  * @file        This file is an AngularJS controller.
  * 
