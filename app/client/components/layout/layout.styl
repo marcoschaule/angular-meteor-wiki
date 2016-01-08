@@ -17,12 +17,15 @@ html, body
     height 100%
     padding 0
 
+h4
+    margin-top 3rem !important
 h6
     margin-bottom 1rem !important
 
 fieldset
-    margin 2rem 0 .5rem 0
+    margin 1rem 0 !important
 label
+    display block
     font-weight normal
 input[type="radio"], input[type="checkbox"]
     display inline
@@ -132,18 +135,30 @@ input[type="radio"] + label, input[type="checkbox"] + label
     padding-right 24px !important
 
 // colors
+.red
+    color red
+.green
+    color green
 .color-bg-2
     color $colorBackground2
     
 // error messages
-.errorField, .errorFieldEmpty
+.errorField, .errorFieldEmpty, .errorFieldDynamic
     font-weight normal
     height 3rem
     width 100%
+.errorFieldDynamic
+    height auto
 
 // cursors
 .pointer
     cursor pointer
+    
+// forms
+.form-input-like
+    padding 8px
+    border-radius $radiusDefault
+    background-color #e4e4e4
 
 // *****************************************************************************
 // Layout
@@ -158,7 +173,7 @@ input[type="radio"] + label, input[type="checkbox"] + label
     padding-bottom 120px
 #footer
     bottom 0
-    border-top 1px solid #dddddd
+    border-top 1px solid #ddd
     height 120px
     margin-top 2*$paddingDefault
     padding-top $paddingDefault
@@ -167,7 +182,7 @@ input[type="radio"] + label, input[type="checkbox"] + label
 
 .header
     height 10rem !important
-    border-bottom 1px solid #dddddd
+    border-bottom 1px solid #ddd
     margin-bottom 2*$paddingDefault
     padding-bottom $paddingDefault
 
@@ -259,4 +274,4 @@ div.table-hover > .tbody > .row:hover
 
 .CodeMirror
     border-radius $radiusDefault
-    border 1px solid #dddddd
+    border 1px solid #ddd

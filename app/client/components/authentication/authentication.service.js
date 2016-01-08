@@ -124,8 +124,7 @@ function Service($rootScope, $state) {
         return Accounts.createUser(objOptions, function(objErr) {
 
             // handle errors
-            objErrs = objErr && objErr.reason && getErrs(objErr.reason,
-                    'server', 'signUp');
+            objErrs = objErr && objErr.reason && getErrs(objErr.reason, 'server', 'signUp');
             return ('function' === typeof callback && callback(objErrs));
         });
     }
@@ -324,9 +323,10 @@ function Service($rootScope, $state) {
             password : objUserNew.strPassword,
             passwordConfirmation : objUserNew.strPasswordConfirmation,
             profile  : {
-                gender    : objUserNew.strGender,
-                firstName : objUserNew.strFirstName,
-                lastName  : objUserNew.strLastName,
+                gender      : objUserNew.strGender,
+                firstName   : objUserNew.strFirstName,
+                lastName    : objUserNew.strLastName,
+                primaryEmail: objUserNew.strEmail,
             },
         };
 
@@ -334,6 +334,20 @@ function Service($rootScope, $state) {
     }
 
     // *****************************************************************************
+
+    /**
+     * Helper function to initialize the service.
+     * This method is immediately invoked.
+     */
+    function _init() {
+        var isDone = false;
+        Tracker.autorun(function() {
+            if (!isDone && Meteor.user()) {
+                service.objUser = Meteor.user();
+                isDone = true;
+            }
+        });
+    } _init();
 
     // *****************************************************************************
 

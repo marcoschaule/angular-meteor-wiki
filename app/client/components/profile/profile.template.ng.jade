@@ -1,3 +1,141 @@
+include client/includes/jade/form.mixins.include.jade
+
 //- ****************************************************************************
 
-h2 {{ 'profile.Title' | translate }}
+h1 {{ 'profile.Title' | translate }}
+
+form#form-profile(
+        name="vm.formProfile",
+        method="POST",
+        data-ng-submit="")
+    
+    h4 {{ 'profile.PersonalInformation' | translate }}
+    .well
+        .alert.alert-danger(data-ng-if="vm.objErrs.strPersonalInformation")
+            |{{ vm.objErrs.strPersonalInformation | translate }}
+        label
+            |{{ 'authentication.Gender' | translate }}:
+        fieldset
+            +inputRadio('vm.objUser.profile.gender', 'vm.objErrs.strGender',
+                    'authentication.gender.Female', 'profile-gender-female',
+                    'profileGender', 'female', "110", '')
+            +inputRadio('vm.objUser.profile.gender', 'vm.objErrs.strGender',
+                    'authentication.gender.Male', 'profile-gender-male',
+                    'profileGender', 'male', "120", '')
+            +inputRadio('vm.objUser.profile.gender', 'vm.objErrs.strGender',
+                    'authentication.gender.Other', 'profile-gender-other',
+                    'profileGender', 'other', "130", '')
+        fieldset
+            +inputText('vm.objUser.profile.firstName', 'vm.objErrs.strFirstName',
+                    'authentication.FirstName', 'profile-first-name',
+                    'profileFirstName', '', '210', '')
+        fieldset
+            +inputText('vm.objUser.profile.lastName', 'vm.objErrs.strLastName',
+                    'authentication.LastName', 'profile-last-name',
+                    'profileLastName', '', '220', '')
+        fieldset.right
+            button.btn.btn-primary(
+                    tabindex="1000",
+                    data-ng-disabled="vm.formProfile.$pristine")
+                |{{ 'common.Save' | translate }}
+
+//- *****************************************************************************
+
+form#form-username(
+        name="vm.formUsername",
+        method="POST",
+        data-ng-submit="")
+
+    h4 {{ 'authentication.Username' | translate }}
+    .well
+        .alert.alert-danger(data-ng-if="vm.objErrs.strUsername")
+            |{{ vm.objErrs.strUsername | translate }}
+        label
+            |{{ 'authentication.UsernameCurrent' | translate }}:
+        .form-input-like
+            |{{ vm.objUser.username }}
+        fieldset
+            +inputText('vm.objUserNew.username', 'vm.objErrs.strUsernameNew',
+                    'authentication.UsernameNew', 'profile-username',
+                    'profileUsername', '', '310', 'vm.isInvalid(\'strUsername\')')
+        .errorFieldDynamic
+            +errorHandler('strUsername')
+        fieldset.right
+            button.btn.btn-primary(
+                    tabindex="1000",
+                    data-ng-disabled="vm.formUsername.$pristine")
+                |{{ 'common.Save' | translate }}
+
+//- *****************************************************************************
+
+form#form-email(
+        name="vm.formEmail",
+        method="POST",
+        data-ng-submit="")
+
+    h4 {{ 'authentication.Email' | translate }}
+    .well
+        table.table
+            thead
+                tr
+                    th {{ 'authentication.email.Primary' | translate }}
+                    th {{ 'authentication.email.Verified' | translate }}
+                    th {{ 'authentication.email.Address' | translate }}
+                    th
+            tbody
+                tr(data-ng-repeat="objEmail in vm.objUser.emails")
+                    td.left
+                        i(data-ng-if=" objEmail.primary").fa.fa-lg.fa-check.green
+                        i(data-ng-if="!objEmail.primary").fa.fa-lg.fa-times.red
+                    td.left
+                        i(data-ng-if=" objEmail.verified").fa.fa-lg.fa-check.green
+                        i(data-ng-if="!objEmail.verified").fa.fa-lg.fa-times.red
+                    td.left
+                        span {{ objEmail.address }}
+                    td.right: .btn-group
+                        a.btn.btn-sm.btn-primary: i.fa.fa-check
+                        a.btn.btn-sm.btn-danger: i.fa.fa-eraser
+        fieldset
+            +inputText('vm.objUser.strEmail', 'vm.objErrs.strEmail',
+                    'authentication.Email', 'profile-email',
+                    'profileEmail', '', '410', 'vm.isInvalid(\'strEmail\')', true)
+        .errorFieldDynamic
+            +errorHandler('strEmail')
+        fieldset
+            +inputText('vm.objUser.strEmailConfirmation', 'vm.objErrs.strEmailConfirmation',
+                    'authentication.EmailConfirmation', 'profile-email-confirmation',
+                    'profileEmailConfirmation', '', '420', 'vm.isInvalid(\'strEmailConfirmation\', \'strEmail\')', true)
+        .errorFieldDynamic
+            +errorHandler('strEmailConfirmation')
+        fieldset.right
+            button.btn.btn-primary(
+                    tabindex="1000",
+                    data-ng-disabled="vm.formUsername.$pristine")
+                |{{ 'common.Save' | translate }}
+
+//- *****************************************************************************
+
+form#form-password(
+        name="vm.formPassword",
+        method="POST",
+        data-ng-submit="")
+
+    h4 {{ 'authentication.Password' | translate }}
+    .well
+        fieldset
+            +inputPassword('vm.objUser.strPassword', 'vm.objErrs.strPassword',
+                    'authentication.Password', 'profile-password',
+                    'profilePassword', '', '510', 'vm.isInvalid(\'strPassword\')', true)
+        .errorFieldDynamic
+            +errorHandler('strPassword')
+        fieldset
+            +inputPassword('vm.objUser.strPasswordConfirmation', 'vm.objErrs.strPasswordConfirmation',
+                    'authentication.PasswordConfirmation', 'profile-password-confirmation',
+                    'profilePasswordConfirmation', '', '520', 'vm.isInvalid(\'strPasswordConfirmation\', \'strPassword\')', true)
+        .errorFieldDynamic
+            +errorHandler('strPasswordConfirmation')
+        fieldset.right
+            button.btn.btn-primary(
+                    tabindex="1000",
+                    data-ng-disabled="vm.formUsername.$pristine")
+                |{{ 'common.Save' | translate }}

@@ -79,7 +79,8 @@ function getStateObjectProfile() {
         url  : '/profile',
         views: {
             content: {
-                templateUrl  : 'profile.template.html',
+                templateUrl: 'profile.template.html',
+                controller : 'AmwProfileCtrl as vm',
             },
         },
     });
