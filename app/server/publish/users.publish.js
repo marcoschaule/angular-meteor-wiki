@@ -19,7 +19,9 @@ Meteor.publish('userData', publishUserData);
  */
 function publishUserData() {
     if (this.userId) {
-        return Meteor.users.find({ _id: this.userId }, { fields: { 'role': 1 } });
+        return Meteor.users.find({ _id: this.userId }, { fields: {
+            _id: 1, role: 1, profile: 1, emails: 1, username: 1,
+        } });
     }
 
     return this.ready();

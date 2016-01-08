@@ -3,7 +3,7 @@
 //- ****************************************************************************
 
 mixin errorHandler(strErrName)
-    span&attributes({ 'data-ng-if': 'vm.objErrs.'+strErrName })
+    span&attributes({ 'data-ng-show': 'vm.objErrs.'+strErrName })
         |{{ 'authentication.error.#{strErrName}.'+vm.objErrs.#{strErrName}|translate }}
 
 mixin errorAlert(strErrName)

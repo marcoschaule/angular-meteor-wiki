@@ -56,6 +56,13 @@ function Service($rootScope, $state) {
             'field'  : 'strEmail',
         }],
 
+        // fields, keys and messages for adding an email
+        'addEmail': [{
+            'message': 'Email already exists',
+            'key'    : 'alreadyExists',
+            'field'  : 'strEmail',
+        }],
+
         // fields, keys and messages for forgotten password
         'forgotPassword': [],
 
@@ -67,13 +74,15 @@ function Service($rootScope, $state) {
     // Service function linking
     // *****************************************************************************
 
-    service.signIn         = signIn;
-    service.signUp         = signUp;
-    service.signOut        = signOut;
-    service.forgotPassword = forgotPassword;
-    service.resetPassword  = resetPassword;
-    service.isSignedIn     = isSignedIn;
-    service.getErrs        = getErrs;
+    service.signIn          = signIn;
+    service.signUp          = signUp;
+    service.signOut         = signOut;
+    service.forgotPassword  = forgotPassword;
+    service.resetPassword   = resetPassword;
+    service.addEmail        = addEmail;
+    service.setPrimaryEmail = setPrimaryEmail;
+    service.isSignedIn      = isSignedIn;
+    service.getErrs         = getErrs;
 
     // *****************************************************************************
     // Service function definition
@@ -190,6 +199,35 @@ function Service($rootScope, $state) {
                     'server', 'resetPassword');
             return ('function' === typeof callback && callback(objErrs));
         });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service method to add a new email address.
+     * 
+     * @param {String}   strEmail  string of new email address
+     * @param {Function} callback  function for callback
+     */
+    function addEmail(strEmail, callback) {
+        return Meteor.call('usersAddEmail', strEmail, function(objErr) {
+
+            // handle errors
+            var objErrs = objErr && objErr.reason && getErrs(objErr.reason, 'server', 'addEmail');
+            return ('function' === typeof callback && callback(objErrs));
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Service function to set the primary email address.
+     * 
+     * @param {String}   strEmail  string of new primary email address
+     * @param {Function} callback  function for callback
+     */
+    function setPrimaryEmail(strEmail, callback) {
+        return Meteor.call('usersSetPrimaryEmail', strEmail, callback);
     }
 
     // *****************************************************************************
@@ -340,11 +378,10 @@ function Service($rootScope, $state) {
      * This method is immediately invoked.
      */
     function _init() {
-        var isDone = false;
         Tracker.autorun(function() {
-            if (!isDone && Meteor.user()) {
+            if (Meteor.user()) {
                 service.objUser = Meteor.user();
-                isDone = true;
+                console.log(">>> Debug ====================; service.objUser:", service.objUser, '\n\n');
             }
         });
     } _init();

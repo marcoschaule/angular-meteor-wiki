@@ -25,27 +25,73 @@ function Controller($rootScope, $scope, $timeout, $reactive, AuthService, PageSe
 
     $reactive(vm).attach($scope);
 
-    vm.subscribe('users');
 
     // *****************************************************************************
     // Public variables
     // *****************************************************************************
 
-    vm.objUser        = {};
-    vm.objEmailNew    = {};
-    vm.objPasswordNew = {};
+    vm.strEmailNew = null;
+    vm.objErrs     = {};
+
+    // reactive helpers
+    vm.helpers({
+        objUser: _getUser
+    });
 
     // *****************************************************************************
     // Controller function linking
     // *****************************************************************************
 
+    vm.addEmail        = addEmail;
+    vm.setPrimaryEmail = setPrimaryEmail;
+
     // *****************************************************************************
     // Controller function definition
     // *****************************************************************************
 
+    function addEmail() {
+        return AuthService.addEmail(vm.strEmailNew, function(objErrs) {
+            if (objErrs) {
+                $timeout(function() {
+                    vm.objErrs = objErrs;
+                });
+                return;
+            }
+            _resetEmail();
+            _resetErrors();
+        });
+    }
+
+    // *****************************************************************************
+
+    /**
+     * Controller function to set primary email address.
+     * 
+     * @param {String} strEmail  string of email to be set to primary
+     */
+    function setPrimaryEmail(strEmail) {
+        return AuthService.setPrimaryEmail(strEmail);
+    }
+
     // *****************************************************************************
     // Controller helper definitions
     // *****************************************************************************
+
+    function _getUser() {
+        return Meteor.users.findOne({ _id: Meteor.userId() });
+    }
+
+    // *****************************************************************************
+
+    function _resetEmail() {
+        vm.strEmailNew = null;
+    }
+
+    // *****************************************************************************
+
+    function _resetErrors() {
+        vm.objErrs = {};
+    }
 
     // *****************************************************************************
 
@@ -54,13 +100,7 @@ function Controller($rootScope, $scope, $timeout, $reactive, AuthService, PageSe
      * This method is immediately invoked.
      */
     function _init() {
-        var isDone = false;
-        Tracker.autorun(function() {
-            if (!isDone && Meteor.user()) {
-                vm.objUser = Meteor.user();
-                isDone = true;
-            }
-        });
+        vm.subscribe('userData');
     } _init();
 
     // *****************************************************************************

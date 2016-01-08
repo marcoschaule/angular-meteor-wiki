@@ -44,6 +44,10 @@ var schemaUserProfile = {
         type          : String,
         optional      : true,
     },
+    'primaryEmail': {
+        type          : String,
+        optional      : false,
+    },
     'gender': {
         type          : String,
         allowedValues : ['male', 'female', 'other'],
@@ -127,6 +131,13 @@ var schemaUserSignUp = {
     },
 };
 SchemaUser.signUp = new SimpleSchema(schemaUserSignUp);
+
+// *****************************************************************************
+
+var schemaUserAddEmail = {
+    'strEmail'               : schemaUser['emails.$.address'],
+};
+SchemaUser.addEmail = new SimpleSchema(schemaUserAddEmail);
 
 // *****************************************************************************
 

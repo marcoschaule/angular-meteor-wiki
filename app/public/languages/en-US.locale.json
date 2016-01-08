@@ -94,6 +94,7 @@
   "privacy.IsThisPagePrivate"                                  : "Is this page private?",
 
   "common.Versions"                                            : "Versions",
+  "common.Add"                                                 : "Add",
   "common.Create"                                              : "Create",
   "common.CreateAndReturn"                                     : "Create and return",
   "common.Edit"                                                : "Edit",

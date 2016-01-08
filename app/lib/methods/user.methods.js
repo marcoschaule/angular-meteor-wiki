@@ -5,8 +5,11 @@
 // ********************************************************************************
 
 Meteor.methods({
-    usersReadUsernames : usersReadUsernames,
-    isUsernameAvailable: isUsernameAvailable,
+    usersReadUsernames      : usersReadUsernames,
+    usersAddEmail           : usersAddEmail,
+    usersSetPrimaryEmail    : usersSetPrimaryEmail,
+    usersIsUsernameAvailable: usersIsUsernameAvailable,
+    usersIsEmailAvailable   : usersIsEmailAvailable,
 });
 
 // *****************************************************************************
@@ -21,7 +24,22 @@ Meteor.methods({
  * @return {Array}             array of user names
  */
 function usersReadUsernames(arrUserIds) {
-    return Meteor.users.find({ _id: { $in: arrUserIds } }, { _id: 1, username: 1 }).fetch();
+    return Meteor.users.find({ _id: { $in: arrUserIds } }, 
+            { _id: 1, username: 1 }).fetch();
+}
+
+// ********************************************************************************
+
+/**
+ * Method to add an email to a user.
+ * 
+ * @param  {String}   strEmail  string of email to be added
+ * @param  {Function} callback  function for callback
+ */
+function usersAddEmail(strEmail, callback) {
+    if (Meteor.isServer) {
+        return Accounts.addEmail(Meteor.userId(), strEmail);
+    }
 }
 
 // ********************************************************************************
@@ -33,7 +51,9 @@ function usersReadUsernames(arrUserIds) {
  * @param {Function} callback  function for callback
  */
 function usersSetPrimaryEmail(strEmail, callback) {
-    return Meteor.users.udpate({ _id: Meteor.userId() }, { $set: { 'profile.primaryEmail': strEmail } }, callback);
+    return Meteor.users.update({ _id: Meteor.userId() },
+            { $set: { 'profile.primaryEmail': strEmail } },
+            ('function' === typeof callback && callback));
 }
 
 // ********************************************************************************
@@ -41,13 +61,26 @@ function usersSetPrimaryEmail(strEmail, callback) {
 /**
  * Method to test if a username is available.
  * 
- * @param  {String}   strUsername  string of username
- * @param  {Function} callback     function for callback
+ * @param {String}   strUsername  string of username
+ * @param {Function} callback     function for callback
  */
-function isUsernameAvailable(strUsername, callback) {
-    var _isUsernameAvailable = !!Meteor.users.find({ username: strUsername });
+function usersIsUsernameAvailable(strUsername, callback) {
+    var isUsernameAvailable = Meteor.users.find({ username: strUsername }).fetch().length <= 0;
+    return ('function' === typeof callback && callback(null, isUsernameAvailable));
+}
 
-    return _.isFunction(callback) && callback(null, _isUsernameAvailable);
+// ********************************************************************************
+
+/**
+ * Method to test if a email is available.
+ * 
+ * @param {String}   strEmail  string of email
+ * @param {Function} callback  function for callback
+ */
+function usersIsEmailAvailable(strEmail, callback) {
+    var arrEmails = Meteor.users.find({ emails: { $elemMatch: { address: strEmail } } }).fetch();
+    var isEmailAvailable = arrEmails.length;
+    return isEmailAvailable;
 }
 
 // ********************************************************************************

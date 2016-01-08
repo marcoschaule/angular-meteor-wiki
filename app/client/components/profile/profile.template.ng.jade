@@ -71,7 +71,7 @@ form#form-username(
 form#form-email(
         name="vm.formEmail",
         method="POST",
-        data-ng-submit="")
+        data-ng-submit="vm.addEmail()")
 
     h4 {{ 'authentication.Email' | translate }}
     .well
@@ -85,33 +85,32 @@ form#form-email(
             tbody
                 tr(data-ng-repeat="objEmail in vm.objUser.emails")
                     td.left
-                        i(data-ng-if=" objEmail.primary").fa.fa-lg.fa-check.green
-                        i(data-ng-if="!objEmail.primary").fa.fa-lg.fa-times.red
+                        i(data-ng-if="vm.objUser.profile.primaryEmail === objEmail.address").fa.fa-lg.fa-check.green
+                        i(data-ng-if="vm.objUser.profile.primaryEmail !== objEmail.address").fa.fa-lg.fa-times.red
                     td.left
                         i(data-ng-if=" objEmail.verified").fa.fa-lg.fa-check.green
                         i(data-ng-if="!objEmail.verified").fa.fa-lg.fa-times.red
                     td.left
                         span {{ objEmail.address }}
                     td.right: .btn-group
-                        a.btn.btn-sm.btn-primary: i.fa.fa-check
-                        a.btn.btn-sm.btn-danger: i.fa.fa-eraser
+                        a.btn.btn-sm.btn-primary(
+                                data-ng-if="vm.objUser.profile.primaryEmail !== objEmail.address",
+                                data-ng-click="vm.setPrimaryEmail(objEmail.address)")
+                            i.fa.fa-check
+                        a.btn.btn-sm.btn-danger
+                            i.fa.fa-eraser
         fieldset
-            +inputText('vm.objUser.strEmail', 'vm.objErrs.strEmail',
+            +inputText('vm.strEmailNew', 'vm.objErrs.strEmail',
                     'authentication.Email', 'profile-email',
                     'profileEmail', '', '410', 'vm.isInvalid(\'strEmail\')', true)
         .errorFieldDynamic
             +errorHandler('strEmail')
-        fieldset
-            +inputText('vm.objUser.strEmailConfirmation', 'vm.objErrs.strEmailConfirmation',
-                    'authentication.EmailConfirmation', 'profile-email-confirmation',
-                    'profileEmailConfirmation', '', '420', 'vm.isInvalid(\'strEmailConfirmation\', \'strEmail\')', true)
-        .errorFieldDynamic
-            +errorHandler('strEmailConfirmation')
         fieldset.right
             button.btn.btn-primary(
                     tabindex="1000",
-                    data-ng-disabled="vm.formUsername.$pristine")
-                |{{ 'common.Save' | translate }}
+                    data-ng-click="vm.addEmail()",
+                    data-ng-disabled="vm.formEmail.$pristine")
+                |{{ 'common.Add' | translate }}
 
 //- *****************************************************************************
 
